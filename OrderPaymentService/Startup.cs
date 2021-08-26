@@ -2,7 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Common.Commands.Order;
+using Common.Commands.Order.Payments;
 using MassTransit;
+using MassTransit.Definition;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -11,6 +14,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
+using OrderPaymentService.Handlers;
 
 namespace OrderPaymentService
 {
@@ -28,18 +33,17 @@ namespace OrderPaymentService
         {
             services.AddMassTransit(x =>
                {
-                   x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(config =>
-                       {
-                           config.UseHealthCheck(provider);
-                           config.Host(new Uri("rabbitmq://localhost"), h =>
-                           {
-                               h.Username("guest");
-                               h.Password("guest");
-                           });
-                       }));
+                   x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq());
+                    x.AddRequestClient<CreatePaymentCommand>(new Uri($"queue:{KebabCaseEndpointNameFormatter.Instance.Consumer<CreatePaymentCommendHandler>()}"));
+                //    x.AddRequestClient<CreatePaymentCommand>();
+
                });
             services.AddMassTransitHostedService();
             services.AddControllers();
+            services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Productcatalog", Version = "v1" });
+});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,6 +53,7 @@ namespace OrderPaymentService
             {
                 app.UseDeveloperExceptionPage();
             }
+
 
             app.UseHttpsRedirection();
 
@@ -60,6 +65,8 @@ namespace OrderPaymentService
             {
                 endpoints.MapControllers();
             });
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Productcatalog v1"));
         }
     }
 }
