@@ -34,8 +34,8 @@ namespace OrderPaymentService
             services.AddMassTransit(x =>
                {
                    x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq());
-                    x.AddRequestClient<CreatePaymentCommand>(new Uri($"queue:{KebabCaseEndpointNameFormatter.Instance.Consumer<CreatePaymentCommendHandler>()}"));
-                //    x.AddRequestClient<CreatePaymentCommand>();
+                   x.AddRequestClient<CreatePaymentCommand>(new Uri($"queue:{KebabCaseEndpointNameFormatter.Instance.Consumer<CreatePaymentCommendHandler>()}"));
+                   //    x.AddRequestClient<CreatePaymentCommand>();
 
                });
             services.AddMassTransitHostedService();
