@@ -1,45 +1,42 @@
 using System.Threading.Tasks;
-using Common.Commands.Order;
-using Common.Commands.Order.Payments;
-using MassTransit;
 
 namespace OrderService.Handlers
 {
-    public class CreateOrderCommandHandler : 
-    IConsumer<CreateOrderCommand>,
-    IConsumer<PaymentCreated>
-    {
-        private readonly IBus bus;
+    //public class CreateOrderCommandHandler : 
+    //IConsumer<CreateOrderCommand>,
+    //IConsumer<PaymentCreated>
+    //{
+    //    private readonly IBus bus;
 
-        public CreateOrderCommandHandler(
-             IBus bus
-        )
-        {
-            this.bus = bus;
-        }
+    //    public CreateOrderCommandHandler(
+    //         IBus bus
+    //    )
+    //    {
+    //        this.bus = bus;
+    //    }
 
-        public async Task Consume(ConsumeContext<CreateOrderCommand> context)
-        {
-            var orderId = context.Message.OrderId;
+    //    public async Task Consume(ConsumeContext<CreateOrderCommand> context)
+    //    {
+    //        var orderId = context.Message.OrderId;
 
-            //create order
-            // bus.Publish(new CreatePaymentCommand { OrderId = orderId });
-            await context.RespondAsync<OrderCreated>(new OrderCreated
-            {
-                IsCreated=true
-            });
-        }
+    //        //create order
+    //        // bus.Publish(new CreatePaymentCommand { OrderId = orderId });
+    //        await context.RespondAsync<OrderCreated>(new OrderCreated
+    //        {
+    //            IsCreated=true
+    //        });
+    //    }
 
-        public Task Consume(ConsumeContext<PaymentCreated> context)
-        {
-            if(context.Message.Created==false) 
-            {
-                //TODO: RollBack Order
-                throw new System.Exception("payment exception");
-            }
+    //    public Task Consume(ConsumeContext<PaymentCreated> context)
+    //    {
+    //        if(context.Message.Created==false) 
+    //        {
+    //            //TODO: RollBack Order
+    //            throw new System.Exception("payment exception");
+    //        }
 
-            //TODO: 
-            return Task.CompletedTask;
-        }
-    }
+    //        //TODO: 
+    //        return Task.CompletedTask;
+    //    }
+    //}
 }

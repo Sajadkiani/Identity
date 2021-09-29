@@ -2,10 +2,11 @@ using System.Threading.Tasks;
 using Common.Commands.Order.Payments;
 using MassTransit;
 using Microsoft.Extensions.Logging;
+using Models;
 
 namespace OrderPaymentService.Handlers
 {
-    public class CreatePaymentCommendHandler : IConsumer<CreatePaymentCommand>
+    public class CreatePaymentCommendHandler : IConsumer<CreateOrderPaymentModel>
     {
         private readonly ILogger<CreatePaymentCommendHandler> logger;
         private readonly IBus bus;
@@ -18,7 +19,8 @@ namespace OrderPaymentService.Handlers
             this.logger = logger;
             this.bus = bus;
         }
-        public Task Consume(ConsumeContext<CreatePaymentCommand> context)
+
+        public Task Consume(ConsumeContext<CreateOrderPaymentModel> context)
         {
             //TODO
             logger.LogInformation("payment created!");

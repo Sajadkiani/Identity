@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Common.Commands.Order;
-using Common.Commands.Order.Payments;
-using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using MassTransit;
+using Models;
 
 namespace OrderService.Controllers
 {
@@ -12,25 +11,25 @@ namespace OrderService.Controllers
     [Route("[controller]")]
     public class OrderController : ControllerBase
     {
-
         private readonly ILogger<OrderController> logger;
-        private readonly IRequestClient<CreateOrderCommand> client;
+        private readonly IPublishEndpoint publishEndpoint;
 
         public OrderController(
          ILogger<OrderController> logger,
-         IRequestClient<CreateOrderCommand> client
+         IPublishEndpoint publishEndpoint
         )
         {
             this.logger = logger;
-            this.client = client;
+            this.publishEndpoint = publishEndpoint;
         }
 
         [HttpGet]
         public async Task CreateOrderAsync()
         {
             var orderId = Guid.NewGuid();
-            logger.LogInformation("Add order");
-            var x = await client.GetResponse<OrderCreated>(new CreateOrderCommand { OrderId = orderId });
+            logger.LogInformation("--> add order");
+            var x = publishEndpoint.Publish(new CreateOrderPaymentModel{ OrderId = 1 });
+            //var x = await client.GetResponse<OrderCreated>(new CreateOrderCommand { OrderId = orderId });
         }
     }
 }

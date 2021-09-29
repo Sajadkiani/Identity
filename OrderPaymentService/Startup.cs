@@ -31,14 +31,28 @@ namespace OrderPaymentService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMassTransit(x =>
-               {
-                   x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq());
-                   x.AddRequestClient<CreatePaymentCommand>(new Uri($"queue:{KebabCaseEndpointNameFormatter.Instance.Consumer<CreatePaymentCommendHandler>()}"));
-                   //    x.AddRequestClient<CreatePaymentCommand>();
 
-               });
+            services.AddMassTransit(x =>
+            {
+                x.AddConsumer<CreatePaymentCommendHandler>();
+
+                x.SetKebabCaseEndpointNameFormatter();
+
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.ConfigureEndpoints(context);
+                });
+            });
+
             services.AddMassTransitHostedService();
+            // services.AddMassTransit(x =>
+            //    {
+            //        x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq());
+            //        x.AddRequestClient<CreatePaymentCommand>(new Uri($"queue:{KebabCaseEndpointNameFormatter.Instance.Consumer<CreatePaymentCommendHandler>()}"));
+            //        //    x.AddRequestClient<CreatePaymentCommand>();
+
+            //    });
+            // services.AddMassTransitHostedService();
             services.AddControllers();
             services.AddSwaggerGen(c =>
 {
