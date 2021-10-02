@@ -9,7 +9,7 @@ using OrderService.ViewModels;
 
 namespace OrderService.Controllers
 {
-    [Route("api/orders")]
+    [Route("api/orderproducts")]
     public class OrderProductController :ControllerBase
     {
         private readonly IMapper mapper;

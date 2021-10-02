@@ -22,61 +22,16 @@ namespace OrderService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-              services.AddGenericRequestClient();
-            // services.AddDbContext<OrderDbContext>(opt=>opt.UseInMemoryDatabase("MyOrderDb"));
-              services.AddAutoMapper(typeof(Startup));
-            //   services.AddMassTransit(x =>
-            //     {
-            //       x.ApplyCustomMassTransitConfiguration();
-
-            //         x.AddDelayedMessageScheduler();
-
-            //         // x.SetEntityFrameworkSagaRepositoryProvider(r =>
-            //         // {
-            //         //     r.ConcurrencyMode = ConcurrencyMode.Pessimistic;
-            //         //     r.LockStatementProvider = new SqlServerLockStatementProvider();
-
-            //         //     r.ExistingDbContext<ForkJointSagaDbContext>();
-            //         // });
-
-            //         x.AddConsumersFromNamespaceContaining<CreateOrderCommandHandler>();
-
-            //         // x.AddActivitiesFromNamespaceContaining<GrillBurgerActivity>();
-
-            //         // x.AddFuturesFromNamespaceContaining<OrderFuture>();
-
-            //         // x.AddSagaRepository<FutureState>()
-            //         //     .EntityFrameworkRepository(r =>
-            //         //     {
-            //         //         r.ConcurrencyMode = ConcurrencyMode.Pessimistic;
-            //         //         r.LockStatementProvider = new SqlServerLockStatementProvider();
-
-            //         //         r.ExistingDbContext<ForkJointSagaDbContext>();
-            //         //     });
-
-            //         x.UsingRabbitMq((context, cfg) =>
-            //         {
-            //             cfg.AutoStart = true;
-
-            //             // cfg.ApplyCustomBusConfiguration();
-
-            //             // if (IsRunningInContainer)
-            //             cfg.Host("rabbitmq://localhost");
-
-            //             cfg.UseDelayedMessageScheduler();
-
-            //             cfg.ConfigureEndpoints(context);
-            //         });
-            //     })
-            //     .AddMassTransitHostedService();
+            services.AddGenericRequestClient();
+            services.AddAutoMapper(typeof(Startup));
             services.AddDbContext<OrderDbContext>(opt => opt.UseInMemoryDatabase("MyOrderDb"));
-            
+
             services.AddMassTransit(x =>
             {
-               x.UsingRabbitMq();
+                x.UsingRabbitMq();
             });
             services.AddMassTransitHostedService();
-            
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
                   {

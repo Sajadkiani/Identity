@@ -25,7 +25,7 @@ namespace OrderPaymentService.Handlers
             //TODO
             logger.LogInformation("payment created!");
 
-            bus.Send(new PaymentCreated{Created=true});
+            bus.Send(new PaymentCreated { Created = true });
             return Task.CompletedTask;
         }
     }

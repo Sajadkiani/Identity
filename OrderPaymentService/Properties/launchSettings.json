@@ -4,8 +4,8 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:58336",
-      "sslPort": 44314
+      "applicationUrl": "http://localhost:45673",
+      "sslPort": 44313
     }
   },
   "profiles": {
@@ -17,14 +17,14 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "OrderPaymentService": {
+    "OrderService": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "weatherforecast",
-      "applicationUrl": "http://localhost:5001",
+      "applicationUrl": "http://localhost:5002",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_URLS": "http://localhost:5001"
+        "ASPNETCORE_URLS": "http://localhost:5002"
       }
     }
   }
