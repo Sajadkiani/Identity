@@ -1,29 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Common.Commands.Order;
-using GreenPipes.Internals.Extensions;
-using MassTransit;
-using MassTransit.Courier;
-using MassTransit.Definition;
-using MassTransit.Futures.Contracts;
-using MassTransit.Internals.Extensions;
-using MassTransit.Saga;
-using MassTransit.Topology;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using OrderService.Data;
-using OrderService.Handlers;
-
+using MassTransit;
+using Microsoft.Extensions.DependencyInjection;
 namespace OrderService
 {
     public class Startup
@@ -38,58 +22,66 @@ namespace OrderService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<OrderDbContext>(opt=>opt.UseInMemoryDatabase("MyOrderDb"));
               services.AddGenericRequestClient();
+            // services.AddDbContext<OrderDbContext>(opt=>opt.UseInMemoryDatabase("MyOrderDb"));
               services.AddAutoMapper(typeof(Startup));
-              services.AddMassTransit(x =>
-                {
-                  x.ApplyCustomMassTransitConfiguration();
+            //   services.AddMassTransit(x =>
+            //     {
+            //       x.ApplyCustomMassTransitConfiguration();
 
-                    x.AddDelayedMessageScheduler();
+            //         x.AddDelayedMessageScheduler();
 
-                    // x.SetEntityFrameworkSagaRepositoryProvider(r =>
-                    // {
-                    //     r.ConcurrencyMode = ConcurrencyMode.Pessimistic;
-                    //     r.LockStatementProvider = new SqlServerLockStatementProvider();
+            //         // x.SetEntityFrameworkSagaRepositoryProvider(r =>
+            //         // {
+            //         //     r.ConcurrencyMode = ConcurrencyMode.Pessimistic;
+            //         //     r.LockStatementProvider = new SqlServerLockStatementProvider();
 
-                    //     r.ExistingDbContext<ForkJointSagaDbContext>();
-                    // });
+            //         //     r.ExistingDbContext<ForkJointSagaDbContext>();
+            //         // });
 
-                    x.AddConsumersFromNamespaceContaining<CreateOrderCommandHandler>();
+            //         x.AddConsumersFromNamespaceContaining<CreateOrderCommandHandler>();
 
-                    // x.AddActivitiesFromNamespaceContaining<GrillBurgerActivity>();
+            //         // x.AddActivitiesFromNamespaceContaining<GrillBurgerActivity>();
 
-                    // x.AddFuturesFromNamespaceContaining<OrderFuture>();
+            //         // x.AddFuturesFromNamespaceContaining<OrderFuture>();
 
-                    // x.AddSagaRepository<FutureState>()
-                    //     .EntityFrameworkRepository(r =>
-                    //     {
-                    //         r.ConcurrencyMode = ConcurrencyMode.Pessimistic;
-                    //         r.LockStatementProvider = new SqlServerLockStatementProvider();
+            //         // x.AddSagaRepository<FutureState>()
+            //         //     .EntityFrameworkRepository(r =>
+            //         //     {
+            //         //         r.ConcurrencyMode = ConcurrencyMode.Pessimistic;
+            //         //         r.LockStatementProvider = new SqlServerLockStatementProvider();
 
-                    //         r.ExistingDbContext<ForkJointSagaDbContext>();
-                    //     });
+            //         //         r.ExistingDbContext<ForkJointSagaDbContext>();
+            //         //     });
 
-                    x.UsingRabbitMq((context, cfg) =>
-                    {
-                        cfg.AutoStart = true;
+            //         x.UsingRabbitMq((context, cfg) =>
+            //         {
+            //             cfg.AutoStart = true;
 
-                        // cfg.ApplyCustomBusConfiguration();
+            //             // cfg.ApplyCustomBusConfiguration();
 
-                        // if (IsRunningInContainer)
-                        cfg.Host("rabbitmq://localhost");
+            //             // if (IsRunningInContainer)
+            //             cfg.Host("rabbitmq://localhost");
 
-                        cfg.UseDelayedMessageScheduler();
+            //             cfg.UseDelayedMessageScheduler();
 
-                        cfg.ConfigureEndpoints(context);
-                    });
-                })
-                .AddMassTransitHostedService();
+            //             cfg.ConfigureEndpoints(context);
+            //         });
+            //     })
+            //     .AddMassTransitHostedService();
+            services.AddDbContext<OrderDbContext>(opt => opt.UseInMemoryDatabase("MyOrderDb"));
+            
+            services.AddMassTransit(x =>
+            {
+               x.UsingRabbitMq();
+            });
+            services.AddMassTransitHostedService();
+            
             services.AddControllers();
             services.AddSwaggerGen(c =>
-                    {
-                        c.SwaggerDoc("v1", new OpenApiInfo { Title = "Productcatalog", Version = "v1" });
-                    });
+                  {
+                      c.SwaggerDoc("v1", new OpenApiInfo { Title = "Productcatalog", Version = "v1" });
+                  });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -133,94 +125,94 @@ namespace OrderService
         /// Should be used on every AddMassTransit configuration
         /// </summary>
         /// <param name="configurator"></param>
-        public static void ApplyCustomMassTransitConfiguration(this IBusRegistrationConfigurator configurator)
-        {
-            configurator.SetEndpointNameFormatter(new CustomEndpointNameFormatter());
-        }
+        //public static void ApplyCustomMassTransitConfiguration(this IBusRegistrationConfigurator configurator)
+        //{
+        //    configurator.SetEndpointNameFormatter(new CustomEndpointNameFormatter());
+        //}
     }
 
-    public class CustomEntityNameFormatter :
-        IEntityNameFormatter
-    {
-        readonly IEntityNameFormatter _entityNameFormatter;
+    //public class CustomEntityNameFormatter :
+    //    IEntityNameFormatter
+    //{
+    //    readonly IEntityNameFormatter _entityNameFormatter;
 
-        public CustomEntityNameFormatter(IEntityNameFormatter entityNameFormatter)
-        {
-            _entityNameFormatter = entityNameFormatter;
-        }
+    //    public CustomEntityNameFormatter(IEntityNameFormatter entityNameFormatter)
+    //    {
+    //        _entityNameFormatter = entityNameFormatter;
+    //    }
 
-        public string FormatEntityName<T>()
-        {
-            if (typeof(T).ClosesType(typeof(Get<>), out Type[] types))
-            {
-                var name = (string)typeof(IEntityNameFormatter)
-                    .GetMethod("FormatEntityName")
-                    .MakeGenericMethod(types)
-                    .Invoke(_entityNameFormatter, Array.Empty<object>());
+    //    public string FormatEntityName<T>()
+    //    {
+    //        if (typeof(T).ClosesType(typeof(Get<>), out Type[] types))
+    //        {
+    //            var name = (string)typeof(IEntityNameFormatter)
+    //                .GetMethod("FormatEntityName")
+    //                .MakeGenericMethod(types)
+    //                .Invoke(_entityNameFormatter, Array.Empty<object>());
 
-                var suffix = typeof(T).Name.Split('`').First();
+    //            var suffix = typeof(T).Name.Split('`').First();
 
-                return $"{name}-{suffix}";
-            }
+    //            return $"{name}-{suffix}";
+    //        }
 
-            return _entityNameFormatter.FormatEntityName<T>();
-        }
-    }
+    //        return _entityNameFormatter.FormatEntityName<T>();
+    //    }
+    //}
 
-     public class CustomEndpointNameFormatter :
-        IEndpointNameFormatter
-    {
-        readonly IEndpointNameFormatter _formatter;
+    // public class CustomEndpointNameFormatter :
+    //    IEndpointNameFormatter
+    //{
+    //    readonly IEndpointNameFormatter _formatter;
 
-        public CustomEndpointNameFormatter()
-        {
-            _formatter = KebabCaseEndpointNameFormatter.Instance;
-        }
+    //    public CustomEndpointNameFormatter()
+    //    {
+    //        _formatter = KebabCaseEndpointNameFormatter.Instance;
+    //    }
 
-        public string TemporaryEndpoint(string tag)
-        {
-            return _formatter.TemporaryEndpoint(tag);
-        }
+    //    public string TemporaryEndpoint(string tag)
+    //    {
+    //        return _formatter.TemporaryEndpoint(tag);
+    //    }
 
-        public string Consumer<T>()
-            where T : class, IConsumer
-        {
-            return _formatter.Consumer<T>();
-        }
+    //    public string Consumer<T>()
+    //        where T : class, IConsumer
+    //    {
+    //        return _formatter.Consumer<T>();
+    //    }
 
-        public string Message<T>()
-            where T : class
-        {
-            return _formatter.Message<T>();
-        }
+    //    public string Message<T>()
+    //        where T : class
+    //    {
+    //        return _formatter.Message<T>();
+    //    }
 
-        public string Saga<T>()
-            where T : class, ISaga
-        {
-            return _formatter.Saga<T>();
-        }
+    //    public string Saga<T>()
+    //        where T : class, ISaga
+    //    {
+    //        return _formatter.Saga<T>();
+    //    }
 
-        public string ExecuteActivity<T, TArguments>()
-            where T : class, IExecuteActivity<TArguments>
-            where TArguments : class
-        {
-            var executeActivity = _formatter.ExecuteActivity<T, TArguments>();
+    //    public string ExecuteActivity<T, TArguments>()
+    //        where T : class, IExecuteActivity<TArguments>
+    //        where TArguments : class
+    //    {
+    //        var executeActivity = _formatter.ExecuteActivity<T, TArguments>();
 
-            return SanitizeName(executeActivity);
-        }
+    //        return SanitizeName(executeActivity);
+    //    }
 
-        public string CompensateActivity<T, TLog>()
-            where T : class, ICompensateActivity<TLog>
-            where TLog : class
-        {
-            var compensateActivity = _formatter.CompensateActivity<T, TLog>();
+    //    public string CompensateActivity<T, TLog>()
+    //        where T : class, ICompensateActivity<TLog>
+    //        where TLog : class
+    //    {
+    //        var compensateActivity = _formatter.CompensateActivity<T, TLog>();
 
-            return SanitizeName(compensateActivity);
-        }
+    //        return SanitizeName(compensateActivity);
+    //    }
 
-        public string SanitizeName(string name)
-        {
-            return _formatter.SanitizeName(name);
-        }
-    }
+    //    public string SanitizeName(string name)
+    //    {
+    //        return _formatter.SanitizeName(name);
+    //    }
+    //}
 }
