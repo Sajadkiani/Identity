@@ -17,12 +17,12 @@ namespace IdentityService.Data.Stores.Users
         }
         public Task AddUserAsync(User user)
         {
-            throw new System.NotImplementedException();
+            return identityDbContext.Users.AddAsync(user).AsTask();
         }
 
         public void DeleteUser(User user)
         {
-            throw new System.NotImplementedException();
+            identityDbContext.Users.Remove(user);
         }
 
         public Task<User> GetUserAsync(int id)
@@ -32,12 +32,14 @@ namespace IdentityService.Data.Stores.Users
 
         public Task<List<User>> GetUsersAsync()
         {
-            throw new System.NotImplementedException();
+           return identityDbContext.Users.ToListAsync();
         }
 
         public void UpdateUser(User user)
         {
-            throw new System.NotImplementedException();
+            identityDbContext.Users.Update(user);
         }
+
+        public Task SaveChangeAsync() => identityDbContext.SaveChangesAsync(); 
     }
 }

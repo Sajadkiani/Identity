@@ -1,4 +1,5 @@
 using AutoMapper;
+using IdentityService.Entities;
 using IdentityService.Models;
 using IdentityService.ViewModels;
 
@@ -8,7 +9,8 @@ namespace IdentityService.MapperPofiles
     {
         public AutoMapperProfile()
         {
-            CreateMap <AddUserVm,AddUserModel> ();
+            CreateMap<AddUserVm, User>();
+            CreateMap<User, GetUserModel>();
         }
     }
 }

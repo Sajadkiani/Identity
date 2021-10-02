@@ -40,6 +40,7 @@ namespace OrderService
         {
             services.AddDbContext<OrderDbContext>(opt=>opt.UseInMemoryDatabase("MyOrderDb"));
               services.AddGenericRequestClient();
+              services.AddAutoMapper(typeof(Startup));
               services.AddMassTransit(x =>
                 {
                   x.ApplyCustomMassTransitConfiguration();

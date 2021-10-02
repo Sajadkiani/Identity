@@ -10,5 +10,6 @@ namespace IdentityService.Data.Stores.Users
          Task AddUserAsync(User user);
          void DeleteUser(User user);
          void UpdateUser(User user);
+        Task SaveChangeAsync();
     }
 }
