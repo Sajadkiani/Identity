@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MassTransit;
-using Models;
 using OrderService.Constants;
+using OrderService.Models;
 
 namespace OrderService.Controllers
 {

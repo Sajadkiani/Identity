@@ -27,7 +27,7 @@ namespace OrderPaymentService
             {
                 x.AddConsumer<CreatePaymentCosumer>();
 
-                x.SetKebabCaseEndpointNameFormatter();
+                //x.SetKebabCaseEndpointNameFormatter();
 
                 x.UsingRabbitMq((context, cfg) =>
                 {
@@ -35,8 +35,8 @@ namespace OrderPaymentService
                     {
                         cfg.Host("rabbitmq://localhost", h =>
                             {
-                                h.Username("gest");
-                                h.Password("gest");
+                                h.Username("guest");
+                                h.Password("guest");
                             });
                     });
                     cfg.ReceiveEndpoint(QueueNames.create_order_payment, endp =>

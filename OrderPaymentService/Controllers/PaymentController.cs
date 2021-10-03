@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using OrderPaymentService.Models;
+using OrderService.Constants;
 
 namespace OrderPaymentService.Controllers
 {
@@ -14,25 +16,41 @@ namespace OrderPaymentService.Controllers
         private readonly ILogger<PaymentController> _logger;
         private readonly IBus bus;
         private readonly ISendEndpointProvider sendEndpointProvider;
+        private readonly IPublishEndpoint publishEndpoint;
 
         public PaymentController(ILogger<PaymentController> logger
-        ,IBus bus
-        ,ISendEndpointProvider sendEndpointProvider
+        , IBus bus
+        , ISendEndpointProvider sendEndpointProvider
+        , IPublishEndpoint publishEndpoint
+
         )
         {
             _logger = logger;
             this.bus = bus;
             this.sendEndpointProvider = sendEndpointProvider;
+            this.publishEndpoint = publishEndpoint;
         }
 
-        [HttpGet]
-        public Task CreateOrderAsync()
+        [HttpGet("sendToOrder")]
+        public async Task SendOrderAsync()
         {
-            var orderId = Guid.NewGuid();
             _logger.LogInformation("Add order");
-            // bus.Publish(new CreatePaymentCommand{OrderId=orderId});
+             var orderId = new Random().Next();
+            var endpoint = await sendEndpointProvider.GetSendEndpoint(new Uri($"rabbitmq://localhost/{QueueNames.payment_created}"));
+            await endpoint.Send(new PaymentCreatedModel { OrderId = orderId });
+            return;
+        }
 
-            return Task.CompletedTask;
+        [HttpGet("publishToOrder")]
+        public async Task PublishOrderAsync()
+        {
+            _logger.LogInformation("Add order");
+            var orderId = new Random().Next();
+
+            await publishEndpoint.Publish(new PaymentCreatedModel{OrderId=orderId});
+            //  await bus.Publish<PaymentCreatedModel>(new  { OrderId = orderId, Created = true });
+
+            return;
         }
     }
 }

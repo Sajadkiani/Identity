@@ -8,7 +8,7 @@ using Microsoft.OpenApi.Models;
 using OrderService.Data;
 using MassTransit;
 using OrderService.Consumers.Orders;
-using Models;
+using OrderService.Constants;
 
 namespace OrderService
 {
@@ -24,9 +24,7 @@ namespace OrderService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddGenericRequestClient();
-            services.AddAutoMapper(typeof(Startup));
-            services.AddDbContext<OrderDbContext>(opt => opt.UseInMemoryDatabase("MyOrderDb"));
+            // services.AddGenericRequestClient();
             services.AddMassTransit(x =>
             {
                 // x.SetKebabCaseEndpointNameFormatter();
@@ -39,17 +37,20 @@ namespace OrderService
                     {
                         cfg.Host("rabbitmq://localhost", h =>
                         {
-                            h.Username("gest");
-                            h.Password("gest");
+                            h.Username("guest");
+                            h.Password("guest");
                         });
-                        cfg.ReceiveEndpoint("event-listener", e =>
-                        {
-                            e.ConfigureConsumer<OrderConsumer>(context);
-                        });
+                        // cfg.ConfigureEndpoints(context);
+                    });
+                    cfg.ReceiveEndpoint(QueueNames.payment_created, e =>
+                    {
+                        e.ConfigureConsumer<OrderConsumer>(context);
                     });
                 });
             });
             services.AddMassTransitHostedService();
+            services.AddDbContext<OrderDbContext>(opt => opt.UseInMemoryDatabase("MyOrderDb"));
+            services.AddAutoMapper(typeof(Startup));
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
