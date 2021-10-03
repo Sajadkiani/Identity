@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using IdentityService.Data.Stores.Users;
+using IdentityService.Entities;
 using IdentityService.Models;
 using IdentityService.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -34,11 +36,19 @@ namespace IdentityService.Controllers
             };
         }
 
-        [HttpGet("{userId}")]
+        [HttpPost]
         public async Task AddUserAsync(AddUserVm vm)
         {
-            var model=mapper.Map<AddUserVm>(vm);
-            
+            var user = mapper.Map<User>(vm);
+            await userStore.AddUserAsync(user);
+            await userStore.SaveChangeAsync();
+        }
+
+        [HttpGet("all")]
+        public async Task<List<GetUserModel>> GetAllUserAsync()
+        {
+            var users = await userStore.GetUsersAsync();
+            return mapper.Map<List<GetUserModel>>(users);
         }
     }
 }

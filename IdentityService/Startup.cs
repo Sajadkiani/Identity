@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using IdentityService.Data;
+using IdentityService.Data.Stores.Users;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -30,6 +31,7 @@ namespace IdentityService
         {
             services.AddDbContext<IdentityDbContext>(opt => opt.UseInMemoryDatabase("MyIdentityDb"));
             services.AddControllers();
+            services.AddScoped<IUserStore, UserStore>();
             services.AddAutoMapper(typeof(Startup));
             services.AddSwaggerGen(c =>
             {
