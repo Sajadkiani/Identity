@@ -1,9 +1,5 @@
 C:\Users\s.kiani\Desktop\GitRepo\MicroService\OrderPaymentService\bin\Debug\net5.0\appsettings.Development.json
 C:\Users\s.kiani\Desktop\GitRepo\MicroService\OrderPaymentService\bin\Debug\net5.0\appsettings.json
-C:\Users\s.kiani\Desktop\GitRepo\MicroService\OrderPaymentService\bin\Debug\net5.0\Common.deps.json
-C:\Users\s.kiani\Desktop\GitRepo\MicroService\OrderPaymentService\bin\Debug\net5.0\Common.runtimeconfig.json
-C:\Users\s.kiani\Desktop\GitRepo\MicroService\OrderPaymentService\bin\Debug\net5.0\Common.runtimeconfig.dev.json
-C:\Users\s.kiani\Desktop\GitRepo\MicroService\OrderPaymentService\bin\Debug\net5.0\Common.exe
 C:\Users\s.kiani\Desktop\GitRepo\MicroService\OrderPaymentService\bin\Debug\net5.0\OrderPaymentService.exe
 C:\Users\s.kiani\Desktop\GitRepo\MicroService\OrderPaymentService\bin\Debug\net5.0\OrderPaymentService.deps.json
 C:\Users\s.kiani\Desktop\GitRepo\MicroService\OrderPaymentService\bin\Debug\net5.0\OrderPaymentService.runtimeconfig.json
@@ -26,8 +22,6 @@ C:\Users\s.kiani\Desktop\GitRepo\MicroService\OrderPaymentService\bin\Debug\net5
 C:\Users\s.kiani\Desktop\GitRepo\MicroService\OrderPaymentService\bin\Debug\net5.0\Swashbuckle.AspNetCore.Swagger.dll
 C:\Users\s.kiani\Desktop\GitRepo\MicroService\OrderPaymentService\bin\Debug\net5.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\Users\s.kiani\Desktop\GitRepo\MicroService\OrderPaymentService\bin\Debug\net5.0\Swashbuckle.AspNetCore.SwaggerUI.dll
-C:\Users\s.kiani\Desktop\GitRepo\MicroService\OrderPaymentService\bin\Debug\net5.0\Common.dll
-C:\Users\s.kiani\Desktop\GitRepo\MicroService\OrderPaymentService\bin\Debug\net5.0\Common.pdb
 C:\Users\s.kiani\Desktop\GitRepo\MicroService\OrderPaymentService\obj\Debug\net5.0\OrderPaymentService.csproj.AssemblyReference.cache
 C:\Users\s.kiani\Desktop\GitRepo\MicroService\OrderPaymentService\obj\Debug\net5.0\OrderPaymentService.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\s.kiani\Desktop\GitRepo\MicroService\OrderPaymentService\obj\Debug\net5.0\OrderPaymentService.AssemblyInfoInputs.cache

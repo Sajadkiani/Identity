@@ -33,7 +33,6 @@
     ".NETCoreApp,Version=v5.0": {
       "OrderPaymentService/1.0.0": {
         "dependencies": {
-          "Common": "1.0.0",
           "MassTransit": "7.2.2",
           "MassTransit.AspNetCore": "7.2.2",
           "MassTransit.RabbitMQ": "7.2.2",
@@ -1247,14 +1246,6 @@
           "System.Text.Encoding": "4.3.0",
           "System.Threading": "4.3.0",
           "System.Xml.ReaderWriter": "4.3.1"
-        }
-      },
-      "Common/1.0.0": {
-        "runtime": {
-          "Common.dll": {}
-        },
-        "compile": {
-          "Common.dll": {}
         }
       },
       "Microsoft.AspNetCore.Antiforgery/5.0.0.0": {
@@ -3690,11 +3681,6 @@
       "sha512": "sha512-5zJ0XDxAIg8iy+t4aMnQAu0MqVbqyvfoUVl1yDV61xdo3Vth45oA2FoY4pPkxYAH5f8ixpmTqXeEIya95x0aCQ==",
       "path": "system.xml.xdocument/4.3.0",
       "hashPath": "system.xml.xdocument.4.3.0.nupkg.sha512"
-    },
-    "Common/1.0.0": {
-      "type": "project",
-      "serviceable": false,
-      "sha512": ""
     },
     "Microsoft.AspNetCore.Antiforgery/5.0.0.0": {
       "type": "referenceassembly",

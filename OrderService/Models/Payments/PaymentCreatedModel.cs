@@ -1,6 +1,6 @@
-namespace OrderService.Models.Payments
+namespace Models
 {
-    public class PaymentCreated
+    public class PaymentCreatedModel
     {
         public bool Created { get; set; }
         public int OrderId { get; set; }

@@ -7,8 +7,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using OrderService.Data;
 using MassTransit;
-using Microsoft.Extensions.DependencyInjection;
-using MassTransit.AspNetCoreIntegration;
+using OrderService.Consumers.Orders;
+using Models;
 
 namespace OrderService
 {
@@ -29,16 +29,23 @@ namespace OrderService
             services.AddDbContext<OrderDbContext>(opt => opt.UseInMemoryDatabase("MyOrderDb"));
             services.AddMassTransit(x =>
             {
+                // x.SetKebabCaseEndpointNameFormatter();
+                x.AddConsumer<OrderConsumer>();
                 x.UsingRabbitMq((context, cfg) =>
                 {
                     //  Bus.Factory.CreateUsingRabbitMq();
+                    // x.AddConsumers(typeof(Startup));
                     Bus.Factory.CreateUsingRabbitMq(cfg =>
                     {
                         cfg.Host("rabbitmq://localhost", h =>
-                            {
-                                h.Username("gest");
-                                h.Password("gest");
-                            });
+                        {
+                            h.Username("gest");
+                            h.Password("gest");
+                        });
+                        cfg.ReceiveEndpoint("event-listener", e =>
+                        {
+                            e.ConfigureConsumer<OrderConsumer>(context);
+                        });
                     });
                 });
             });

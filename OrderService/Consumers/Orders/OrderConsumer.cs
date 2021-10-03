@@ -1,17 +1,16 @@
 using System;
 using System.Threading.Tasks;
 using MassTransit;
-using OrderService.Models.Payments;
+using Models;
 
 namespace OrderService.Consumers.Orders
 {
-    public class OrderConsumer : IConsumer<PaymentCreated>
+    public class OrderConsumer : IConsumer<PaymentCreatedModel>
     {
-        public Task Consume(ConsumeContext<PaymentCreated> context)
+        public Task Consume(ConsumeContext<PaymentCreatedModel> context)
         {
             Console.WriteLine("orderservice --> get PaymentCreated");
-
             return Task.CompletedTask;
         }
     }
-}
+}   
