@@ -6,13 +6,13 @@ using Models;
 
 namespace OrderPaymentService.Handlers
 {
-    public class CreatePaymentCommendHandler : IConsumer<CreateOrderPaymentModel>
+    public class CreatePaymentCosumer : IConsumer<CreateOrderPaymentModel>
     {
-        private readonly ILogger<CreatePaymentCommendHandler> logger;
+        private readonly ILogger<CreatePaymentCosumer> logger;
         private readonly IBus bus;
 
-        public CreatePaymentCommendHandler(
-            ILogger<CreatePaymentCommendHandler> logger,
+        public CreatePaymentCosumer(
+            ILogger<CreatePaymentCosumer> logger,
             IBus bus
         )
         {
@@ -25,7 +25,7 @@ namespace OrderPaymentService.Handlers
             //TODO
             logger.LogInformation("payment created!");
 
-            bus.Send(new PaymentCreated { Created = true });
+            bus.Send(new PaymentCreated { OrderId = context.Message.OrderId, Created = true });
             return Task.CompletedTask;
         }
     }

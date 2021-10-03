@@ -1,4 +1,4 @@
-namespace Common.Commands.Order.Payments
+namespace OrderService.Models.Payments
 {
     public class PaymentCreated
     {

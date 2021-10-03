@@ -31,15 +31,15 @@ namespace OrderService
             {
                 x.UsingRabbitMq((context, cfg) =>
                 {
-                     Bus.Factory.CreateUsingRabbitMq();
-                    // Bus.Factory.CreateUsingRabbitMq(cfg =>
-                    // {
-                    //     cfg.Host("rabbitmq://localhost", h =>
-                    //         {
-                    //             h.Username("gest");
-                    //             h.Password("gest");
-                    //         });
-                    // });
+                    //  Bus.Factory.CreateUsingRabbitMq();
+                    Bus.Factory.CreateUsingRabbitMq(cfg =>
+                    {
+                        cfg.Host("rabbitmq://localhost", h =>
+                            {
+                                h.Username("gest");
+                                h.Password("gest");
+                            });
+                    });
                 });
             });
             services.AddMassTransitHostedService();

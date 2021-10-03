@@ -35,7 +35,7 @@ namespace OrderPaymentService
 
             services.AddMassTransit(x =>
             {
-                x.AddConsumer<CreatePaymentCommendHandler>();
+                x.AddConsumer<CreatePaymentCosumer>();
 
                 // x.SetKebabCaseEndpointNameFormatter();
 
@@ -51,7 +51,7 @@ namespace OrderPaymentService
                     });
                     cfg.ReceiveEndpoint(QueueNames.create_order_payment, endp =>
                     {
-                        endp.ConfigureConsumer<CreatePaymentCommendHandler>(context);
+                        endp.ConfigureConsumer<CreatePaymentCosumer>(context);
                     });
                 });
             });
