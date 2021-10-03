@@ -24,6 +24,8 @@ namespace OrderService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddGenericRequestClient();
+            services.AddAutoMapper(typeof(Startup));
             services.AddDbContext<OrderDbContext>(opt => opt.UseInMemoryDatabase("MyOrderDb"));
             services.AddMassTransit(x =>
             {

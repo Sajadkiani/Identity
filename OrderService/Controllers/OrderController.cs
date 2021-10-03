@@ -9,7 +9,7 @@ using OrderService.Constants;
 namespace OrderService.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/orders")]
     public class OrderController : ControllerBase
     {
         private readonly ILogger<OrderController> logger;
