@@ -16,6 +16,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using OrderPaymentService.Handlers;
+using OrderService.Constants;
 
 namespace OrderPaymentService
 {
@@ -36,11 +37,22 @@ namespace OrderPaymentService
             {
                 x.AddConsumer<CreatePaymentCommendHandler>();
 
-                x.SetKebabCaseEndpointNameFormatter();
+                // x.SetKebabCaseEndpointNameFormatter();
 
                 x.UsingRabbitMq((context, cfg) =>
                 {
-                    cfg.ConfigureEndpoints(context);
+                    Bus.Factory.CreateUsingRabbitMq(cfg =>
+                    {
+                        cfg.Host("rabbitmq://localhost", h =>
+                            {
+                                h.Username("gest");
+                                h.Password("gest");
+                            });
+                    });
+                    cfg.ReceiveEndpoint(QueueNames.create_order_payment, endp =>
+                    {
+                        endp.ConfigureConsumer<CreatePaymentCommendHandler>(context);
+                    });
                 });
             });
 
@@ -55,9 +67,9 @@ namespace OrderPaymentService
             // services.AddMassTransitHostedService();
             services.AddControllers();
             services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Productcatalog", Version = "v1" });
-});
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Productcatalog", Version = "v1" });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

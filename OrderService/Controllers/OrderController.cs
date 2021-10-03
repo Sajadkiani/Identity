@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MassTransit;
 using Models;
+using OrderService.Constants;
 
 namespace OrderService.Controllers
 {
@@ -12,23 +13,30 @@ namespace OrderService.Controllers
     public class OrderController : ControllerBase
     {
         private readonly ILogger<OrderController> logger;
-        private readonly IPublishEndpoint publishEndpoint;
+        private readonly ISendEndpointProvider sendEndpointProvider;
+        private readonly IBus bus;
 
         public OrderController(
          ILogger<OrderController> logger,
-         IPublishEndpoint publishEndpoint
+         ISendEndpointProvider sendEndpointProvider, 
+         IBus bus
         )
         {
             this.logger = logger;
-            this.publishEndpoint = publishEndpoint;
+            this.sendEndpointProvider = sendEndpointProvider;
+            this.bus = bus;
         }
 
         [HttpGet]
         public async Task CreateOrderAsync()
         {
-            var orderId = Guid.NewGuid();
+            var orderId = new Random().Next();
+            var endpoint = await sendEndpointProvider.GetSendEndpoint(new Uri($"rabbitmq://localhost/{QueueNames.create_order_payment}"));
+
+            await endpoint.Send(new CreateOrderPaymentModel { OrderId = orderId });
+         
             logger.LogInformation("--> add order");
-            var x = publishEndpoint.Publish(new CreateOrderPaymentModel{ OrderId = 1 });
+            // var x = publishEndpoint.Publish(new CreateOrderPaymentModel{ OrderId = 1 });
             //var x = await client.GetResponse<OrderCreated>(new CreateOrderCommand { OrderId = orderId });
         }
     }

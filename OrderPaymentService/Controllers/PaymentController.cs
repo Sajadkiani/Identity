@@ -16,13 +16,16 @@ namespace OrderPaymentService.Controllers
 
         private readonly ILogger<PaymentController> _logger;
         private readonly IBus bus;
+        private readonly ISendEndpointProvider sendEndpointProvider;
 
         public PaymentController(ILogger<PaymentController> logger
         ,IBus bus
+        ,ISendEndpointProvider sendEndpointProvider
         )
         {
             _logger = logger;
             this.bus = bus;
+            this.sendEndpointProvider = sendEndpointProvider;
         }
 
         [HttpGet]

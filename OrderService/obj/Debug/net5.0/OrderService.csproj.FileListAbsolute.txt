@@ -10,6 +10,7 @@ C:\Users\s.kiani\Desktop\GitRepo\MicroService\OrderService\bin\Debug\net5.0\Orde
 C:\Users\s.kiani\Desktop\GitRepo\MicroService\OrderService\bin\Debug\net5.0\Automatonymous.dll
 C:\Users\s.kiani\Desktop\GitRepo\MicroService\OrderService\bin\Debug\net5.0\GreenPipes.dll
 C:\Users\s.kiani\Desktop\GitRepo\MicroService\OrderService\bin\Debug\net5.0\MassTransit.dll
+C:\Users\s.kiani\Desktop\GitRepo\MicroService\OrderService\bin\Debug\net5.0\MassTransit.AspNetCoreIntegration.dll
 C:\Users\s.kiani\Desktop\GitRepo\MicroService\OrderService\bin\Debug\net5.0\MassTransit.ExtensionsDependencyInjectionIntegration.dll
 C:\Users\s.kiani\Desktop\GitRepo\MicroService\OrderService\bin\Debug\net5.0\MassTransit.RabbitMqTransport.dll
 C:\Users\s.kiani\Desktop\GitRepo\MicroService\OrderService\bin\Debug\net5.0\Microsoft.Bcl.AsyncInterfaces.dll
@@ -42,4 +43,3 @@ C:\Users\s.kiani\Desktop\GitRepo\MicroService\OrderService\obj\Debug\net5.0\Orde
 C:\Users\s.kiani\Desktop\GitRepo\MicroService\OrderService\obj\Debug\net5.0\ref\OrderService.dll
 C:\Users\s.kiani\Desktop\GitRepo\MicroService\OrderService\obj\Debug\net5.0\OrderService.pdb
 C:\Users\s.kiani\Desktop\GitRepo\MicroService\OrderService\obj\Debug\net5.0\OrderService.genruntimeconfig.cache
-C:\Users\s.kiani\Desktop\GitRepo\MicroService\OrderService\bin\Debug\net5.0\MassTransit.AspNetCoreIntegration.dll
