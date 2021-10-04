@@ -1,4 +1,5 @@
-namespace OrderPaymentService.Models
+// namespace OrderPaymentService.Models
+namespace Models
 {
     public class CreateOrderPaymentModel
     {
