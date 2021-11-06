@@ -2,7 +2,6 @@ using System.Threading.Tasks;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 using Models;
-using OrderPaymentService.Models;
 
 namespace OrderPaymentService.Handlers
 {

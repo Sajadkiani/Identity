@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using MassTransit;
 using OrderService.Constants;
 using OrderService.Models;
-using Models;
 
 namespace OrderService.Controllers
 {
@@ -32,7 +31,7 @@ namespace OrderService.Controllers
         public async Task CreateOrderAsync()
         {
             var orderId = new Random().Next();
-            var endpoint = await sendEndpointProvider.GetSendEndpoint(new Uri($"rabbitmq://localhost/{QueueNames.create_order_payment}"));
+            var endpoint = await bus.GetSendEndpoint(new Uri($"exchange:{QueueNames.create_order_payment}"));
 
             await endpoint.Send<CreateOrderPaymentModel>(new { OrderId = orderId });
          

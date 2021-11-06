@@ -349,3 +349,8 @@ OrderService/obj/Debug/net5.0/OrderService.pdb
 OrderService/obj/Debug/net5.0/ref/OrderService.dll
 OrderPaymentService/bin/Debug/netcoreapp3.1/Common.exe
 OrderPaymentService/bin/Debug/netcoreapp3.1/OrderPaymentService.exe
+OrderPaymentService/bin/Debug/net5.0/OrderPaymentService.deps.json
+OrderPaymentService/bin/Debug/net5.0/OrderPaymentService.dll
+OrderPaymentService/bin/Debug/net5.0/OrderPaymentService.pdb
+OrderPaymentService/bin/Debug/net5.0/OrderPaymentService.runtimeconfig.dev.json
+OrderPaymentService/bin/Debug/net5.0/ref/OrderPaymentService.dll

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using OrderPaymentService.Models;
+using Models;
 using OrderService.Constants;
 
 namespace OrderPaymentService.Controllers

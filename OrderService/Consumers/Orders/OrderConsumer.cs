@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using MassTransit;
 using Microsoft.Extensions.Logging;
-using OrderService.Models;
+using Models;
 
 namespace OrderService.Consumers.Orders
 {

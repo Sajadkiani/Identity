@@ -1,5 +1,5 @@
 {
-  "FilePath": "/media/kian/sdb1/Source/MyGitRepo/MicroService/OrderService/OrderService.csproj",
+  "FilePath": "/media/kian/sdb1/Source/MyGitRepo/MicroService/OrderPaymentService/OrderPaymentService.csproj",
   "Configuration": {
     "ConfigurationName": "MVC-3.0",
     "LanguageVersion": "5.0",
@@ -15616,7 +15616,7 @@
     ],
     "CSharpLanguageVersion": 900
   },
-  "RootNamespace": "OrderService",
+  "RootNamespace": "OrderPaymentService",
   "Documents": [],
   "SerializationFormat": "0.2"
 }
