@@ -5,9 +5,7 @@ VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderService", "OrderService\OrderService.csproj", "{96CDDD5E-C5B2-47A3-9B0B-EF82200E047F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderPaymentService", "OrderPaymentService\OrderPaymentService.csproj", "{D4007058-28FD-4795-9F40-90D4159D8D37}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "Common\Common.csproj", "{46A918F2-CADB-4D5D-9ECF-3790C3FE557D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaymentService", "PaymentService\PaymentService.csproj", "{D4007058-28FD-4795-9F40-90D4159D8D37}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityService", "IdentityService\IdentityService.csproj", "{C23283A2-F5F1-40CD-BA12-3609C53B32C3}"
 EndProject
@@ -47,18 +45,6 @@ Global
 		{D4007058-28FD-4795-9F40-90D4159D8D37}.Release|x64.Build.0 = Release|Any CPU
 		{D4007058-28FD-4795-9F40-90D4159D8D37}.Release|x86.ActiveCfg = Release|Any CPU
 		{D4007058-28FD-4795-9F40-90D4159D8D37}.Release|x86.Build.0 = Release|Any CPU
-		{46A918F2-CADB-4D5D-9ECF-3790C3FE557D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{46A918F2-CADB-4D5D-9ECF-3790C3FE557D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{46A918F2-CADB-4D5D-9ECF-3790C3FE557D}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{46A918F2-CADB-4D5D-9ECF-3790C3FE557D}.Debug|x64.Build.0 = Debug|Any CPU
-		{46A918F2-CADB-4D5D-9ECF-3790C3FE557D}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{46A918F2-CADB-4D5D-9ECF-3790C3FE557D}.Debug|x86.Build.0 = Debug|Any CPU
-		{46A918F2-CADB-4D5D-9ECF-3790C3FE557D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{46A918F2-CADB-4D5D-9ECF-3790C3FE557D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{46A918F2-CADB-4D5D-9ECF-3790C3FE557D}.Release|x64.ActiveCfg = Release|Any CPU
-		{46A918F2-CADB-4D5D-9ECF-3790C3FE557D}.Release|x64.Build.0 = Release|Any CPU
-		{46A918F2-CADB-4D5D-9ECF-3790C3FE557D}.Release|x86.ActiveCfg = Release|Any CPU
-		{46A918F2-CADB-4D5D-9ECF-3790C3FE557D}.Release|x86.Build.0 = Release|Any CPU
 		{C23283A2-F5F1-40CD-BA12-3609C53B32C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C23283A2-F5F1-40CD-BA12-3609C53B32C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C23283A2-F5F1-40CD-BA12-3609C53B32C3}.Debug|x64.ActiveCfg = Debug|Any CPU
