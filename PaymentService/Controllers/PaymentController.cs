@@ -9,10 +9,9 @@ using OrderService.Constants;
 namespace OrderPaymentService.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("payments")]
     public class PaymentController : ControllerBase
     {
-
         private readonly ILogger<PaymentController> _logger;
         private readonly IBus bus;
         private readonly ISendEndpointProvider sendEndpointProvider;

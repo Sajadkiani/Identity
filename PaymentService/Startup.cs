@@ -19,15 +19,13 @@ namespace OrderPaymentService
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddMassTransit(x =>
             {
                 x.AddConsumer<CreatePaymentCosumer>();
 
-                //x.SetKebabCaseEndpointNameFormatter();
+                x.SetKebabCaseEndpointNameFormatter();
 
                 x.UsingRabbitMq((context, cfg) =>
                 {
@@ -47,18 +45,10 @@ namespace OrderPaymentService
             });
 
             services.AddMassTransitHostedService();
-            // services.AddMassTransit(x =>
-            //    {
-            //        x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq());
-            //        x.AddRequestClient<CreatePaymentCommand>(new Uri($"queue:{KebabCaseEndpointNameFormatter.Instance.Consumer<CreatePaymentCommendHandler>()}"));
-            //        //    x.AddRequestClient<CreatePaymentCommand>();
-
-            //    });
-            // services.AddMassTransitHostedService();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Productcatalog", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Paymentcatalog", Version = "v1" });
             });
         }
 
@@ -69,7 +59,6 @@ namespace OrderPaymentService
             {
                 app.UseDeveloperExceptionPage();
             }
-
 
             app.UseHttpsRedirection();
 
@@ -82,7 +71,7 @@ namespace OrderPaymentService
                 endpoints.MapControllers();
             });
             app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Productcatalog v1"));
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Paymentcatalog v1"));
         }
     }
 }

@@ -27,12 +27,10 @@ namespace OrderService
             // services.AddGenericRequestClient();
             services.AddMassTransit(x =>
             {
-                // x.SetKebabCaseEndpointNameFormatter();
+                x.SetKebabCaseEndpointNameFormatter();
                 x.AddConsumer<OrderConsumer>();
                 x.UsingRabbitMq((context, cfg) =>
                 {
-                    //  Bus.Factory.CreateUsingRabbitMq();
-                    // x.AddConsumers(typeof(Startup));
                     Bus.Factory.CreateUsingRabbitMq(cfg =>
                     {
                         cfg.Host("rabbitmq://localhost", h =>
