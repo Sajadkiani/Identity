@@ -1,7 +1,7 @@
-namespace OrderService.Models
-// namespace Models
+// namespace OrderService.Models
+namespace Models
 {
-    public class CreateOrderPaymentModel
+    public class CreatePayment
     {
         public int OrderId { get; set; }
     }

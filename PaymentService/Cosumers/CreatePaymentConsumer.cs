@@ -5,14 +5,14 @@ using Models;
 
 namespace OrderPaymentService.Handlers
 {
-    public class CreatePaymentCosumer : IConsumer<CreateOrderPaymentModel>
+    public class CreatePaymentConsumer : IConsumer<CreatePayment>
     {
-        private readonly ILogger<CreatePaymentCosumer> logger;
+        private readonly ILogger<CreatePaymentConsumer> logger;
         private readonly ISendEndpointProvider sendEndpointProvide;
         private readonly IPublishEndpoint publishEndpoint;
 
-        public CreatePaymentCosumer(
-            ILogger<CreatePaymentCosumer> logger,
+        public CreatePaymentConsumer(
+            ILogger<CreatePaymentConsumer> logger,
             ISendEndpointProvider sendEndpointProvide,
             IPublishEndpoint publishEndpoint
         )
@@ -20,9 +20,9 @@ namespace OrderPaymentService.Handlers
             this.logger = logger;
             this.sendEndpointProvide = sendEndpointProvide;
             this.publishEndpoint = publishEndpoint;
-        }
+        }   
 
-        public Task Consume(ConsumeContext<CreateOrderPaymentModel> context)
+        public Task Consume(ConsumeContext<CreatePayment> context)
         {
             //TODO
             logger.LogInformation("payment created!");

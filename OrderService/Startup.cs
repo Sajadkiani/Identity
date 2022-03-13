@@ -8,7 +8,6 @@ using Microsoft.OpenApi.Models;
 using OrderService.Data;
 using MassTransit;
 using OrderService.Consumers.Orders;
-using OrderService.Constants;
 
 namespace OrderService
 {
@@ -27,8 +26,8 @@ namespace OrderService
             // services.AddGenericRequestClient();
             services.AddMassTransit(x =>
             {
-                x.SetKebabCaseEndpointNameFormatter();
                 x.AddConsumer<OrderConsumer>();
+                x.SetKebabCaseEndpointNameFormatter();
                 x.UsingRabbitMq((context, cfg) =>
                 {
                     Bus.Factory.CreateUsingRabbitMq(cfg =>
@@ -38,12 +37,12 @@ namespace OrderService
                             h.Username("guest");
                             h.Password("guest");
                         });
-                        // cfg.ConfigureEndpoints(context);
+                        cfg.ConfigureEndpoints(context);
                     });
-                    cfg.ReceiveEndpoint(QueueNames.payment_created, e =>
-                    {
-                        e.ConfigureConsumer<OrderConsumer>(context);
-                    });
+                    // cfg.ReceiveEndpoint(QueueNames.payment_created, e =>
+                    // {
+                    //     e.ConfigureConsumer<OrderConsumer>(context);
+                    // });
                 });
             });
             services.AddMassTransitHostedService();

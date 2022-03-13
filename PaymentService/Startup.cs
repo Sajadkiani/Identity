@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using OrderPaymentService.Handlers;
-using OrderService.Constants;
 
 namespace OrderPaymentService
 {
@@ -23,10 +22,8 @@ namespace OrderPaymentService
         {
             services.AddMassTransit(x =>
             {
-                x.AddConsumer<CreatePaymentCosumer>();
-
+                x.AddConsumer<CreatePaymentConsumer>();
                 x.SetKebabCaseEndpointNameFormatter();
-
                 x.UsingRabbitMq((context, cfg) =>
                 {
                     Bus.Factory.CreateUsingRabbitMq(cfg =>
@@ -37,10 +34,7 @@ namespace OrderPaymentService
                                 h.Password("guest");
                             });
                     });
-                    cfg.ReceiveEndpoint(QueueNames.create_order_payment, endp =>
-                    {
-                        endp.ConfigureConsumer<CreatePaymentCosumer>(context);
-                    });
+                    cfg.ConfigureEndpoints(context);
                 });
             });
 

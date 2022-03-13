@@ -4,7 +4,6 @@ using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Models;
-using OrderService.Constants;
 
 namespace OrderPaymentService.Controllers
 {
@@ -33,10 +32,10 @@ namespace OrderPaymentService.Controllers
         [HttpGet("sendToOrder")]
         public async Task SendOrderAsync()
         {
-            _logger.LogInformation("Add order");
-             var orderId = new Random().Next();
-            var endpoint = await sendEndpointProvider.GetSendEndpoint(new Uri($"rabbitmq://localhost/{QueueNames.payment_created}"));
-            await endpoint.Send(new PaymentCreatedModel { OrderId = orderId });
+            // _logger.LogInformation("Add order");
+            //  var orderId = new Random().Next();
+            // var endpoint = await sendEndpointProvider.GetSendEndpoint(new Uri($"rabbitmq://localhost/{QueueNames.payment_created}"));
+            // await endpoint.Send(new PaymentCreatedModel { OrderId = orderId });
             return;
         }
 
