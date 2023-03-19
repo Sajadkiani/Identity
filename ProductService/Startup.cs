@@ -30,6 +30,7 @@ namespace ProductService
         {
             services.AddDbContext<ProductDbContext>(opt=>opt.UseInMemoryDatabase("MyProductDb"));
             services.AddControllers();
+            
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ProductService", Version = "v1" });
