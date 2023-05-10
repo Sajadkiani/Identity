@@ -1,28 +1,57 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using MassTransit;
+using MassTransit.MultiBus;
+using Microsoft.EntityFrameworkCore;
+using ProductService.Data.Database;
+using ProductService.Extenstions.ServiceCollection;
+using ProductService.Models.Options;
 
-namespace ProductService
+var builder = WebApplication.CreateBuilder(args);
+builder.Configuration.AddJsonFile("appsettings.json", optional: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true);
+
+// Add services to the container.
+
+builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+var configuration = builder.Configuration;
+
+//options
+builder.Services.ConfigureOptions(configuration);
+
+builder.Services.ConfigureInjections();
+
+builder.Services.AddDbContext<ProductContext>(opt =>
+    opt.UseSqlServer(configuration.GetConnectionString("Default"))
+    );
+
+builder.Services.AddMassTransit(x =>
 {
-    public class Program
-    {
-        public static void Main(string[] args)
+    // var op = new MasstransitOptions();
+    // var ff = configuration.GetSection("masstransit");
+    var options = configuration.GetSection("masstransit").Get<MasstransitOptions>();
+    x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(config =>
+        config.Host(new Uri(options.RootUrl), configure =>
         {
-            CreateHostBuilder(args).Build().Run();
-        }
+            configure.Password(options.Password);
+            configure.Username(options.UserName);
+        })));
+});
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    
-                    
-                    webBuilder.UseStartup<Startup>();
-                });
-    }
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
+
+app.UseHttpsRedirection();
+
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.Run();

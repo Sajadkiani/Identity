@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Models;
 
-namespace OrderPaymentService.Controllers
+namespace PaymentService.Controllers
 {
     [ApiController]
     [Route("payments")]

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -25,14 +26,14 @@ namespace IdentityService.Controllers
         }
 
         [HttpGet("{userId}")]
-        public async Task<GetUserModel> GetUserAsync(int userId)
+        public async Task<GetUserModel> GetUserAsync(Guid userId)
         {
             var user = await userStore.GetUserAsync(userId);
             return new GetUserModel
             {
                 Id = user.Id,
                 UserName = user.UserName,
-                Password = user.Password
+                // Password = user.PasswordHash
             };
         }
 
@@ -40,7 +41,7 @@ namespace IdentityService.Controllers
         public async Task AddUserAsync(AddUserVm vm)
         {
             var user = mapper.Map<User>(vm);
-            await userStore.AddUserAsync(user);
+            userStore.AddUser(user);
             await userStore.SaveChangeAsync();
         }
 

@@ -3,7 +3,7 @@ using MassTransit;
 using Microsoft.Extensions.Logging;
 using Models;
 
-namespace OrderPaymentService.Handlers
+namespace PaymentService.Cosumers
 {
     public class CreatePaymentConsumer : IConsumer<CreatePayment>
     {

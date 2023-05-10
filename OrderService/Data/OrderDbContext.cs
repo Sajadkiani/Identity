@@ -7,10 +7,8 @@ namespace OrderService.Data
     {
         public OrderDbContext(DbContextOptions<OrderDbContext> option) : base(option)
         {
-
         }
 
-        public DbSet<UserOrder> UserOrders { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderProduct> OrderProducts { get; set; }
     }

@@ -8,6 +8,6 @@ namespace OrderService.Entities
         public int Id { get; set; }
         public string OrderNo { get; set; }
         public DateTime CreateOn { get; set; }
-        public ICollection<UserOrder> UserOrders { get; set; }
+        public int UserId { get; set; }
     }
 }

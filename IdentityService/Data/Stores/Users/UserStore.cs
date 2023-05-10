@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using IdentityService.Entities;
@@ -7,17 +8,18 @@ namespace IdentityService.Data.Stores.Users
 {
     public class UserStore : IUserStore
     {
-        private readonly IdentityDbContext identityDbContext;
+        private readonly ThisDbContext identityDbContext;
 
         public UserStore(
-            IdentityDbContext identityDbContext
+            ThisDbContext identityDbContext
         )
         {
             this.identityDbContext = identityDbContext;
         }
-        public Task AddUserAsync(User user)
+
+        public void AddUser(User user)
         {
-            return identityDbContext.Users.AddAsync(user).AsTask();
+            identityDbContext.Users.Add(user);
         }
 
         public void DeleteUser(User user)
@@ -25,7 +27,7 @@ namespace IdentityService.Data.Stores.Users
             identityDbContext.Users.Remove(user);
         }
 
-        public Task<User> GetUserAsync(int id)
+        public Task<User> GetUserAsync(Guid id)
         {
             return identityDbContext.Users.FirstOrDefaultAsync(item => item.Id == id);
         }

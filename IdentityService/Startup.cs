@@ -4,9 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using IdentityService.Data;
 using IdentityService.Data.Stores.Users;
+using IdentityService.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -14,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace IdentityService
 {
@@ -29,7 +32,10 @@ namespace IdentityService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<IdentityDbContext>(opt => opt.UseInMemoryDatabase("MyIdentityDb"));
+            services.AddDbContext<ThisDbContext>(opt => 
+                opt.UseInMemoryDatabase("MyIdentityDb"));
+            services.AddIdentity<User, IdentityRole>()
+                .AddEntityFrameworkStores<ThisDbContext>();
             services.AddControllers();
             services.AddScoped<IUserStore, UserStore>();
             services.AddAutoMapper(typeof(Startup));

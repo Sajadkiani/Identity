@@ -1,10 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Common.Services;
+using Common.Services.Brokers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MassTransit;
 using Models;
 using OrderService.Constants;
+using OrderService.Data.Stores.Orders;
+using OrderService.Entities;
 
 namespace OrderService.Controllers
 {
@@ -13,33 +18,32 @@ namespace OrderService.Controllers
     public class OrderController : ControllerBase
     {
         private readonly ILogger<OrderController> logger;
-        private readonly ISendEndpointProvider sendEndpointProvider;
-        // private readonly IPublishEndpointProvider publishEndpointProvider;
-        private readonly IBus bus;
+        private readonly IBroker _broker;
+        private readonly ICurrentUser _currentUser;
+        private readonly IOrderStore _orderStore;
 
         public OrderController(
          ILogger<OrderController> logger,
-         ISendEndpointProvider sendEndpointProvider, 
-        //  IPublishEndpointProvider publishEndpointProvider, 
-         IBus bus
-        )
+         IBroker broker,
+         ICurrentUser currentUser,
+         IOrderStore orderStore)
         {
             this.logger = logger;
-            this.sendEndpointProvider = sendEndpointProvider;
-            // this.publishEndpointProvider = publishEndpointProvider;
-            this.bus = bus;
+            _broker = broker;
+            _currentUser = currentUser;
+            _orderStore = orderStore;
         }
 
         [HttpGet("add")]
         public async Task CreateOrderAsync()
         {
-            var orderId = new Random().Next();
-            var endpoint = await bus.GetSendEndpoint(new Uri($"queue:{QueueNames.createPayment}"));
-            await endpoint.Send(new CreatePayment{ OrderId = orderId});
-            await bus.Publish(new CreatePayment{ OrderId = orderId});
+            var order = new Order();
+            order.OrderNo = new Random().Next().ToString();
+            order.UserId = _currentUser.UserId;
+            await _orderStore.AddOrderAsync(order);
+            await _orderStore.SaveChangeAsync();
+            
             logger.LogInformation("--> add order");
-            // var x = publishEndpoint.Publish(new CreateOrderPaymentModel{ OrderId = 1 });
-            //var x = await client.GetResponse<OrderCreated>(new CreateOrderCommand { OrderId = orderId });
         }
     }
 }
