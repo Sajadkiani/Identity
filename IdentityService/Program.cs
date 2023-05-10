@@ -9,7 +9,7 @@ namespace IdentityService
 {
     public class Program
     {
-        public  void Main(string[] args)
+        public static void Main(string[] args)
         {
             var builder = CreateHostBuilder(args);
             var host = builder.Build();
@@ -27,7 +27,7 @@ namespace IdentityService
             });
         }
 
-        public IHostBuilder CreateHostBuilder(string[] args) =>
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

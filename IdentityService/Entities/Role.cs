@@ -1,9 +1,8 @@
+using System;
 using Microsoft.AspNetCore.Identity;
 
 namespace IdentityService.Entities;
 
-public class Role : IdentityRole
+public class Role : IdentityRole<Guid>
 {
-    public int Id { get; set; }
-    public int Name { get; set; }
 }

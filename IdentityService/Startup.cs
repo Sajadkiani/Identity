@@ -32,10 +32,18 @@ namespace IdentityService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var con = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ThisDbContext>(opt => 
-                opt.UseInMemoryDatabase("MyIdentityDb"));
-            services.AddIdentity<User, IdentityRole>()
+                // opt.UseInMemoryDatabase("MyIdentityDb")
+                opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
+                );
+            // services.AddIdentity<IdentityUser,IdentityRole>()
+            //     .AddEntityFrameworkStores<ThisDbContext>()
+            //     .AddDefaultTokenProviders();
+            
+            services.AddIdentity<User, Role>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ThisDbContext>();
+            
             services.AddControllers();
             services.AddScoped<IUserStore, UserStore>();
             services.AddAutoMapper(typeof(Startup));
