@@ -23,7 +23,7 @@ namespace IdentityService
             builder.ConfigureAppConfiguration(conf =>
             {
                 conf.AddJsonFile("appsettings.json", optional: true)
-                    .AddJsonFile($"appsettings.{env}.json", optional: true);
+                    .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
             });
         }
 

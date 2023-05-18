@@ -17,6 +17,13 @@ public class AuthViewModel
         public string ExpireDate { get; set; }
     }
 
+    public class GetTokenOutput
+    {
+        public string AccessToken { get; set; }
+        public string RefreshToken { get; set; }
+        public string ExpireDate { get; set; }
+    }
+
     public class RefreshTokenInput
     {
     }
