@@ -60,7 +60,7 @@ public class JwtTokenGeneratorService : ITokenGeneratorService
         var token = new AuthViewModel.GetTokenOutput
         {
             AccessToken = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
-            ExpireDate = expire.Date,
+            ExpireDate = expire,
             RefreshToken = randoms.GetRandom(lenght: null),
             Reference = randoms.GetRandom(lenght: null)
         };

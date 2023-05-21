@@ -57,7 +57,7 @@ public class AuthController : ControllerBase
     private async Task SaveTokenAsync(AuthViewModel.GetTokenOutput token, User user)
     {
         var tokenInput = mapper.Map<AuthViewModel.AddTokenInput>(token);
-        tokenInput.UseId = user.Id;
+        tokenInput.UserId = user.Id;
         
         await tokenService.AddTokenAsync(tokenInput);
         
