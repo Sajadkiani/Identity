@@ -5,6 +5,7 @@ using AutoMapper;
 using IdentityService.Data.Stores.Users;
 using IdentityService.Entities;
 using IdentityService.Models;
+using IdentityService.Services;
 using IdentityService.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,43 +14,38 @@ namespace IdentityService.Controllers
     [Route("api/users")]
     public class UserController : ControllerBase
     {
-        private readonly IUserStore userStore;
+        private readonly IUserService userService;
         private readonly IMapper mapper;
+        private readonly IRoleService roleService;
 
         public UserController(
-            IUserStore userStore,
-            IMapper mapper
+            IUserService userService,
+            IMapper mapper,
+            IRoleService roleService
         )
         {
-            this.userStore = userStore;
+            this.userService = userService;
             this.mapper = mapper;
-        }
-
-        [HttpGet("{userId}")]
-        public async Task<GetUserModel> GetUserAsync(Guid userId)
-        {
-            var user = await userStore.GetUserAsync(userId);
-            return new GetUserModel
-            {
-                Id = user.Id,
-                UserName = user.UserName,
-                // Password = user.PasswordHash
-            };
+            this.roleService = roleService;
         }
 
         [HttpPost]
-        public async Task AddUserAsync(AddUserVm vm)
+        public async Task AddUserAsync([FromBody] AddUserInput input)
         {
-            var user = mapper.Map<User>(vm);
-            userStore.AddUser(user);
-            await userStore.SaveChangeAsync();
+            var user = mapper.Map<User>(input);
+            await userService.CreateAsync(user, input.Password);
+        }
+        
+        [HttpPost("roles")]
+        public async Task AddRoleAsync([FromBody] AddRoleInput input)
+        {
+            await roleService.AddRoleAsync(input);
         }
 
-        [HttpGet("all")]
-        public async Task<List<GetUserModel>> GetAllUserAsync()
+        [HttpPost("userRoles")]
+        public Task GetAllUserAsync(AddUserRolesInput input)
         {
-            var users = await userStore.GetUsersAsync();
-            return mapper.Map<List<GetUserModel>>(users);
+            return userService.CreateRoleAsync(input);
         }
     }
 }

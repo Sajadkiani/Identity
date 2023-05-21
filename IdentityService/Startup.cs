@@ -44,6 +44,7 @@ namespace IdentityService
             services.AddIdentity<User, Role>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ThisDbContext>();
 
+            var x = Configuration["Jwt:Key"];
             services.AddAuthentication(opt =>
             {
                 opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -64,6 +65,7 @@ namespace IdentityService
 
             services.AddAppDependencies();
             services.AddAppOptions(Configuration);
+            services.AddMemoryCache();
             services.AddControllers();
             services.AddScoped<IUserStore, UserStore>();
             services.AddAutoMapper(typeof(Startup));

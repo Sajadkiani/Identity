@@ -19,15 +19,34 @@ public static class AppMessages
 
 public class IdentityException
 {
-    public class IdentityInternalException : Exception
+    
+    public class BaseIdentityInternalException : Exception
     {
         public AppMessage AppMessage { get; }
 
-        public IdentityInternalException(
+        public BaseIdentityInternalException(
             AppMessage appMessage
-            ) : base(appMessage.message)
+        ) : base(appMessage.message)
         {
             AppMessage = appMessage;
         }
+    }
+
+    public class IdentityInternalException : BaseIdentityInternalException
+    {
+        public IdentityInternalException(AppMessage message) : base(message)
+        {}
+    }
+
+    public class IdentityNotFoundException : BaseIdentityInternalException
+    {
+        public IdentityNotFoundException(AppMessage message) : base(message)
+        {}
+    }
+    
+    public class IdentityUnauthorizedException : BaseIdentityInternalException
+    {
+        public IdentityUnauthorizedException(AppMessage message) : base(message)
+        {}
     }
 }

@@ -9,8 +9,10 @@ namespace IdentityService.MapperPofiles
     {
         public AutoMapperProfile()
         {
-            CreateMap<AddUserVm, User>();
-            CreateMap<User, GetUserModel>();
+            CreateMap<AddUserInput, User>();
+            CreateMap<AddRoleInput, Role>();
+            CreateMap<AuthViewModel.AddTokenInput, Token>();
+            CreateMap<AuthViewModel.GetTokenOutput , AuthViewModel.AddTokenInput>();
         }
     }
 }
