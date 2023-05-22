@@ -2,16 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Azure.Core;
 using IdentityService.Data.Stores.Users;
 using IdentityService.Entities;
 using IdentityService.Models;
 using IdentityService.Services;
 using IdentityService.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityService.Controllers
 {
     [Route("api/users")]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly IUserService userService;
@@ -35,10 +38,11 @@ namespace IdentityService.Controllers
             var user = mapper.Map<User>(input);
             await userService.CreateAsync(user, input.Password);
         }
-        
+
         [HttpPost("roles")]
         public async Task AddRoleAsync([FromBody] AddRoleInput input)
         {
+            
             await roleService.AddRoleAsync(input);
         }
 

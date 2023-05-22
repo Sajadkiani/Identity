@@ -15,16 +15,17 @@ public class AppMessage
 public static class AppMessages
 {
     public static AppMessage UserNotFound = new AppMessage("کاربر یافت نشد");
+    public static AppMessage Unauthenticated = new AppMessage("unauthenticated");
 }
 
 public class IdentityException
 {
     
-    public class BaseIdentityInternalException : Exception
+    public class BaseIdentityException : Exception
     {
         public AppMessage AppMessage { get; }
 
-        public BaseIdentityInternalException(
+        public BaseIdentityException(
             AppMessage appMessage
         ) : base(appMessage.message)
         {
@@ -32,21 +33,21 @@ public class IdentityException
         }
     }
 
-    public class IdentityInternalException : BaseIdentityInternalException
+    public class IdentityInternalException : BaseIdentityException
     {
         public IdentityInternalException(AppMessage message) : base(message)
         {}
     }
 
-    public class IdentityNotFoundException : BaseIdentityInternalException
+    public class IdentityNotFoundException : BaseIdentityException
     {
         public IdentityNotFoundException(AppMessage message) : base(message)
         {}
     }
     
-    public class IdentityUnauthorizedException : BaseIdentityInternalException
+    public class IdentityUnauthorizedException : BaseIdentityException
     {
-        public IdentityUnauthorizedException(AppMessage message) : base(message)
+        public IdentityUnauthorizedException() : base(AppMessages.Unauthenticated)
         {}
     }
 }

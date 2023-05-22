@@ -36,6 +36,6 @@ public class TokenService : ITokenService
     
     public Task<Token> GetTokenByRefreshAsync(string refresh)
     {
-        return context.Tokens.Where(item => item.RefreshToken == refresh).FirstOrDefaultAsync();
+        return context.Tokens.Where(item => item.RefreshToken == refresh).AsNoTracking().FirstOrDefaultAsync();
     }
 }

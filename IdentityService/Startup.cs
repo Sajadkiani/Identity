@@ -7,6 +7,7 @@ using IdentityService.Data;
 using IdentityService.Data.Stores.Users;
 using IdentityService.Entities;
 using IdentityService.Extensions;
+using IdentityService.Filters;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -62,17 +63,14 @@ namespace IdentityService
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
                 };
             });
-
+            
             services.AddAppDependencies();
             services.AddAppOptions(Configuration);
             services.AddMemoryCache();
-            services.AddControllers();
+            services.AddControllers(options => options.Filters.Add<AppAuthorizeFilter>());
             services.AddScoped<IUserStore, UserStore>();
             services.AddAutoMapper(typeof(Startup));
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "IdentityService", Version = "v1" });
-            });
+            services.AddAppSwagger();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

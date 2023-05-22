@@ -47,6 +47,20 @@ public class AuthController : ControllerBase
         return await GetTokenAsync(user);
     }
 
+    [HttpPost("refresh")]
+    public async Task<AuthViewModel.GetTokenOutput> RefreshTokenAsync(AuthViewModel.RefreshTokenInput input)
+    {
+        var token = await tokenService.GetTokenByRefreshAsync(input.RefreshToken);
+        if (token is null)
+            throw new IdentityException.IdentityInternalException(AppMessages.UserNotFound);
+
+        var user = await userService.GetUserAsync(token.UserId);
+        if (user is null)
+            throw new IdentityException.IdentityInternalException(AppMessages.UserNotFound);
+        
+        return await GetTokenAsync(user);
+    }
+    
     private async Task<AuthViewModel.GetTokenOutput> GetTokenAsync(User user)
     {
         var token = await tokenGenerator.GenerateTokenAsync(user);
@@ -62,19 +76,5 @@ public class AuthController : ControllerBase
         await tokenService.AddTokenAsync(tokenInput);
         
         cache.Set(CacheKeys.Token + token.Reference, token);
-    }
-
-    [HttpPost("refresh")]
-    public async Task<AuthViewModel.GetTokenOutput> RefreshTokenAsync(AuthViewModel.RefreshTokenInput input)
-    {
-        var token = await tokenService.GetTokenByRefreshAsync(input.RefreshToken);
-        if (token is null)
-            throw new IdentityException.IdentityInternalException(AppMessages.UserNotFound);
-
-        var user = await userService.GetUserAsync(token.UserId);
-        if (user is null)
-            throw new IdentityException.IdentityInternalException(AppMessages.UserNotFound);
-        
-        return await GetTokenAsync(user);
     }
 }
