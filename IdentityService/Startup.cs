@@ -67,7 +67,12 @@ namespace IdentityService
             services.AddAppDependencies();
             services.AddAppOptions(Configuration);
             services.AddMemoryCache();
-            services.AddControllers(options => options.Filters.Add<AppAuthorizeFilter>());
+            // services.AddControllers(options =>
+            // {
+            //     options.Filters.Add<AppAuthorizeFilter>();
+            // });
+            
+            services.AddControllers();
             services.AddScoped<IUserStore, UserStore>();
             services.AddAutoMapper(typeof(Startup));
             services.AddAppSwagger();
