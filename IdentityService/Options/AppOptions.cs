@@ -1,14 +1,21 @@
-﻿namespace IdentityService.Options;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+
+namespace IdentityService.Options;
 
 public class AppOptions
 {
-    public class Jwt
+    private class AppScheme { }
+
+    public class Jwt : JwtBearerOptions 
     {
+        public static string Scheme = nameof(AppScheme);
         public static string Section = "Jwt";
         
         public string Issuer { get; set; }
         public string Audience { get; set; }
         public string Key { get; set; }
         public int DurationInMinutes { get; set; }
+        public int DurationInMinutesRefresh { get; set; }
     }
 }

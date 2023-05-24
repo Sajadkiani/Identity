@@ -14,22 +14,24 @@ using Microsoft.AspNetCore.Mvc;
 namespace IdentityService.Controllers
 {
     [Route("api/users")]
-    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly IUserService userService;
         private readonly IMapper mapper;
         private readonly IRoleService roleService;
+        private readonly ICurrentUser currentUser;
 
         public UserController(
             IUserService userService,
             IMapper mapper,
-            IRoleService roleService
+            IRoleService roleService,
+            ICurrentUser currentUser
         )
         {
             this.userService = userService;
             this.mapper = mapper;
             this.roleService = roleService;
+            this.currentUser = currentUser;
         }
 
         [HttpPost]
@@ -38,11 +40,11 @@ namespace IdentityService.Controllers
             var user = mapper.Map<User>(input);
             await userService.CreateAsync(user, input.Password);
         }
-
+        
+        [Authorize]
         [HttpPost("roles")]
         public async Task AddRoleAsync([FromBody] AddRoleInput input)
         {
-            
             await roleService.AddRoleAsync(input);
         }
 

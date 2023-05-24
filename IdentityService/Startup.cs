@@ -1,27 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using IdentityService.Data;
 using IdentityService.Data.Stores.Users;
 using IdentityService.Entities;
 using IdentityService.Extensions;
-using IdentityService.Filters;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using IdentityService.Options;
+using IdentityService.Security;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
 namespace IdentityService
@@ -45,12 +34,12 @@ namespace IdentityService
             services.AddIdentity<User, Role>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ThisDbContext>();
 
-            var x = Configuration["Jwt:Key"];
             services.AddAuthentication(opt =>
             {
-                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(opt =>
+                opt.DefaultAuthenticateScheme = AppOptions.Jwt.Scheme;
+                opt.DefaultScheme = AppOptions.Jwt.Scheme;
+                opt.DefaultChallengeScheme = AppOptions.Jwt.Scheme;
+            }).AddScheme<AppOptions.Jwt, AppAuthenticationHandler>(AppOptions.Jwt.Scheme, opt =>
             {
                 opt.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -63,15 +52,10 @@ namespace IdentityService
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
                 };
             });
-            
+
             services.AddAppDependencies();
             services.AddAppOptions(Configuration);
             services.AddMemoryCache();
-            // services.AddControllers(options =>
-            // {
-            //     options.Filters.Add<AppAuthorizeFilter>();
-            // });
-            
             services.AddControllers();
             services.AddScoped<IUserStore, UserStore>();
             services.AddAutoMapper(typeof(Startup));

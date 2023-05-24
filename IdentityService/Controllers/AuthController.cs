@@ -3,6 +3,7 @@ using AutoMapper;
 using IdentityService.Consts;
 using IdentityService.Entities;
 using IdentityService.Exceptions;
+using IdentityService.Options;
 using IdentityService.Services;
 using IdentityService.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -18,13 +19,15 @@ public class AuthController : ControllerBase
     private readonly ITokenService tokenService;
     private readonly IMapper mapper;
     private readonly IMemoryCache cache;
+    private readonly AppOptions.Jwt jwt;
 
     public AuthController(
         IUserService userService,
         ITokenGeneratorService tokenGenerator,
         ITokenService tokenService,
         IMapper mapper,
-        IMemoryCache cache
+        IMemoryCache cache,
+        AppOptions.Jwt jwt
     )
     {
         this.userService = userService;
@@ -32,6 +35,7 @@ public class AuthController : ControllerBase
         this.tokenService = tokenService;
         this.mapper = mapper;
         this.cache = cache;
+        this.jwt = jwt;
     }
     
     [HttpPost("login")]
@@ -72,9 +76,10 @@ public class AuthController : ControllerBase
     {
         var tokenInput = mapper.Map<AuthViewModel.AddTokenInput>(token);
         tokenInput.UserId = user.Id;
-        
+
         await tokenService.AddTokenAsync(tokenInput);
-        
-        cache.Set(CacheKeys.Token + token.Reference, token);
+
+        cache.Set(CacheKeys.Token + token.RefreshToken, token,
+            tokenInput.ExpireDate.AddMinutes(jwt.DurationInMinutesRefresh));
     }
 }

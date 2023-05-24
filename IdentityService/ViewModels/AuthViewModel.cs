@@ -21,9 +21,8 @@ public class AuthViewModel
 
     public class GetTokenOutput
     {
-        public string AccessToken { get; set; }
         public string RefreshToken { get; set; }
-        public string Reference { get; set; }
+        public string AccessToken { get; set; }
         public DateTime ExpireDate { get; set; }
     }
 

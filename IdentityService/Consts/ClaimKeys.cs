@@ -2,5 +2,5 @@
 
 public class ClaimKeys
 {
-    public static string UserId = nameof(UserId);
+    public static string UserId = "uid";
 }
