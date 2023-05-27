@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace IdentityService.Controllers
 {
     [Route("api/users")]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly IUserService userService;
@@ -41,7 +42,6 @@ namespace IdentityService.Controllers
             await userService.CreateAsync(user, input.Password);
         }
         
-        [Authorize]
         [HttpPost("roles")]
         public async Task AddRoleAsync([FromBody] AddRoleInput input)
         {

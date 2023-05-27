@@ -1,12 +1,17 @@
+using System;
 using System.Text;
+using Hellang.Middleware.ProblemDetails;
 using IdentityService.Data;
 using IdentityService.Data.Stores.Users;
 using IdentityService.Entities;
+using IdentityService.Exceptions;
 using IdentityService.Extensions;
 using IdentityService.Options;
 using IdentityService.Security;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,8 +22,11 @@ namespace IdentityService
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly IWebHostEnvironment environment;
+
+        public Startup(IConfiguration configuration,  IWebHostEnvironment environment)
         {
+            this.environment = environment;
             Configuration = configuration;
         }
 
@@ -27,10 +35,12 @@ namespace IdentityService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ThisDbContext>(opt => 
+            services.AddDbContext<ThisDbContext>(opt =>
                 opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
             );
-            
+
+            services.AddAppProblemDetail(environment);
+
             services.AddIdentity<User, Role>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ThisDbContext>();
 
@@ -62,7 +72,7 @@ namespace IdentityService
             services.AddAppSwagger();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -72,6 +82,7 @@ namespace IdentityService
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "IdentityService v1"));
             }
 
+            app.UseAppProblemDetail();
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -79,10 +90,7 @@ namespace IdentityService
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
 }

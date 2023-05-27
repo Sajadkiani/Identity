@@ -1,10 +1,5 @@
-using System.Collections.Generic;
-using IdentityService.Options;
-using IdentityService.Security;
 using IdentityService.Services;
 using IdentityService.Utils;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace IdentityService.Extensions;
