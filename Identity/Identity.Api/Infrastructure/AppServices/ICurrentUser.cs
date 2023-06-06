@@ -3,7 +3,7 @@ using System.Linq;
 using System.Security.Claims;
 using IdentityService.Consts;
 
-namespace IdentityService.Api.AppServices;
+namespace Identity.Api.Infrastructure.AppServices;
 
 public class CurrentUser : ICurrentUser
 {

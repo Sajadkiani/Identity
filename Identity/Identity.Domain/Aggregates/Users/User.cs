@@ -3,7 +3,7 @@ using Identity.Domain.SeedWork;
 
 namespace Identity.Domain.Aggregates.Users
 {
-    public class User : Entity
+    public class User : Entity, IAggregateRoot
     {
         public User(string name, string family, string userName, string email, string password, Gender gender)
         {
@@ -23,6 +23,7 @@ namespace Identity.Domain.Aggregates.Users
         public string Email { get; private set; }
         public string Password { get; private set; }
         public Gender Gender { get; private set; }
+        public UserStatus Status { get; private set; }
         private readonly List<UserRole> userRoles;
 
         public IReadOnlyCollection<UserRole> UserRoles => userRoles;

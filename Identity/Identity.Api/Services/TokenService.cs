@@ -1,13 +1,11 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AutoMapper;
-using IdentityService.Data;
-using IdentityService.Entities;
+using Identity.Domain.Aggregates.Users;
+using IdentityService.Services;
 using IdentityService.ViewModels;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
-namespace IdentityService.Services;
+namespace Identity.Api.Services;
 
 public class TokenService : ITokenService
 {

@@ -1,6 +1,6 @@
 ﻿using System;
 using Hellang.Middleware.ProblemDetails;
-using IdentityService.Exceptions;
+using Identity.Api.Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;

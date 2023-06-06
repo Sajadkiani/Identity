@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using IdentityService.Entities;
-using IdentityService.Exceptions;
+using Identity.Api.Infrastructure.Exceptions;
+using Identity.Domain.Aggregates.Users;
+using IdentityService.Services;
 using IdentityService.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace IdentityService.Services;
+namespace IdentityService.Api.Services;
 
 public class UserService : IUserService
 {

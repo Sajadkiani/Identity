@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using IdentityService.Entities;
+using Identity.Domain.Aggregates.Users;
 using IdentityService.ViewModels;
 
 namespace IdentityService.Services;

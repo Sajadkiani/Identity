@@ -1,7 +1,8 @@
 ﻿using System;
-using IdentityService.Api.AppServices;
+using Identity.Api.Infrastructure.AppServices;
+using Identity.Api.Infrastructure.Consts;
+using Identity.Api.Infrastructure.Exceptions;
 using IdentityService.Consts;
-using IdentityService.Exceptions;
 using IdentityService.Services;
 using IdentityService.ViewModels;
 using Microsoft.AspNetCore.Http;

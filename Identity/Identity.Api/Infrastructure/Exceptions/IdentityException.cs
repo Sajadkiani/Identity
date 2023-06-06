@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace IdentityService.Exceptions;
+namespace Identity.Api.Infrastructure.Exceptions;
 
 public class AppMessage
 {
@@ -18,7 +18,7 @@ public static class AppMessages
     public static AppMessage Unauthenticated = new AppMessage("unauthenticated");
     public static AppMessage InternalError = new AppMessage("internalError");
     public static AppMessage Forbidden = new AppMessage("forbidden");
-    public static AppMessage NotFound = new AppMessage("NotFound");
+    public static AppMessage NotFound = new AppMessage("notFound");
 }
 
 public class IdentityException

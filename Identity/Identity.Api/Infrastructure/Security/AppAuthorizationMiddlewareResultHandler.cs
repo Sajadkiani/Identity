@@ -2,7 +2,8 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using IdentityService.Api.AppServices;
+using Identity.Api.Infrastructure.AppServices;
+using Identity.Api.Infrastructure.Consts;
 using IdentityService.Consts;
 using IdentityService.Options;
 using IdentityService.Services;

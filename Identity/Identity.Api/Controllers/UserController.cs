@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using AutoMapper;
+using Identity.Api.Infrastructure.AppServices;
 using Identity.Domain.Aggregates.Users;
-using IdentityService.Api.AppServices;
 using IdentityService.Services;
 using IdentityService.ViewModels;
 using Microsoft.AspNetCore.Authorization;

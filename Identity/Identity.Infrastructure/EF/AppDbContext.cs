@@ -1,23 +1,29 @@
+using System.Data;
 using System.Reflection;
 using Identity.Domain.Aggregates.Users;
 using Identity.Domain.SeedWork;
 using Identity.Infrastructure.EF.Configs;
 using Identity.Infrastructure.Extensions;
-using MediatR;
+using MassTransit.Mediator;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Identity.Infrastructure.EF
 {
     public class AppDbContext : DbContext, IUnitOfWork
     {
         private readonly IMediator mediator;
-
+        private IDbContextTransaction currentTransaction;
+        public IDbContextTransaction GetCurrentTransaction() => currentTransaction;
+        public bool HasActiveTransaction => currentTransaction != null;
         public AppDbContext(DbContextOptions<AppDbContext> options, IMediator mediator)
             : base(options)
         {
             this.mediator = mediator;
         }
 
+        public DbSet<User> Users { get; set; }
+        
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.ApplyConfigurationsFromAssembly(Assembly.GetAssembly(typeof(TokenConfig)));
@@ -41,7 +47,58 @@ namespace Identity.Infrastructure.EF
             var result = await base.SaveChangesAsync(cancellationToken) > 0;
             return result;
         }
+        
+        public async Task<IDbContextTransaction> BeginTransactionAsync()
+        {
+            if (currentTransaction != null) return null;
 
-        public DbSet<User> Users { get; set; }
+            currentTransaction = await Database.BeginTransactionAsync(IsolationLevel.ReadCommitted);
+
+            return currentTransaction;
+        }
+
+        public async Task CommitTransactionAsync(IDbContextTransaction transaction)
+        {
+            if (transaction == null)
+                throw new ArgumentNullException(nameof(transaction));
+            
+            if (transaction != currentTransaction)
+                throw new InvalidOperationException($"Transaction {transaction.TransactionId} is not current");
+
+            try
+            {
+                await SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+                RollbackTransaction();
+                throw;
+            }
+            finally
+            {
+                if (currentTransaction != null)
+                {
+                    currentTransaction.Dispose();
+                    currentTransaction = null;
+                }
+            }
+        }
+
+        public void RollbackTransaction()
+        {
+            try
+            {
+                currentTransaction?.Rollback();
+            }
+            finally
+            {
+                if (currentTransaction != null)
+                {
+                    currentTransaction.Dispose();
+                    currentTransaction = null;
+                }
+            }
+        }
     }
 }

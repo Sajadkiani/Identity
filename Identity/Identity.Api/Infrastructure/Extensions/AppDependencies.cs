@@ -1,4 +1,6 @@
-using IdentityService.Api.AppServices;
+using Identity.Api.Infrastructure.AppServices;
+using Identity.Api.Services;
+using IdentityService.Api.Services;
 using IdentityService.Services;
 using IdentityService.Utils;
 using Microsoft.Extensions.DependencyInjection;

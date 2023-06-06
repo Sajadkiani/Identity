@@ -1,6 +1,9 @@
-﻿namespace Identity.Domain.Aggregates.Users;
+﻿using Identity.Domain.SeedWork;
 
-public interface IUserStore
+namespace Identity.Domain.Aggregates.Users;
+
+public interface IUserStore : IRepository<User, int>
 {
-    
+    Task<User> GetTokenByRefreshAsync(string refreshToken);
+    Task<User> GetByUserNameAsync(string userName);
 }

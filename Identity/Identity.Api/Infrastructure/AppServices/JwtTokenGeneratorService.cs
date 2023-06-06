@@ -4,18 +4,14 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using Azure.Core;
 using Identity.Domain.Aggregates.Users;
-using IdentityService.Api.AppServices;
-using IdentityService.Consts;
-using IdentityService.Entities;
 using IdentityService.Options;
+using IdentityService.Services;
 using IdentityService.Utils;
 using IdentityService.ViewModels;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
 
-namespace IdentityService.Services;
+namespace Identity.Api.Infrastructure.AppServices;
 
 public class JwtTokenGeneratorService : ITokenGeneratorService
 {

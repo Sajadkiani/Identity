@@ -1,6 +1,7 @@
 ﻿namespace Identity.Domain.SeedWork;
 
-public interface IRepository<T> where T : IAggregateRoot
+public interface IRepository<TEntity, TId> where TEntity : IAggregateRoot
 {
+    Task<TEntity?> GetByIdAsync(TId id);
     IUnitOfWork UnitOfWork { get; }
 }

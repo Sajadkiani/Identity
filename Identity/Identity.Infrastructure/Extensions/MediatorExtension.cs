@@ -1,6 +1,6 @@
 ﻿using Identity.Domain.SeedWork;
 using Identity.Infrastructure.EF;
-using MediatR;
+using MassTransit.Mediator;
 
 namespace Identity.Infrastructure.Extensions;
 

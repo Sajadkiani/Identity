@@ -1,12 +1,16 @@
 using System.Threading.Tasks;
 using AutoMapper;
+using Identity.Api.Infrastructure.AppServices;
+using Identity.Api.Infrastructure.Brokers;
+using Identity.Api.Infrastructure.Consts;
+using Identity.Api.Infrastructure.Exceptions;
 using Identity.Domain.Aggregates.Users;
-using IdentityService.Api.AppServices;
+using IdentityService.Api.Application.Commands.Users;
 using IdentityService.Consts;
-using IdentityService.Exceptions;
 using IdentityService.Options;
 using IdentityService.Services;
 using IdentityService.ViewModels;
+using MassTransit.Mediator;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -21,6 +25,7 @@ public class AuthController : ControllerBase
     private readonly IMapper mapper;
     private readonly IMemoryCache cache;
     private readonly AppOptions.Jwt jwt;
+    private readonly IEventHandler eventHandler;
 
     public AuthController(
         IUserService userService,
@@ -28,7 +33,8 @@ public class AuthController : ControllerBase
         ITokenService tokenService,
         IMapper mapper,
         IMemoryCache cache,
-        AppOptions.Jwt jwt
+        AppOptions.Jwt jwt,
+        IEventHandler eventHandler
     )
     {
         this.userService = userService;
@@ -37,24 +43,22 @@ public class AuthController : ControllerBase
         this.mapper = mapper;
         this.cache = cache;
         this.jwt = jwt;
+        this.eventHandler = eventHandler;
     }
     
     [HttpPost("login")]
     public async Task<AuthViewModel.GetTokenOutput> LoginAsync(AuthViewModel.LoginInput input)
     {
-        var user = await userService.GetUserByUserNameAsync(input.UserName);
-        if (user is null)
-            throw new IdentityException.IdentityInternalException(AppMessages.UserNotFound);
-
-        if (!await userService.HasPasswordAsync(user))
-            throw new IdentityException.IdentityInternalException(AppMessages.UserNotFound);
-
-        return await GetTokenAsync(user);
+        return await eventHandler.SendMediator(new LoginCommand(input.UserName,
+            input.Password));
     }
 
     [HttpPost("refresh")]
     public async Task<AuthViewModel.GetTokenOutput> RefreshTokenAsync(AuthViewModel.RefreshTokenInput input)
     {
+        return await eventHandler.SendMediator(new RefreshTokenQuery{input})
+        
+        
         var token = await tokenService.GetTokenByRefreshAsync(input.RefreshToken);
         if (token is null)
             throw new IdentityException.IdentityInternalException(AppMessages.UserNotFound);
