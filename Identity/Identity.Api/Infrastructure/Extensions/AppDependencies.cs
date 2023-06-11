@@ -1,25 +1,16 @@
+using Autofac.Extensions.DependencyInjection;
 using Identity.Api.Infrastructure.AppServices;
-using Identity.Api.Services;
-using IdentityService.Api.Services;
-using IdentityService.Services;
-using IdentityService.Utils;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace IdentityService.Api.Extensions;
+namespace Identity.Api.Infrastructure.Extensions;
 
 public static class AppDependencies
 {
     public static IServiceCollection AddAppDependencies(this IServiceCollection services)
     {
-        //TODO: add auto injector
-        services.AddScoped<IUserService, UserService>();
-        services.AddScoped<ITokenService, TokenService>();
-        services.AddScoped<ITokenGeneratorService, JwtTokenGeneratorService>();
-        services.AddScoped<IRoleService, RoleService>();
-        services.AddScoped<IAppRandoms, AppRandoms>();
-
         #region security
         services.AddAuthorization();
+        services.AddAutofac();
         services.AddScoped<ICurrentUser, CurrentUser>();
         #endregion
         

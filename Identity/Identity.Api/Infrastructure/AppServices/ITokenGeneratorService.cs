@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
+using Identity.Api.ViewModels;
 using Identity.Domain.Aggregates.Users;
-using IdentityService.ViewModels;
 
 namespace Identity.Api.Infrastructure.AppServices;
 

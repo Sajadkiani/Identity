@@ -2,7 +2,6 @@
 using Autofac;
 using Identity.Api.Application.Behaviors;
 using Identity.Api.Application.Commands.Users;
-using IdentityService.Api.Application.Commands.Users;
 using MediatR;
 
 namespace Identity.Api.Infrastructure.AutofacModules;
@@ -17,10 +16,6 @@ public class MediatorModule : Autofac.Module
         // Register all the Command classes (they implement IRequestHandler) in assembly holding the Commands
         builder.RegisterAssemblyTypes(typeof(AddUserCommand).GetTypeInfo().Assembly)
             .AsClosedTypesOf(typeof(IRequestHandler<,>));
-
-        // Register the DomainEventHandler classes (they implement INotificationHandler<>) in assembly holding the Domain Events
-        builder.RegisterAssemblyTypes(typeof(AddUserCommandHandler).GetTypeInfo().Assembly)
-            .AsClosedTypesOf(typeof(INotificationHandler<>));
 
         // Register the Command's Validators (Validators based on FluentValidation library)
         // builder

@@ -1,7 +1,8 @@
-using IdentityService.ViewModels;
+using System;
+using Identity.Api.ViewModels;
 using MediatR;
 
-namespace IdentityService.Api.Application.Commands.Users;
+namespace Identity.Api.Application.Commands.Users;
 
 public class LoginCommand : IRequest<AuthViewModel.GetTokenOutput>
 {

@@ -4,36 +4,38 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Identity.Api.Application.Queries.Users;
+using Identity.Api.Infrastructure.Brokers;
+using Identity.Api.ViewModels;
 using Identity.Domain.Aggregates.Users;
 using IdentityService.Options;
-using IdentityService.Services;
 using IdentityService.Utils;
-using IdentityService.ViewModels;
+using MassTransit.Mediator;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Identity.Api.Infrastructure.AppServices;
 
 public class JwtTokenGeneratorService : ITokenGeneratorService
 {
-    private readonly IUserService userService;
     private readonly AppOptions.Jwt jwtOptions;
     private readonly IAppRandoms randoms;
+    private readonly IEventHandler eventHandler;
 
     public JwtTokenGeneratorService(
-        IUserService userService,
         AppOptions.Jwt jwtOptions,
-        IAppRandoms randoms 
+        IAppRandoms randoms,
+        IEventHandler eventHandler
         )
     {
-        this.userService = userService;
         this.jwtOptions = jwtOptions;
         this.randoms = randoms;
+        this.eventHandler = eventHandler;
     }
 
     public async Task<AuthViewModel.GetTokenOutput> GenerateTokenAsync(User user)
     {
-        var roles = await userService.GetUserRolesNamesAsync(user);
-        var roleClaims = roles.Select(item => new Claim("roles", item));
+        var roles = await eventHandler.SendMediator(new GetUserRolesQuery(user.Id));
+        var roleClaims = roles.Select(item => new Claim("roles", item.Name));
 
         var claims = new[]
             {

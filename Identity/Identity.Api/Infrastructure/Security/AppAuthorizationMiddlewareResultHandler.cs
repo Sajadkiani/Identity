@@ -4,16 +4,14 @@ using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Identity.Api.Infrastructure.AppServices;
 using Identity.Api.Infrastructure.Consts;
-using IdentityService.Consts;
+using Identity.Api.ViewModels;
 using IdentityService.Options;
-using IdentityService.Services;
-using IdentityService.ViewModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace IdentityService.Security;
+namespace Identity.Api.Infrastructure.Security;
 
 public class AppAuthenticationHandler : AuthenticationHandler<AppOptions.Jwt>
 {

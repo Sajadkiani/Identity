@@ -1,9 +1,12 @@
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using Identity.Api.Infrastructure.AutofacModules;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace IdentityService.Api
+namespace Identity.Api
 {
     public class Program
     {
@@ -19,10 +22,13 @@ namespace IdentityService.Api
         {
             var env = host.Services.GetRequiredService<IWebHostEnvironment>();
             builder.ConfigureAppConfiguration(conf =>
-            {
-                conf.AddJsonFile("appsettings.json", optional: true)
-                    .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
-            });
+                {
+                    conf.AddJsonFile("appsettings.json", optional: true)
+                        .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
+                }).UseServiceProviderFactory(new AutofacServiceProviderFactory())
+                .ConfigureContainer<ContainerBuilder>(conbuilder =>
+                    conbuilder.RegisterModule(new ApplicationModule(builder.Configuration["ConnectionString"])));
+            ;
         }
 
         private static IHostBuilder CreateHostBuilder(string[] args) =>

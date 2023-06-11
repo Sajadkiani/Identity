@@ -1,11 +1,11 @@
 using System.Text;
+using Identity.Api.Infrastructure.Extensions;
+using Identity.Api.Infrastructure.Security;
 using Identity.Domain.Aggregates.Users;
 using Identity.Infrastructure.EF;
-using IdentityService.Api.Extensions;
-using IdentityService.Data.Stores.Users;
+using IdentityService.Api;
 using IdentityService.Extensions;
 using IdentityService.Options;
-using IdentityService.Security;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -13,9 +13,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
-using IUserStore = IdentityService.Data.Stores.Users.IUserStore;
 
-namespace IdentityService.Api
+namespace Identity.Api
 {
     public class Startup
     {
@@ -39,8 +38,8 @@ namespace IdentityService.Api
 
             services.AddAppProblemDetail(environment);
 
-            services.AddIdentity<User, Role>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<AppDbContext>();
+            // services.AddIdentity<User, Role>(options => options.SignIn.RequireConfirmedAccount = true)
+            //     .AddEntityFrameworkStores<AppDbContext>();
 
             services.AddAuthentication(opt =>
             {
@@ -65,7 +64,6 @@ namespace IdentityService.Api
             services.AddAppOptions(Configuration);
             services.AddMemoryCache();
             services.AddControllers();
-            services.AddScoped<IUserStore, UserStore>();
             services.AddAutoMapper(typeof(Startup));
             services.AddAppSwagger();
         }

@@ -1,9 +1,9 @@
 ﻿using Identity.Domain.Aggregates.Users.Enums;
 using MediatR;
 
-namespace IdentityService.Api.Application.Commands.Users;
+namespace Identity.Api.Application.Commands.Users;
 
-public class AddUserCommand : INotification
+public class AddUserCommand : IRequest<int>
 {
     public AddUserCommand(Gender gender, string password, string email, string userName, string family, string name)
     {

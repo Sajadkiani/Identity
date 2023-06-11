@@ -4,8 +4,9 @@ namespace Identity.Infrastructure.EF.Stores;
 
 public class Repository<TEntity, TId> : IRepository<TEntity, TId> where TEntity : class, IAggregateRoot
 {
-    private readonly AppDbContext context;
-    public IUnitOfWork UnitOfWork { get; }
+    protected readonly AppDbContext context;
+
+    public IUnitOfWork UnitOfWork => context;
 
     public Repository(
         AppDbContext context

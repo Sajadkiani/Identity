@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Identity.Domain.Events.Users;
 using MediatR;
 
-namespace IdentityService.Api.Application.DomainEventHandlers.Users;
+namespace Identity.Api.Application.DomainEventHandlers.Users;
 
 public class SampleDomainEventHandler : INotificationHandler<SampleDomainEvent>
 {

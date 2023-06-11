@@ -2,15 +2,13 @@
 using Identity.Api.Infrastructure.AppServices;
 using Identity.Api.Infrastructure.Consts;
 using Identity.Api.Infrastructure.Exceptions;
-using IdentityService.Consts;
-using IdentityService.Services;
-using IdentityService.ViewModels;
+using Identity.Api.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace IdentityService.Api.Filters;
+namespace Identity.Api.Infrastructure.Filters;
 
 public class AppAuthorizeFilter : IAuthorizationFilter 
 {

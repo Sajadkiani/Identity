@@ -6,22 +6,26 @@ namespace Identity.Infrastructure.EF.Stores;
 
 public class UserStore : Repository<User, int>, IUserStore
 {
-    private readonly AppDbContext context;
-
-    public IUnitOfWork UnitOfWork => context;
-
     public UserStore(AppDbContext context) : base(context)
     {
     }
     
     public Task<User> GetByUserNameAsync(string userName)
     {
-        return context.Users.FirstOrDefaultAsync(u => u.UserName == userName);
+        return context.Users.FirstOrDefaultAsync(u => u.UserName == userName)!;
+    }
+
+    public Task<List<Role>> GetUserIncludeRolesAsync(int userId)
+    {
+        return context.Users
+            .Where(item => item.Id == userId)
+            .SelectMany(item => item.UserRoles).Select(item => item.Role)
+            .ToListAsync();
     }
 
     public Task<User> GetTokenByRefreshAsync(string refreshToken)
     {
         return context.Users.Include(u => u.Tokens.Where(item => item.RefreshToken == refreshToken))
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync()!;
     }
 }

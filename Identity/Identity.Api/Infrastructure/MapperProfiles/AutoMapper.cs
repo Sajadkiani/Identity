@@ -1,6 +1,6 @@
 using AutoMapper;
+using Identity.Api.ViewModels;
 using Identity.Domain.Aggregates.Users;
-using IdentityService.ViewModels;
 
 namespace IdentityService.Api.MapperProfiles
 {
@@ -10,8 +10,6 @@ namespace IdentityService.Api.MapperProfiles
         {
             CreateMap<AddUserInput, User>();
             CreateMap<AddRoleInput, Role>();
-            CreateMap<AuthViewModel.AddTokenInput, Token>();
-            CreateMap<AuthViewModel.GetTokenOutput , AuthViewModel.AddTokenInput>();
         }
     }
 }

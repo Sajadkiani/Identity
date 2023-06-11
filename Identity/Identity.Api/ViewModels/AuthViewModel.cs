@@ -1,22 +1,19 @@
 ﻿using System;
-using System.Threading.Tasks;
 
-namespace IdentityService.ViewModels;
+namespace Identity.Api.ViewModels;
 
 public class AuthViewModel
 {
-    public class AddTokenInput
-    {
-        public string AccessToken { get; set; }
-        public string RefreshToken { get; set; }
-        public DateTime ExpireDate { get; set; }
-        public Guid UserId { get; set; }
-    }
-    
     public class LoginInput
     {
         public string UserName { get; set; }
         public string Password { get; set; }
+    }
+
+    public class UserRoleOutput
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 
     public class GetTokenOutput
