@@ -10,10 +10,9 @@ using Identity.Api.ViewModels;
 using Identity.Domain.Aggregates.Users;
 using IdentityService.Options;
 using IdentityService.Utils;
-using MassTransit.Mediator;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Identity.Api.Infrastructure.AppServices;
+namespace Identity.Api.Infrastructure.Services;
 
 public class JwtTokenGeneratorService : ITokenGeneratorService
 {

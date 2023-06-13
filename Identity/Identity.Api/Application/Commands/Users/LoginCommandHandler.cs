@@ -1,10 +1,11 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Identity.Api.Infrastructure.AppServices;
 using Identity.Api.Infrastructure.Exceptions;
+using Identity.Api.Infrastructure.Services;
 using Identity.Api.ViewModels;
 using Identity.Domain.Aggregates.Users;
 using Identity.Domain.Aggregates.Users.Enums;
+using Identity.Domain.IServices;
 using IdentityService.Options;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -48,7 +49,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthViewModel.G
             throw new IdentityException.IdentityUnauthorizedException();
         }
 
-        var incomePassword = passwordService.HashPassword(user.Id, notification.Password, notification.UserName);
+        var incomePassword = passwordService.HashPassword(notification.Password, notification.UserName);
         if (user.Password != incomePassword)
         {
             throw new IdentityException.IdentityUnauthorizedException();

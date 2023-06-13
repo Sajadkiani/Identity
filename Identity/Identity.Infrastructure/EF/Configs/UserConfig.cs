@@ -8,7 +8,7 @@ public class UserConfig : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {
-        builder.ToTable("Orders").HasKey(item => item.Id);
+        builder.ToTable("Users").HasKey(item => item.Id);
         
         builder
             .HasMany(item => item.Tokens)

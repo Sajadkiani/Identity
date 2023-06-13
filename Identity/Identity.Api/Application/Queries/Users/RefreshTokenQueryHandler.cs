@@ -6,6 +6,7 @@ using Identity.Api.Application.Commands.Users;
 using Identity.Api.Infrastructure.Brokers;
 using Identity.Api.ViewModels;
 using Identity.Domain.Aggregates.Users;
+using Identity.Domain.IServices;
 using Identity.Domain.SeedWork;
 using MediatR;
 
@@ -25,7 +26,7 @@ public class GetUserRolesQueryHandler : IRequestHandler<GetUserRolesQuery, IEnum
     public Task<IEnumerable<AuthViewModel.UserRoleOutput>> Handle(GetUserRolesQuery request, CancellationToken cancellationToken)
     {
         return queryExecutor.QueryAsync<AuthViewModel.UserRoleOutput>(
-            $"select r.id, r.name from userroles as ur left join roles as r on ur.roleid = r.id where ur.useid ={request.UserId}");
+            $"select r.id, r.name from userroles as ur left join roles as r on ur.roleid = r.id where ur.userid ={request.UserId}");
         
     }
 }

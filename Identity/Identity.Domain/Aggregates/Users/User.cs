@@ -1,20 +1,32 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using Identity.Domain.Aggregates.Users.Enums;
+using Identity.Domain.Exceptions;
+using Identity.Domain.IServices;
 using Identity.Domain.SeedWork;
+using Identity.Domain.Validations.Users;
 
 namespace Identity.Domain.Aggregates.Users
 {
     public class User : Entity, IAggregateRoot
     {
-        public User(string name, string family, string userName, string email, string password, Gender gender)
+        private User()
+        {
+            
+        }
+        public User(string name, string family, string userName, string email, string password, Gender gender,
+            IUserBcScopeValidation bcScopeValidation, IPasswordService passwordService)
         {
             Name = name;
             Family = family;
             UserName = userName;
             Email = email;
-            Password = password;
+            Password = passwordService.HashPassword(password, password);
             Gender = gender;
             userRoles = new List<UserRole>();
             tokens = new List<Token>();
+            
+            //TODO: all invariants and data consistencies must put here 
+            Validate(bcScopeValidation);
         }
 
         public string Name { get; private set; }
@@ -30,6 +42,21 @@ namespace Identity.Domain.Aggregates.Users
 
         private readonly List<Token> tokens;
         public IReadOnlyCollection<Token> Tokens => tokens;
+        
+        private void Validate(IUserBcScopeValidation bcScopeValidation)
+        {
+            var isExistEmail = bcScopeValidation.IsExistEmail(Email);
+            if (isExistEmail)
+            {
+                throw new AppBaseDomainException(AppDomainMessages.InvalidEmail);
+            }
+            
+            var isExistUserName = bcScopeValidation.IsExistUserName(Email);
+            if (isExistUserName)
+            {
+                throw new AppBaseDomainException(AppDomainMessages.InvalidUserName);
+            }
+        }
         
         public void AddTokens(string accessToken, string refreshToken, DateTime expireDate)
         {

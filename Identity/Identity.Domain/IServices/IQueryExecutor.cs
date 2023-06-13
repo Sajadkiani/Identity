@@ -1,4 +1,4 @@
-﻿namespace Identity.Domain.SeedWork;
+﻿namespace Identity.Domain.IServices;
 
 public interface IQueryExecutor
 {

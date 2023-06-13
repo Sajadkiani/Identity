@@ -16,24 +16,13 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Identity.Api
 {
-    public class Startup
+    public static class Startup
     {
-        private readonly IWebHostEnvironment environment;
-
-        public Startup(IConfiguration configuration,  IWebHostEnvironment environment)
-        {
-            this.environment = environment;
-            Configuration = configuration;
-        }
-
-        public IConfiguration Configuration { get; }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public static void ConfigureServices(this IServiceCollection services, IWebHostEnvironment environment, IConfiguration configuration)
         {
             services.AddMediatR(conf => conf.RegisterServicesFromAssembly(typeof(Program).Assembly));
-            services.AddDbContext<AppDbContext>(opt =>
-                opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
+            services.AddDbContext<AppDbContext>(opt => 
+                opt.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
             );
 
             services.AddAppProblemDetail(environment);
@@ -54,21 +43,21 @@ namespace Identity.Api
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = Configuration["Jwt:Issuer"],
-                    ValidAudience = Configuration["Jwt:Issuer"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                    ValidIssuer = configuration["Jwt:Issuer"],
+                    ValidAudience = configuration["Jwt:Issuer"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]))
                 };
             });
 
-            services.AddAppDependencies();
-            services.AddAppOptions(Configuration);
+            services.AddAppDependencies(configuration);
+            services.AddAppOptions(configuration);
             services.AddMemoryCache();
             services.AddControllers();
             services.AddAutoMapper(typeof(Startup));
             services.AddAppSwagger();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public static void Configure(this IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {

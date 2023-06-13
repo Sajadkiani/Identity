@@ -3,11 +3,6 @@ using Identity.Domain.Aggregates.Users.Enums;
 
 namespace Identity.Api.ViewModels
 {
-    public class GetUserRolesInput
-    {
-        public int UserId { get; set; }
-    }
-    
     public class AddUserRolesInput
     {
         public Guid UserId { get; set; }

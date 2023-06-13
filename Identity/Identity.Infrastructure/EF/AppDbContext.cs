@@ -4,7 +4,7 @@ using Identity.Domain.Aggregates.Users;
 using Identity.Domain.SeedWork;
 using Identity.Infrastructure.EF.Configs;
 using Identity.Infrastructure.Extensions;
-using MassTransit.Mediator;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
@@ -41,7 +41,7 @@ namespace Identity.Infrastructure.EF
             // multiple transactions. You will need to handle eventual consistency and
             // compensatory actions in case of failures.
             await mediator.DispatchDomainEventsAsync(this);
-
+        
             // After this line runs, all the changes (from the Command Handler and Domain
             // event handlers) performed through the DbContext will be committed
             var result = await base.SaveChangesAsync(cancellationToken) > 0;

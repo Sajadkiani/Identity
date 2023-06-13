@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using Identity.Api.ViewModels;
 using Identity.Domain.Aggregates.Users;
 
-namespace Identity.Api.Infrastructure.AppServices;
+namespace Identity.Api.Infrastructure.Services;
 
 public interface ITokenGeneratorService
 {

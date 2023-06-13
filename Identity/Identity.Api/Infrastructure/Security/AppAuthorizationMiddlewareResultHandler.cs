@@ -2,8 +2,8 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using Identity.Api.Infrastructure.AppServices;
 using Identity.Api.Infrastructure.Consts;
+using Identity.Api.Infrastructure.Services;
 using Identity.Api.ViewModels;
 using IdentityService.Options;
 using Microsoft.AspNetCore.Authentication;

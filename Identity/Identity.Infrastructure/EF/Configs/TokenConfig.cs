@@ -8,11 +8,11 @@ public class TokenConfig : IEntityTypeConfiguration<Token>
 {
     public void Configure(EntityTypeBuilder<Token> builder)
     {
-        // // builder.HasKey(item => item.Id);
-        //
-        // builder
-        //     .HasOne(item => item.User)
-        //     .WithMany(item => item.Tokens)
-        //     .HasForeignKey(item => item.UserId).OnDelete(DeleteBehavior.Cascade);
+        builder.ToTable("Tokens").HasKey(item => item.Id);
+        
+        builder
+            .HasOne(item => item.User)
+            .WithMany(item => item.Tokens)
+            .HasForeignKey(item => item.UserId).OnDelete(DeleteBehavior.Restrict);
     }
 }

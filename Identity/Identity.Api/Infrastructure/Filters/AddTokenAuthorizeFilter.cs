@@ -1,7 +1,7 @@
 ﻿using System;
-using Identity.Api.Infrastructure.AppServices;
 using Identity.Api.Infrastructure.Consts;
 using Identity.Api.Infrastructure.Exceptions;
+using Identity.Api.Infrastructure.Services;
 using Identity.Api.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;

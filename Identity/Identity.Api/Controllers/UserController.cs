@@ -1,9 +1,10 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Identity.Api.Application.Commands.Users;
 using Identity.Api.Application.Queries.Users;
-using Identity.Api.Infrastructure.AppServices;
 using Identity.Api.Infrastructure.Brokers;
+using Identity.Api.Infrastructure.Services;
 using Identity.Api.ViewModels;
 using Identity.Domain.Aggregates.Users;
 using Microsoft.AspNetCore.Authorization;
@@ -12,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Identity.Api.Controllers
 {
     [Route("api/users")]
-    [Authorize]
+    // [Authorize]
     public class UserController : ControllerBase
     {
         private readonly IMapper mapper;
@@ -38,9 +39,9 @@ namespace Identity.Api.Controllers
         }
         
         [HttpGet("{userId}/roles")]
-        public async Task GetUserRolesAsync([FromBody] GetUserRolesInput input)
+        public async Task<IEnumerable<AuthViewModel.UserRoleOutput>> GetUserRolesAsync([FromRoute] int userId)
         {
-            await eventHandler.SendMediator(new GetUserRolesQuery(input.UserId));
+            return await eventHandler.SendMediator(new GetUserRolesQuery(userId));
         }
         
         // [HttpPost("roles")]

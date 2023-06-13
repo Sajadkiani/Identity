@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using Dapper;
+using Identity.Domain.IServices;
 using Identity.Domain.SeedWork;
 
 namespace Identity.Infrastructure.Dapper;

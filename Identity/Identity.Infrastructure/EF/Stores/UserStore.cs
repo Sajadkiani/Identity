@@ -14,6 +14,11 @@ public class UserStore : Repository<User, int>, IUserStore
     {
         return context.Users.FirstOrDefaultAsync(u => u.UserName == userName)!;
     }
+    
+    public Task AddUserAsync(User user)
+    {
+        return context.Users.AddAsync(user).AsTask();
+    }
 
     public Task<List<Role>> GetUserIncludeRolesAsync(int userId)
     {
