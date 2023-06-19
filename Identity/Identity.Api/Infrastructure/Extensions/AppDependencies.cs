@@ -1,8 +1,12 @@
+using System;
+using System.Data.Common;
 using Autofac.Extensions.DependencyInjection;
+using Identity.Api.Application.IntegrationEvents;
 using Identity.Api.Infrastructure.Brokers;
 using Identity.Domain.Aggregates.Users;
 using Identity.Domain.SeedWork;
 using Identity.Infrastructure.Dapper;
+using IntegrationEventLogEF.Services;
 using MassTransit;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -18,12 +22,17 @@ public static class AppDependencies
         #region security
         services.AddAuthorization();
         services.AddAutofac();
-        services.AddAppMasstransit(configuration);
+        services.AddIntegrationServices(configuration);
         #endregion
     }
 
-    private static void AddAppMasstransit(this IServiceCollection services, IConfiguration configuration)
+    private static void AddIntegrationServices(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddTransient<Func<DbConnection, IIntegrationEventLogService>>(
+            sp => (DbConnection c) => new IntegrationEventLogService(c));
+        
+        services.AddTransient<IIntegrationEventService, IntegrationEventService>();
+        
         services.AddMassTransit(config =>
         {
             config.UsingRabbitMq((context, cfg) =>

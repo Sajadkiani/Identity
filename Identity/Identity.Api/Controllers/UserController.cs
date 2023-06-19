@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using EventBus.Abstractions;
 using Identity.Api.Application.Commands.Users;
 using Identity.Api.Application.Queries.Users;
 using Identity.Api.Infrastructure.Brokers;
@@ -18,12 +19,12 @@ namespace Identity.Api.Controllers
     {
         private readonly IMapper mapper;
         private readonly ICurrentUser currentUser;
-        private readonly IEventHandler eventHandler;
+        private readonly IEventBus eventHandler;
 
         public UserController(
             IMapper mapper,
             ICurrentUser currentUser,
-            IEventHandler eventHandler
+            IEventBus eventHandler
         )
         {
             this.mapper = mapper;

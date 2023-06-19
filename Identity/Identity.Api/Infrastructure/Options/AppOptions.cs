@@ -18,4 +18,9 @@ public class AppOptions
         public int DurationInMinutes { get; set; }
         public int DurationInMinutesRefresh { get; set; }
     }
+
+    public static class ApplicationOptionContext
+    {
+        public static string ConnectionString { get; set; }
+    }
 }

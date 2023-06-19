@@ -1,18 +1,21 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using EventBus.Abstractions;
+using EventBus.Events;
 using Identity.Api.Infrastructure.Exceptions;
 using MassTransit;
 using MediatR;
+using IMediator = MediatR.IMediator;
 
 namespace Identity.Api.Infrastructure.Brokers;
 
-public class EventHandler : IEventHandler
+public class EventBus : IEventBus
 {
     private readonly IPublishEndpoint publishEndpoint;
     private readonly IMediator mediator;
     
-    public EventHandler(IPublishEndpoint publishEndpoint, IMediator mediator)
+    public EventBus(IPublishEndpoint publishEndpoint, IMediator mediator)
     {
         this.publishEndpoint = publishEndpoint;
         this.mediator = mediator;
@@ -22,22 +25,23 @@ public class EventHandler : IEventHandler
     {
         return mediator.Send(command);
     }
-    
+
     public Task PublishMediator<TNotification>(TNotification notification)
     {
         return mediator.Publish(notification);
     }
 
-    public Task Publish<TNotification>(TNotification notification)
+    public Task Publish<TIntegrationEvent>(TIntegrationEvent @event) where TIntegrationEvent : IntegrationEvent
     {
-        if (notification is null)
+        if (@event is null)
             throw new IdentityException.IdentityInternalException(
-                new AppMessage($"notification:{nameof(notification)} is null."));
-        
-        return publishEndpoint.Publish(notification);
+                new AppMessage($"notification:{nameof(@event)} is null."));
+
+        return publishEndpoint.Publish(@event);
     }
 
-    public Task Send<TRequest>(TRequest request, CancellationToken cancellationToken = new CancellationToken()) where TRequest : IRequest
+    public Task Send<TRequest>(TRequest request, CancellationToken cancellationToken = new CancellationToken())
+        where TRequest : IRequest
     {
         throw new NotImplementedException();
     }

@@ -1,3 +1,6 @@
+using System;
+using System.Data.Common;
+using System.Reflection;
 using System.Text;
 using Identity.Api.Infrastructure.Extensions;
 using Identity.Api.Infrastructure.Security;
@@ -6,9 +9,11 @@ using Identity.Infrastructure.EF;
 using IdentityService.Api;
 using IdentityService.Extensions;
 using IdentityService.Options;
+using IntegrationEventLogEF.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.eShopOnContainers.BuildingBlocks.IntegrationEventLogEF;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -20,15 +25,27 @@ namespace Identity.Api
     {
         public static void ConfigureServices(this IServiceCollection services, IWebHostEnvironment environment, IConfiguration configuration)
         {
+            AppOptions.ApplicationOptionContext.ConnectionString =
+                configuration.GetConnectionString("DefaultConnection");
+            
             services.AddMediatR(conf => conf.RegisterServicesFromAssembly(typeof(Program).Assembly));
             services.AddDbContext<AppDbContext>(opt => 
-                opt.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
+                opt.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
+                    options => options.MigrationsAssembly(Assembly.GetAssembly(typeof(Program))!.GetName().Name))
             );
+            
+            services.AddDbContext<IntegrationEventLogContext>(options =>
+            {
+                options.UseSqlServer(configuration["DefaultConnection"],
+                    sqlServerOptionsAction: sqlOptions =>
+                    {
+                        sqlOptions.MigrationsAssembly(typeof(Program).GetTypeInfo().Assembly.GetName().Name);
+                        sqlOptions.EnableRetryOnFailure(maxRetryCount: 15, maxRetryDelay: TimeSpan.FromSeconds(30),
+                            errorNumbersToAdd: null);
+                    });
+            });
 
             services.AddAppProblemDetail(environment);
-
-            // services.AddIdentity<User, Role>(options => options.SignIn.RequireConfirmedAccount = true)
-            //     .AddEntityFrameworkStores<AppDbContext>();
 
             services.AddAuthentication(opt =>
             {
@@ -48,7 +65,7 @@ namespace Identity.Api
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]))
                 };
             });
-
+            
             services.AddAppDependencies(configuration);
             services.AddAppOptions(configuration);
             services.AddMemoryCache();

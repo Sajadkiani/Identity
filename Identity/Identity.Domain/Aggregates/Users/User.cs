@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Identity.Domain.Aggregates.Users.Enums;
+using Identity.Domain.Events.Users;
 using Identity.Domain.Exceptions;
 using Identity.Domain.IServices;
 using Identity.Domain.SeedWork;
@@ -27,6 +28,7 @@ namespace Identity.Domain.Aggregates.Users
             
             //TODO: all invariants and data consistencies must put here 
             Validate(bcScopeValidation);
+            AddDomainEvent(new TestDomainEvent(UserName));
         }
 
         public string Name { get; private set; }
@@ -51,7 +53,7 @@ namespace Identity.Domain.Aggregates.Users
                 throw new AppBaseDomainException(AppDomainMessages.InvalidEmail);
             }
             
-            var isExistUserName = bcScopeValidation.IsExistUserName(Email);
+            var isExistUserName = bcScopeValidation.IsExistUserName(UserName);
             if (isExistUserName)
             {
                 throw new AppBaseDomainException(AppDomainMessages.InvalidUserName);

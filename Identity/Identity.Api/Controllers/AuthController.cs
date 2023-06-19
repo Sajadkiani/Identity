@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using AutoMapper;
+using EventBus.Abstractions;
 using Identity.Api.Application.Commands.Users;
 using Identity.Api.Application.Queries.Users;
 using Identity.Api.Infrastructure.Brokers;
@@ -20,14 +21,14 @@ public class AuthController : ControllerBase
     private readonly IMapper mapper;
     private readonly IMemoryCache cache;
     private readonly AppOptions.Jwt jwt;
-    private readonly IEventHandler eventHandler;
+    private readonly IEventBus eventHandler;
 
     public AuthController(
         ITokenGeneratorService tokenGenerator,
         IMapper mapper,
         IMemoryCache cache,
         AppOptions.Jwt jwt,
-        IEventHandler eventHandler
+        IEventBus eventHandler
     )
     {
         this.tokenGenerator = tokenGenerator;

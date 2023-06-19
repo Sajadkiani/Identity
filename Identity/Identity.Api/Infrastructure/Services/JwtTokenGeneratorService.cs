@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using EventBus.Abstractions;
 using Identity.Api.Application.Queries.Users;
 using Identity.Api.Infrastructure.Brokers;
 using Identity.Api.ViewModels;
@@ -18,12 +19,12 @@ public class JwtTokenGeneratorService : ITokenGeneratorService
 {
     private readonly AppOptions.Jwt jwtOptions;
     private readonly IAppRandoms randoms;
-    private readonly IEventHandler eventHandler;
+    private readonly IEventBus eventHandler;
 
     public JwtTokenGeneratorService(
         AppOptions.Jwt jwtOptions,
         IAppRandoms randoms,
-        IEventHandler eventHandler
+        IEventBus eventHandler
         )
     {
         this.jwtOptions = jwtOptions;
