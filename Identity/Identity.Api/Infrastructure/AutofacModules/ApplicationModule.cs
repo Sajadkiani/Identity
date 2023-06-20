@@ -47,6 +47,6 @@ public class ApplicationModule
         
         // Register the DomainEventHandler classes (they implement INotificationHandler<>) in assembly holding the Domain Events
         builder.RegisterAssemblyTypes(typeof(TestDomainEventHandler).GetTypeInfo().Assembly)
-            .AsClosedTypesOf(typeof(INotificationHandler<>));
+            .AsClosedTypesOf(typeof(INotificationHandler<>)).InstancePerLifetimeScope();
     }
 }

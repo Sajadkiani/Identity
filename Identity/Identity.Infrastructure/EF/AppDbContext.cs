@@ -67,7 +67,7 @@ namespace Identity.Infrastructure.EF
 
             try
             {
-                await SaveChangesAsync();
+                await SaveEntitiesAsync();
                 await transaction.CommitAsync();
             }
             catch

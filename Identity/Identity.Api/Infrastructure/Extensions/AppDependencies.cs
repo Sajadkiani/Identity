@@ -28,10 +28,10 @@ public static class AppDependencies
 
     private static void AddIntegrationServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddTransient<Func<DbConnection, IIntegrationEventLogService>>(
+        services.AddScoped<Func<DbConnection, IIntegrationEventLogService>>(
             sp => (DbConnection c) => new IntegrationEventLogService(c));
         
-        services.AddTransient<IIntegrationEventService, IntegrationEventService>();
+        services.AddScoped<IIntegrationEventService, IntegrationEventService>();
         
         services.AddMassTransit(config =>
         {

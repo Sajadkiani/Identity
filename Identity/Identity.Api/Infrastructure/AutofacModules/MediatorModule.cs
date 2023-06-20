@@ -14,7 +14,7 @@ public class MediatorModule : Autofac.Module
             .AsImplementedInterfaces();
 
         // Register all the Command classes (they implement IRequestHandler) in assembly holding the Commands
-        builder.RegisterAssemblyTypes(typeof(AddUserCommand).GetTypeInfo().Assembly)
+        builder.RegisterAssemblyTypes(typeof(AddUserCommandHandler).GetTypeInfo().Assembly)
             .AsClosedTypesOf(typeof(IRequestHandler<,>));
 
         // Register the Command's Validators (Validators based on FluentValidation library)

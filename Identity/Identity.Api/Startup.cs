@@ -28,7 +28,6 @@ namespace Identity.Api
             AppOptions.ApplicationOptionContext.ConnectionString =
                 configuration.GetConnectionString("DefaultConnection");
             
-            services.AddMediatR(conf => conf.RegisterServicesFromAssembly(typeof(Program).Assembly));
             services.AddDbContext<AppDbContext>(opt => 
                 opt.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
                     options => options.MigrationsAssembly(Assembly.GetAssembly(typeof(Program))!.GetName().Name))

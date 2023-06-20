@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Data.Common;
 using System.Threading.Tasks;
-using EventBus.Abstractions;
 using EventBus.Events;
-using Identity.Api.Infrastructure.Brokers;
 using Identity.Infrastructure.EF;
 using IntegrationEventLogEF.Services;
 using Microsoft.EntityFrameworkCore;
@@ -21,11 +19,13 @@ public class IntegrationEventService : IIntegrationEventService
     private readonly IIntegrationEventLogService eventLogService;
     private readonly ILogger<IntegrationEventService> logger;
 
-    public IntegrationEventService(IEventBus eventBus,
+    public IntegrationEventService(
+        IEventBus eventBus,
         AppDbContext context,
         IntegrationEventLogContext eventLogContext,
         Func<DbConnection, IIntegrationEventLogService> integrationEventLogServiceFactory,
-        ILogger<IntegrationEventService> logger)
+        ILogger<IntegrationEventService> logger
+        )
     {
         this.context = context ?? throw new ArgumentNullException(nameof(context));
         integrationEventLogServiceFactory = integrationEventLogServiceFactory ??
@@ -65,7 +65,7 @@ public class IntegrationEventService : IIntegrationEventService
     {
         logger.LogInformation(
             "----- Enqueuing integration event {IntegrationEventId} to repository ({@IntegrationEvent})", evt.Id, evt);
-
+        
         await eventLogService.SaveEventAsync(evt, context.GetCurrentTransaction());
     }
 }

@@ -8,6 +8,7 @@ using Identity.Api.Infrastructure.Brokers;
 using Identity.Api.Infrastructure.Services;
 using Identity.Api.ViewModels;
 using Identity.Domain.Aggregates.Users;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,30 +20,37 @@ namespace Identity.Api.Controllers
     {
         private readonly IMapper mapper;
         private readonly ICurrentUser currentUser;
-        private readonly IEventBus eventHandler;
+        private readonly IEventBus eventBus;
+        private readonly IMediator mediator;
 
         public UserController(
             IMapper mapper,
             ICurrentUser currentUser,
-            IEventBus eventHandler
+            IEventBus eventBus,
+            IMediator mediator
         )
         {
             this.mapper = mapper;
             this.currentUser = currentUser;
-            this.eventHandler = eventHandler;
+            this.eventBus = eventBus;
+            this.mediator = mediator;
         }
 
         [HttpPost]
         public async Task AddUserAsync([FromBody] AddUserInput input)
         {
-            await eventHandler.SendMediator(new AddUserCommand(input.Gender, input.Password, input.Email,
+            // await mediator.Send(new LoginCommand(string.Empty, string.Empty));
+            await mediator.Send(new AddUserCommand(input.Gender, input.Password, input.Email,
                 input.UserName, input.Family, input.Name));
+            
+            // await eventBus.SendMediator(new AddUserCommand(input.Gender, input.Password, input.Email,
+            //     input.UserName, input.Family, input.Name));
         }
         
         [HttpGet("{userId}/roles")]
         public async Task<IEnumerable<AuthViewModel.UserRoleOutput>> GetUserRolesAsync([FromRoute] int userId)
         {
-            return await eventHandler.SendMediator(new GetUserRolesQuery(userId));
+            return await eventBus.SendMediator(new GetUserRolesQuery(userId));
         }
         
         // [HttpPost("roles")]

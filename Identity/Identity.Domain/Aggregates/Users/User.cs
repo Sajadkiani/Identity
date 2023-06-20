@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using Identity.Domain.Aggregates.Users.Enums;
 using Identity.Domain.Events.Users;
 using Identity.Domain.Exceptions;
