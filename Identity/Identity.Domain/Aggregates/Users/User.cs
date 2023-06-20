@@ -26,7 +26,7 @@ namespace Identity.Domain.Aggregates.Users
             tokens = new List<Token>();
             
             //TODO: all invariants and data consistencies must put here 
-            Validate(bcScopeValidation);
+            // Validate(bcScopeValidation);
             AddDomainEvent(new TestDomainEvent(UserName));
         }
 

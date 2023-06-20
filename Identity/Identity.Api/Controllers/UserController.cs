@@ -4,12 +4,9 @@ using AutoMapper;
 using EventBus.Abstractions;
 using Identity.Api.Application.Commands.Users;
 using Identity.Api.Application.Queries.Users;
-using Identity.Api.Infrastructure.Brokers;
 using Identity.Api.Infrastructure.Services;
 using Identity.Api.ViewModels;
-using Identity.Domain.Aggregates.Users;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Identity.Api.Controllers
@@ -39,12 +36,8 @@ namespace Identity.Api.Controllers
         [HttpPost]
         public async Task AddUserAsync([FromBody] AddUserInput input)
         {
-            // await mediator.Send(new LoginCommand(string.Empty, string.Empty));
-            await mediator.Send(new AddUserCommand(input.Gender, input.Password, input.Email,
+            await eventBus.SendMediator(new AddUserCommand(input.Gender, input.Password, input.Email,
                 input.UserName, input.Family, input.Name));
-            
-            // await eventBus.SendMediator(new AddUserCommand(input.Gender, input.Password, input.Email,
-            //     input.UserName, input.Family, input.Name));
         }
         
         [HttpGet("{userId}/roles")]

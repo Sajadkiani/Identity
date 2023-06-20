@@ -35,13 +35,25 @@ public static class AppDependencies
         
         services.AddMassTransit(config =>
         {
+            config.SetEndpointNameFormatter(new SnakeCaseEndpointNameFormatter(false));
             config.UsingRabbitMq((context, cfg) =>
             {
-                cfg.Host(configuration["Masstransit:Host"], configuration["Masstransit:Virtualhost"], h =>
-                {
-                    h.Username(configuration["Masstransit:UserName"]);
-                    h.Password(configuration["Masstransit:Password"]);
-                });
+                cfg.Host(configuration["Masstransit:Host"], configuration["Masstransit:Virtualhost"],
+                    configuration["Masstransit:Port"], h =>
+                    {
+                        h.Username(configuration["Masstransit:UserName"]);
+                        h.Password(configuration["Masstransit:Password"]);
+
+                        //https://masstransit.io/documentation/configuration/transports/rabbitmq#configurebatchpublish
+                        h.ConfigureBatchPublish(b =>
+                        {
+                            b.Enabled = true;
+                            b.Timeout = TimeSpan.FromMilliseconds(2);
+                        });
+                    });
+                
+
+                cfg.ConfigureEndpoints(context);
             });
         });
     }
