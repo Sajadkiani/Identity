@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Identity.Api.Application.IntegrationEvents;
 using Identity.Api.Infrastructure.Exceptions;
 using Identity.Infrastructure.EF;
 using MediatR;
@@ -16,13 +17,17 @@ public class TransactionBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
     private readonly ILogger<TransactionBehaviour<TRequest, TResponse>> logger;
 
     private readonly AppDbContext dbContext;
+
+    private readonly IIntegrationEventService integrationEventService;
     // private readonly IOrderingIntegrationEventService _orderingIntegrationEventService;
 
-    public TransactionBehaviour(AppDbContext dbContext,
+    public TransactionBehaviour(
+        AppDbContext dbContext,
+        IIntegrationEventService integrationEventService,
         ILogger<TransactionBehaviour<TRequest, TResponse>> logger)
     {
         this.dbContext = dbContext ?? throw new ArgumentException(nameof(dbContext));
-        // _orderingIntegrationEventService = orderingIntegrationEventService ?? throw new ArgumentException(nameof(orderingIntegrationEventService));
+        this.integrationEventService = integrationEventService ?? throw new ArgumentException(nameof(integrationEventService));
         this.logger = logger ?? throw new ArgumentException(nameof(ILogger));
     }
 
@@ -61,7 +66,7 @@ public class TransactionBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
                     transactionId = transaction.TransactionId;
                 }
 
-                // await _orderingIntegrationEventService.PublishEventsThroughEventBusAsync(transactionId);
+                await integrationEventService.PublishEventsThroughEventBusAsync(transactionId);
             });
 
             return response;

@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using Events;
 using Identity.Api.Application.IntegrationEvents;
-using Identity.Api.Application.IntegrationEvents.Events;
 using Identity.Domain.Events.Users;
 using MediatR;
 
@@ -20,6 +20,7 @@ public class TestDomainEventHandler : INotificationHandler<TestDomainEvent>
     
     public async Task Handle(TestDomainEvent notification, CancellationToken cancellationToken)
     {
-        await integrationEventService.AddAndSaveEventAsync(new TestIntegrationEvent(notification.UserName));
+        await integrationEventService.AddAndSaveEventAsync(
+            new TestIntegrationEvent { UserName = notification.UserName });
     }
 }

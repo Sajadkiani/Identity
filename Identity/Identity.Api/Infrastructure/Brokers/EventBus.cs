@@ -14,11 +14,13 @@ public class EventBus : IEventBus
 {
     private readonly IPublishEndpoint publishEndpoint;
     private readonly IMediator mediator;
-    
-    public EventBus(IPublishEndpoint publishEndpoint, IMediator mediator)
+    private readonly ISendEndpointProvider  sendEndpoint;
+
+    public EventBus(IPublishEndpoint publishEndpoint, IMediator mediator, ISendEndpointProvider  sendEndpoint)
     {
         this.publishEndpoint = publishEndpoint;
         this.mediator = mediator;
+        this.sendEndpoint = sendEndpoint;
     }
     
     public Task<TResponse> SendMediator<TResponse>(IRequest<TResponse> command)
@@ -40,9 +42,9 @@ public class EventBus : IEventBus
         return publishEndpoint.Publish(@event);
     }
 
-    public Task Send<TRequest>(TRequest request, CancellationToken cancellationToken = new CancellationToken())
+    public async Task Send<TRequest>(TRequest request, CancellationToken cancellationToken = new CancellationToken())
         where TRequest : IRequest
     {
-        throw new NotImplementedException();
+        await sendEndpoint.Send(request, cancellationToken);
     }
 }

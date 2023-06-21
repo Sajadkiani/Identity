@@ -1,5 +1,9 @@
 ﻿using EventBus.Events;
 
-namespace Identity.Api.Application.IntegrationEvents.Events;
+namespace Events;
 
-public record TestIntegrationEvent(string userName) : IntegrationEvent;
+// public record TestIntegrationEvent: IntegrationEvent
+public record TestIntegrationEvent
+{
+    public string UserName { get; init; }
+}
