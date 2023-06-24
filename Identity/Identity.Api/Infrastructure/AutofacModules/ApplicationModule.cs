@@ -10,6 +10,7 @@ using Identity.Infrastructure.BcValidations;
 using Identity.Infrastructure.Dapper;
 using Identity.Infrastructure.EF.Stores;
 using IdentityService.Utils;
+using IntegrationEventLogEF.Services;
 using MediatR;
 
 namespace Identity.Api.Infrastructure.AutofacModules;
@@ -28,6 +29,7 @@ public class ApplicationModule
     {
         builder.RegisterType<JwtTokenGeneratorService>().As<ITokenGeneratorService>().InstancePerLifetimeScope();
         builder.RegisterType<PasswordService>().As<IPasswordService>().InstancePerLifetimeScope();
+        builder.RegisterType<EventInitializer>().As<IEventInitializer>().InstancePerLifetimeScope();
         builder.RegisterType<AppRandoms>().As<IAppRandoms>().InstancePerLifetimeScope();
         builder.RegisterType<Brokers.EventBus>().As<IEventBus>().InstancePerLifetimeScope();
         builder.RegisterType<DapperQueryExecutor>().As<IQueryExecutor>().InstancePerLifetimeScope();

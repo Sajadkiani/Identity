@@ -41,18 +41,18 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthViewModel.G
         var user = await userStore.GetByUserNameAsync(notification.UserName);
         if (user is null)
         {
-            throw new IdentityException.IdentityNotFoundException(AppMessages.UserNotFound);
+            throw new ApplicationException.NotFound(AppMessages.UserNotFound);
         }
         
         if (user.Status != UserStatus.Active)
         {
-            throw new IdentityException.IdentityUnauthorizedException();
+            throw new ApplicationException.Unauthorized();
         }
 
         var incomePassword = passwordService.HashPassword(notification.Password, notification.UserName);
         if (user.Password != incomePassword)
         {
-            throw new IdentityException.IdentityUnauthorizedException();
+            throw new ApplicationException.Unauthorized();
         }
 
         var token = await tokenService.GenerateTokenAsync(user);

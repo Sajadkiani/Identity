@@ -1,6 +1,4 @@
-﻿using EventBus.Events;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.eShopOnContainers.BuildingBlocks.IntegrationEventLogEF;
+﻿using Microsoft.eShopOnContainers.BuildingBlocks.IntegrationEventLogEF;
 
 namespace IntegrationEventLogEF.Services;
 
@@ -18,34 +16,21 @@ public class IntegrationEventLogService : IIntegrationEventLogService, IDisposab
             new DbContextOptionsBuilder<IntegrationEventLogContext>()
                 .UseSqlServer(dbConnection)
                 .Options);
-
-        eventTypes = Assembly.Load(Assembly.GetEntryAssembly().FullName)
-            .GetTypes()
-            .Where(t => t.Name.EndsWith(nameof(IntegrationEvent)))
-            .ToList();
     }
 
     public async Task<IEnumerable<IntegrationEventLogEntry>> RetrieveEventLogsPendingToPublishAsync(Guid transactionId)
     {
         var tid = transactionId.ToString();
 
-        var result = await integrationEventLogContext.IntegrationEventLogs
+        return await integrationEventLogContext.IntegrationEventLogs
             .Where(e => e.TransactionId == tid && e.State == EventStateEnum.NotPublished).ToListAsync();
-
-        if (result.Any())
-        {
-            return result.OrderBy(o => o.CreationTime)
-                .Select(e => e.DeserializeJsonContent(eventTypes.Find(t => t.Name == e.EventTypeShortName)));
-        }
-
-        return new List<IntegrationEventLogEntry>();
     }
 
-    public Task SaveEventAsync(IntegrationEvent @event, IDbContextTransaction transaction)
+    public Task SaveEventAsync<TEvent>(TEvent @event, IDbContextTransaction transaction)
     {
-        if (transaction == null) throw new ArgumentNullException(nameof(transaction));
+        if (transaction == null || @event is null) throw new ArgumentNullException(nameof(transaction));
 
-        var eventLogEntry = new IntegrationEventLogEntry(@event, transaction.TransactionId);
+        var eventLogEntry = new IntegrationEventLogEntry(@event, transaction.TransactionId, @event.GetType());
 
         integrationEventLogContext.Database.UseTransaction(transaction.GetDbTransaction());
         integrationEventLogContext.IntegrationEventLogs.Add(eventLogEntry);

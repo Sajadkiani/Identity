@@ -2,17 +2,19 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using EventBus.Abstractions;
+using Events;
 using Identity.Api.Application.Commands.Users;
 using Identity.Api.Application.Queries.Users;
 using Identity.Api.Infrastructure.Services;
 using Identity.Api.ViewModels;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Identity.Api.Controllers
 {
     [Route("api/users")]
-    // [Authorize]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly IMapper mapper;
@@ -39,23 +41,11 @@ namespace Identity.Api.Controllers
             await eventBus.SendMediator(new AddUserCommand(input.Gender, input.Password, input.Email,
                 input.UserName, input.Family, input.Name));
         }
-        
+
         [HttpGet("{userId}/roles")]
         public async Task<IEnumerable<AuthViewModel.UserRoleOutput>> GetUserRolesAsync([FromRoute] int userId)
         {
             return await eventBus.SendMediator(new GetUserRolesQuery(userId));
         }
-        
-        // [HttpPost("roles")]
-        // public async Task AddRoleAsync([FromBody] AddRoleInput input)
-        // {
-        //     await eventHandler.SendMediator(new GetUserRolesQuery(input.);
-        // }
-        
-        // [HttpPost("userRoles")]
-        // public Task GetAllUserAsync(AddUserRolesInput input)
-        // {
-        //     await eventHandler.SendMediator(new GetUserRolesQuery(input.UserId));
-        // }
     }
 }

@@ -1,11 +1,13 @@
-﻿namespace EventBus.Events;
+using System.Text.Json.Serialization;
 
-public record IntegrationEvent
+namespace IntegrationEventLogEF.Services;
+
+public class IntegrationEvent
 {        
     public IntegrationEvent()
     {
         Id = Guid.NewGuid();
-        CreationDate = DateTime.UtcNow;
+        CreationDate = DateTime.Now;
     }
 
     [JsonConstructor]
@@ -13,6 +15,7 @@ public record IntegrationEvent
     {
         Id = id;
         CreationDate = createDate;
+        FullName = nameof(IntegrationEvent);
     }
 
     [JsonInclude]
@@ -20,4 +23,7 @@ public record IntegrationEvent
 
     [JsonInclude]
     public DateTime CreationDate { get; private init; }
+    
+    [JsonInclude]
+    public string FullName { get; private init; }
 }

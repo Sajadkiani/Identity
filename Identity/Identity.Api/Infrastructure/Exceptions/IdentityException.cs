@@ -21,14 +21,14 @@ public static class AppMessages
     public static AppMessage NotFound = new AppMessage("notFound");
 }
 
-public class IdentityException
+public class ApplicationException
 {
     
-    public class BaseIdentityException : Exception
+    public class BaseException : Exception
     {
         public AppMessage AppMessage { get; }
 
-        public BaseIdentityException(
+        public BaseException(
             AppMessage appMessage
         ) : base(appMessage.message)
         {
@@ -36,21 +36,21 @@ public class IdentityException
         }
     }
 
-    public class IdentityInternalException : BaseIdentityException
+    public class Internal : BaseException
     {
-        public IdentityInternalException(AppMessage message) : base(message)
+        public Internal(AppMessage message) : base(message)
         {}
     }
 
-    public class IdentityNotFoundException : BaseIdentityException
+    public class NotFound : BaseException
     {
-        public IdentityNotFoundException(AppMessage message) : base(message)
+        public NotFound(AppMessage message) : base(message)
         {}
     }
     
-    public class IdentityUnauthorizedException : BaseIdentityException
+    public class Unauthorized : BaseException
     {
-        public IdentityUnauthorizedException() : base(AppMessages.Unauthenticated)
+        public Unauthorized() : base(AppMessages.Unauthenticated)
         {}
     }
 }

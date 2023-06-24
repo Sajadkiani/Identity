@@ -24,7 +24,7 @@ public class RequestManager : IRequestManager
         var exists = await ExistAsync(id);
 
         var request = exists ?
-            throw new IdentityDomainException($"Request with {id} already exists") :
+            throw new AppInternalDomainException(($"Request with {id} already exists")) :
             new ClientRequest()
             {
                 Id = id,

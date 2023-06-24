@@ -1,9 +1,10 @@
-﻿using EventBus.Events;
+﻿using IntegrationEventLogEF.Services;
 
 namespace Events;
 
 // public record TestIntegrationEvent: IntegrationEvent
-public record TestIntegrationEvent
+public class TestIntegrationEvent : IntegrationEvent
 {
     public string UserName { get; init; }
 }
+    

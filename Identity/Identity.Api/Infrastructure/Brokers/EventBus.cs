@@ -1,8 +1,6 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using EventBus.Abstractions;
-using EventBus.Events;
 using Identity.Api.Infrastructure.Exceptions;
 using MassTransit;
 using MediatR;
@@ -33,12 +31,12 @@ public class EventBus : IEventBus
         return mediator.Publish(notification);
     }
 
-    public Task Publish<TIntegrationEvent>(TIntegrationEvent @event) where TIntegrationEvent : IntegrationEvent
+    public Task Publish<TIntegrationEvent>(TIntegrationEvent @event) 
     {
         if (@event is null)
-            throw new IdentityException.IdentityInternalException(
+            throw new ApplicationException.Internal(
                 new AppMessage($"notification:{nameof(@event)} is null."));
-
+        
         return publishEndpoint.Publish(@event);
     }
 

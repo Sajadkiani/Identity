@@ -7,8 +7,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ApplicationException = Identity.Api.Infrastructure.Exceptions.ApplicationException;
 
-namespace IdentityService.Extensions;
+namespace Identity.Api.Infrastructure.Extensions;
 
 public static class AppProblemDetail
 {
@@ -27,14 +28,14 @@ public static class AppProblemDetail
             options.IncludeExceptionDetails = (ctx, ex) => environment.IsDevelopment();
 
             // This will map UserNotFoundException to the 404 Not Found status code and return custom problem details.
-            options.Map<IdentityException.IdentityInternalException>(ex => new ProblemDetails
+            options.Map<ApplicationException.Internal>(ex => new ProblemDetails
             {
                 Title = AppMessages.InternalError.message,
                 Status = StatusCodes.Status500InternalServerError,
                 Detail = ex.Message,
             });
             
-            options.Map<IdentityException.IdentityUnauthorizedException>(ex => new ProblemDetails
+            options.Map<ApplicationException.Unauthorized>(ex => new ProblemDetails
             {
                 Title = AppMessages.Unauthenticated.message,
                 Status = StatusCodes.Status403Forbidden,
@@ -42,7 +43,7 @@ public static class AppProblemDetail
             });
             
             
-            options.Map<IdentityException.IdentityNotFoundException>(ex => new ProblemDetails
+            options.Map<ApplicationException.NotFound>(ex => new ProblemDetails
             {
                 Title = AppMessages.NotFound.message,
                 Status = StatusCodes.Status404NotFound,

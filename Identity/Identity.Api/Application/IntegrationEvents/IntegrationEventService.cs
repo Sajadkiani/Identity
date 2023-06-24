@@ -1,12 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Common;
+using System.Dynamic;
+using System.Linq;
+using System.Reflection;
+using System.Text.Json;
 using System.Threading.Tasks;
-using EventBus.Events;
+using Identity.Api.Infrastructure.Exceptions;
+using Identity.Api.Infrastructure.Services;
+using Identity.Domain.Exceptions;
 using Identity.Infrastructure.EF;
 using IntegrationEventLogEF.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.eShopOnContainers.BuildingBlocks.IntegrationEventLogEF;
 using Microsoft.Extensions.Logging;
+using ApplicationException = Identity.Api.Infrastructure.Exceptions.ApplicationException;
 using IEventBus = EventBus.Abstractions.IEventBus;
 
 namespace Identity.Api.Application.IntegrationEvents;
@@ -18,13 +26,15 @@ public class IntegrationEventService : IIntegrationEventService
     private readonly AppDbContext context;
     private readonly IIntegrationEventLogService eventLogService;
     private readonly ILogger<IntegrationEventService> logger;
+    private readonly IEventInitializer eventInitializer;
 
     public IntegrationEventService(
         IEventBus eventBus,
         AppDbContext context,
         IntegrationEventLogContext eventLogContext,
         Func<DbConnection, IIntegrationEventLogService> integrationEventLogServiceFactory,
-        ILogger<IntegrationEventService> logger
+        ILogger<IntegrationEventService> logger,
+        IEventInitializer eventInitializer
         )
     {
         this.context = context ?? throw new ArgumentNullException(nameof(context));
@@ -33,22 +43,34 @@ public class IntegrationEventService : IIntegrationEventService
         this.eventBus = eventBus ?? throw new ArgumentNullException(nameof(eventBus));
         eventLogService = integrationEventLogServiceFactory(context.Database.GetDbConnection());
         this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        this.eventInitializer = eventInitializer;
     }
 
     public async Task PublishEventsThroughEventBusAsync(Guid transactionId)
     {
         var pendingLogEvents = await eventLogService.RetrieveEventLogsPendingToPublishAsync(transactionId);
-
+        var eventTypes = Assembly.Load(Assembly.GetEntryAssembly().FullName)
+            .GetTypes()
+            .Where(t => t.Name.EndsWith("IntegrationEvent"))
+            .ToList();
+        
         foreach (var logEvt in pendingLogEvents)
         {
             logger.LogInformation(
                 "----- Publishing integration event: {IntegrationEventId} from {AppName} - ({@IntegrationEvent})",
-                logEvt.EventId, Program.AppName, logEvt.IntegrationEvent);
+                logEvt.EventId, Program.AppName, logEvt.Content);
 
+            var eventType = eventTypes.FirstOrDefault(item => item.Name == logEvt.EventTypeName);
+            if (eventType is null)
+            {
+                throw new ApplicationException.Internal(AppMessages.InternalError);
+            }
+
+            var deserializedEvent = JsonSerializer.Deserialize(logEvt.Content, eventType);
             try
             {
                 await eventLogService.MarkEventAsInProgressAsync(logEvt.EventId);
-                await eventBus.Publish(logEvt.IntegrationEvent);
+                await eventBus.Publish(deserializedEvent);
                 await eventLogService.MarkEventAsPublishedAsync(logEvt.EventId);
             }
             catch (Exception ex)
@@ -61,11 +83,12 @@ public class IntegrationEventService : IIntegrationEventService
         }
     }
 
-    public async Task AddAndSaveEventAsync(IntegrationEvent evt)
+    public async Task AddAndSaveEventAsync<TEvent>(TEvent evt)
     {
         logger.LogInformation(
-            "----- Enqueuing integration event {IntegrationEventId} to repository ({@IntegrationEvent})", evt.Id, evt);
-        
+            "----- Enqueuing integration event {IntegrationEventId} to repository ({@IntegrationEvent})",
+            evt, evt);
+
         await eventLogService.SaveEventAsync(evt, context.GetCurrentTransaction());
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
+using ApplicationException = Identity.Api.Infrastructure.Exceptions.ApplicationException;
 
 namespace Identity.Api.Infrastructure.Filters;
 
@@ -33,7 +34,7 @@ public class AppAuthorizeFilter : IAuthorizationFilter
         var referenceToken = authorization.Split(" ")[1];
         var token = cache.Get<AuthViewModel.GetTokenOutput>(CacheKeys.Token + referenceToken);
         if (token is null)
-            throw new IdentityException.IdentityUnauthorizedException();
+            throw new ApplicationException.Unauthorized();
          
         context.HttpContext.Request.Headers.Authorization = token.AccessToken;
         SetCurrentUser(context.HttpContext);
