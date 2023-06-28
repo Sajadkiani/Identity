@@ -24,9 +24,10 @@ namespace Identity.Domain.Aggregates.Users
             Gender = gender;
             userRoles = new List<UserRole>();
             tokens = new List<Token>();
+            Status = UserStatus.Active;
             
             //TODO: all invariants and data consistencies must put here 
-            // Validate(bcScopeValidation);
+            Validate(bcScopeValidation);
             AddDomainEvent(new TestDomainEvent(UserName));
         }
 

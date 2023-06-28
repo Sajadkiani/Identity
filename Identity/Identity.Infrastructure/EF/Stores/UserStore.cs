@@ -12,7 +12,7 @@ public class UserStore : Repository<User, int>, IUserStore
     
     public Task<User> GetByUserNameAsync(string userName)
     {
-        return context.Users.FirstOrDefaultAsync(u => u.UserName == userName)!;
+        return context.Users.Include(item => item.Tokens).FirstOrDefaultAsync(u => u.UserName == userName)!;
     }
     
     public Task AddUserAsync(User user)

@@ -14,7 +14,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace Identity.Api.Controllers
 {
     [Route("api/users")]
-    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly IMapper mapper;
@@ -43,6 +42,7 @@ namespace Identity.Api.Controllers
         }
 
         [HttpGet("{userId}/roles")]
+        [Authorize]
         public async Task<IEnumerable<AuthViewModel.UserRoleOutput>> GetUserRolesAsync([FromRoute] int userId)
         {
             return await eventBus.SendMediator(new GetUserRolesQuery(userId));
