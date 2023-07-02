@@ -1,21 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Common;
-using System.Dynamic;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
+using EventBus.Abstractions;
 using Identity.Api.Infrastructure.Exceptions;
-using Identity.Api.Infrastructure.Services;
-using Identity.Domain.Exceptions;
 using Identity.Infrastructure.EF;
 using IntegrationEventLogEF.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.eShopOnContainers.BuildingBlocks.IntegrationEventLogEF;
 using Microsoft.Extensions.Logging;
 using ApplicationException = Identity.Api.Infrastructure.Exceptions.ApplicationException;
-using IEventBus = EventBus.Abstractions.IEventBus;
 
 namespace Identity.Api.Application.IntegrationEvents;
 
