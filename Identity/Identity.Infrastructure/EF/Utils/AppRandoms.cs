@@ -1,8 +1,6 @@
-﻿using System;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
-namespace IdentityService.Utils;
+namespace Identity.Infrastructure.EF.Utils;
 
 public interface IAppRandoms
 {

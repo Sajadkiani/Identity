@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Security.Claims;
-using IdentityService.Consts;
+using Identity.Api.Infrastructure.Consts;
 
 namespace Identity.Api.Infrastructure.Services;
 

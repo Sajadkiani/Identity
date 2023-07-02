@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 
-namespace IdentityService.Options;
+namespace Identity.Api.Infrastructure.Options;
 
 public class AppOptions
 {

@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 
-namespace IdentityService.Extensions;
+namespace Identity.Api.Infrastructure.Extensions;
 
 public static class AppSwagger
 {
@@ -31,7 +31,7 @@ public static class AppSwagger
                     new string[]{}
                 }
             });
-            c.SwaggerDoc("v1", new OpenApiInfo { Title = "IdentityService.Api", Version = "v1" });
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "Identity.Api", Version = "v1" });
         });
 
         return services;

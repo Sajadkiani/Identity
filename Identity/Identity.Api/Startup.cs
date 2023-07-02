@@ -1,15 +1,10 @@
 using System;
-using System.Data.Common;
 using System.Reflection;
 using System.Text;
 using Identity.Api.Infrastructure.Extensions;
+using Identity.Api.Infrastructure.Options;
 using Identity.Api.Infrastructure.Security;
-using Identity.Domain.Aggregates.Users;
 using Identity.Infrastructure.EF;
-using IdentityService.Api;
-using IdentityService.Extensions;
-using IdentityService.Options;
-using IntegrationEventLogEF.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -78,9 +73,11 @@ namespace Identity.Api
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Identity.Api v1"));
             }
+
+            //TODO: swagger config must run in develop env, then put these inside of  
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Identity.Api v1"));
 
             app.UseAppProblemDetail();
             app.UseHttpsRedirection();

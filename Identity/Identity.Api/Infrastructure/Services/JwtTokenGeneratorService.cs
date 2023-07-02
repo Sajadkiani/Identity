@@ -6,11 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 using EventBus.Abstractions;
 using Identity.Api.Application.Queries.Users;
-using Identity.Api.Infrastructure.Brokers;
+using Identity.Api.Infrastructure.Options;
 using Identity.Api.ViewModels;
 using Identity.Domain.Aggregates.Users;
-using IdentityService.Options;
-using IdentityService.Utils;
+using Identity.Infrastructure.EF.Utils;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Identity.Api.Infrastructure.Services;

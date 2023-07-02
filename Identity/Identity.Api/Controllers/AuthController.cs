@@ -5,10 +5,10 @@ using Identity.Api.Application.Commands.Users;
 using Identity.Api.Application.Queries.Users;
 using Identity.Api.Infrastructure.Brokers;
 using Identity.Api.Infrastructure.Consts;
+using Identity.Api.Infrastructure.Options;
 using Identity.Api.Infrastructure.Services;
 using Identity.Api.ViewModels;
 using Identity.Domain.Aggregates.Users;
-using IdentityService.Options;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 

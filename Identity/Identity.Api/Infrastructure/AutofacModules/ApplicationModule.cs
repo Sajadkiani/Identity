@@ -9,7 +9,7 @@ using Identity.Domain.Validations.Users;
 using Identity.Infrastructure.BcValidations;
 using Identity.Infrastructure.Dapper;
 using Identity.Infrastructure.EF.Stores;
-using IdentityService.Utils;
+using Identity.Infrastructure.EF.Utils;
 using IntegrationEventLogEF.Services;
 using MediatR;
 

@@ -2,7 +2,7 @@ using AutoMapper;
 using Identity.Api.ViewModels;
 using Identity.Domain.Aggregates.Users;
 
-namespace IdentityService.Api.MapperProfiles
+namespace Identity.Api.Infrastructure.MapperProfiles
 {
     public class AutoMapperProfile : Profile
     {

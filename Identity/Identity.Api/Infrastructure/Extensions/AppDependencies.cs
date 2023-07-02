@@ -38,12 +38,17 @@ public static class AppDependencies
             config.SetEndpointNameFormatter(new SnakeCaseEndpointNameFormatter(false));
             config.UsingRabbitMq((context, cfg) =>
             {
+                if (string.IsNullOrEmpty(configuration["Masstransit:Host"]))
+                {
+                    throw new Exception("Masstransit:Host config in appsettings not found.");
+                }
+
                 cfg.Host(configuration["Masstransit:Host"], configuration["Masstransit:Virtualhost"],
                     configuration["Masstransit:Port"], h =>
                     {
                         h.Username(configuration["Masstransit:UserName"]);
                         h.Password(configuration["Masstransit:Password"]);
-
+                
                         //https://masstransit.io/documentation/configuration/transports/rabbitmq#configurebatchpublish
                         h.ConfigureBatchPublish(b =>
                         {
@@ -52,7 +57,7 @@ public static class AppDependencies
                         });
                     });
                 
-
+                
                 cfg.ConfigureEndpoints(context);
             });
         });

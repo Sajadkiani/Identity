@@ -1,4 +1,4 @@
-﻿namespace IdentityService.Consts;
+﻿namespace Identity.Api.Infrastructure.Consts;
 
 public class ClaimKeys
 {

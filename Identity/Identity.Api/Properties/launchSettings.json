@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "IdentityService": {
+    "Identity": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "launchBrowser": true,
