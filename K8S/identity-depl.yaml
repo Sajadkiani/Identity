@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: identity-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: identityservice
+  template:
+    metadata:
+      labels:
+        editor: identityservice
+    spec:
+      containers:
+      - name: identityservice
+        image: sajadkiani/microservices-dev:identity
