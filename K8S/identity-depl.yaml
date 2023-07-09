@@ -1,17 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: identity-depl
+  name: identity
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: identityservice
+      app: identity
   template:
     metadata:
       labels:
-        editor: identityservice
+        app: identity
     spec:
       containers:
-      - name: identityservice
-        image: sajadkiani/microservices-dev:identity
+       - name: identity
+         image: docker.io/sajadkiani/microservices-dev:identity
+         imagePullPolicy: IfNotPresent
+         ports:
+           - containerPort: 5002

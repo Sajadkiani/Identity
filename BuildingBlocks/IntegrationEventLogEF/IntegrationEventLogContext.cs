@@ -1,9 +1,9 @@
-﻿using IntegrationEventLogEF;
-
-namespace Microsoft.eShopOnContainers.BuildingBlocks.IntegrationEventLogEF;
+﻿namespace IntegrationEventLogEF;
 
 public class IntegrationEventLogContext : DbContext
 {
+    public int Manual { get; set; }
+
     public IntegrationEventLogContext(DbContextOptions<IntegrationEventLogContext> options) : base(options)
     {
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using Identity.Api.Infrastructure.Options;
+using IntegrationEventLogEF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.eShopOnContainers.BuildingBlocks.IntegrationEventLogEF;
