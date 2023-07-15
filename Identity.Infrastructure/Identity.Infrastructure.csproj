@@ -18,6 +18,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Identity.Domain\Identity.Domain.csproj" />
+        <ProjectReference Include="..\BuildingBlocks\IntegrationEventLogEF\IntegrationEventLogEF.csproj" />
     </ItemGroup>
 
 </Project>

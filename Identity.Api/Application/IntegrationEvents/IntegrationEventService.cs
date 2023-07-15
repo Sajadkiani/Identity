@@ -42,6 +42,7 @@ public class IntegrationEventService : IIntegrationEventService
         this.eventInitializer = eventInitializer;
     }
 
+    //TODO: later add a .net worker to use this method and constantly send events.
     public async Task PublishEventsThroughEventBusAsync(Guid transactionId)
     {
         var pendingLogEvents = await eventLogService.RetrieveEventLogsPendingToPublishAsync(transactionId);

@@ -30,7 +30,8 @@ public class IntegrationEventLogService : IIntegrationEventLogService, IDisposab
     {
         if (transaction == null || @event is null) throw new ArgumentNullException(nameof(transaction));
 
-        var eventLogEntry = new IntegrationEventLogEntry(@event, transaction.TransactionId, @event.GetType());
+        //TODO: get event environment type form outside
+        var eventLogEntry = new IntegrationEventLogEntry(@event, transaction.TransactionId, @event.GetType(), EventEnvironmentType.Development);
 
         integrationEventLogContext.Database.UseTransaction(transaction.GetDbTransaction());
         integrationEventLogContext.IntegrationEventLogs.Add(eventLogEntry);
