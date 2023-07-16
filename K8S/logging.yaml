@@ -1,0 +1,116 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elasticsearch
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elasticsearch
+  template:
+    metadata:
+      labels:
+        app: elasticsearch
+    spec:
+      containers:
+       - name:  elasticsearch
+         image: docker.elastic.co/elasticsearch/elasticsearch:7.9.2
+         imagePullPolicy: IfNotPresent
+         ports:
+           - containerPort: 9200
+         env:
+         - name:  xpack.monitoring.enabled
+           value: "true"
+         - name:  xpack.watcher.enabled
+           value: "false"
+         - name:  ES_JAVA_OPTS
+           value: "-Xms512m -Xmx512m"
+         - name:  discovery.type
+           value: "single-node"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: elastic-clusterip
+spec:
+  type: ClusterIP
+  selector:
+    app: elasticsearch
+  ports:
+  - name: elastic-port
+    protocol: TCP
+    port: 9200
+    targetPort: 9200
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticnp
+spec:
+  type: NodePort
+  selector: 
+    app: elasticsearch
+  ports:
+   - name:  elasticnp
+     port:  5002
+     protocol: TCP
+     targetPort: 9200
+---
+
+
+
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kibana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kibana
+  template:
+    metadata:
+      labels:
+        app: kibana
+    spec:
+      containers:
+       - name:  kibana
+         image: docker.elastic.co/kibana/kibana:7.9.2
+         imagePullPolicy: IfNotPresent
+         ports:
+           - containerPort: 5601
+         env:
+          - name: ELASTICSEARCH_URL
+            value: "http://elastic-clusterip:9200"
+          - name: ELASTICSEARCH_HOSTS
+            value: "http://elastic-clusterip:9200"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kibana-clusterip
+spec:
+  type: ClusterIP
+  selector:
+    app: kibana
+  ports:
+  - name: kibana-port
+    protocol: TCP
+    port: 5601
+    targetPort: 5601
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kibananp
+spec:
+  type: NodePort
+  selector: 
+    app: kibana
+  ports:
+   - name:  kibananp
+     port:  5601
+     protocol: TCP
+     targetPort: 5601

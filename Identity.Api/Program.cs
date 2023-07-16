@@ -1,3 +1,4 @@
+using System;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Identity.Api;
@@ -6,9 +7,26 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-
+using Serilog;
+using Serilog.Formatting.Compact;
+//Creating the Logger with Minimum Settings
+Log.Logger = new LoggerConfiguration()
+                    .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning)
+                    .Enrich.FromLogContext()
+                    .WriteTo.Console()
+                    .CreateLogger();
 
 var webApplicationBuilder = WebApplication.CreateBuilder(args);
+
+//serilog configurations
+webApplicationBuilder.Host.UseSerilog((ctx, config) =>
+{
+    config.Enrich.WithProperty("Application", ctx.HostingEnvironment.ApplicationName)
+       .Enrich.WithProperty("Environment", ctx.HostingEnvironment.EnvironmentName)
+       .WriteTo.Console(new RenderedCompactJsonFormatter());
+    config.ReadFrom.Configuration(ctx.Configuration);
+});
+
 var host = webApplicationBuilder.Host;
 webApplicationBuilder.Services.ConfigureServices(webApplicationBuilder.Environment,
     webApplicationBuilder.Configuration);
@@ -18,7 +36,10 @@ AddExtraConfigs(host, webApplicationBuilder.Environment);
 
 var app = webApplicationBuilder.Build();
 app.Configure(webApplicationBuilder.Environment);
-await app.RunAsync();
+
+
+    await app.RunAsync();
+
 
 //method and class 
 static void AddAutofacRequirements(IHostBuilder builder, WebApplicationBuilder webApplicationBuilder)
