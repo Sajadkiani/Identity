@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Identity.Api;
@@ -9,12 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Formatting.Compact;
-//Creating the Logger with Minimum Settings
-Log.Logger = new LoggerConfiguration()
-                    .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning)
-                    .Enrich.FromLogContext()
-                    .WriteTo.Console()
-                    .CreateLogger();
+using Serilog.Sinks.Elasticsearch;
 
 var webApplicationBuilder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +19,12 @@ webApplicationBuilder.Host.UseSerilog((ctx, config) =>
 {
     config.Enrich.WithProperty("Application", ctx.HostingEnvironment.ApplicationName)
        .Enrich.WithProperty("Environment", ctx.HostingEnvironment.EnvironmentName)
-       .WriteTo.Console(new RenderedCompactJsonFormatter());
+       .WriteTo.Console()
+       .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(webApplicationBuilder.Configuration["ElasticConfiguration:Uri"]))  
+                {  
+                    AutoRegisterTemplate = true,  
+                    IndexFormat = $"{Assembly.GetExecutingAssembly().GetName().Name.ToLower()}-{DateTime.UtcNow:yyyy-MM}"  
+                });
     config.ReadFrom.Configuration(ctx.Configuration);
 });
 
@@ -34,12 +35,21 @@ webApplicationBuilder.Services.ConfigureServices(webApplicationBuilder.Environme
 AddAutofacRequirements(host, webApplicationBuilder);
 AddExtraConfigs(host, webApplicationBuilder.Environment);
 
+ConfigLogger(webApplicationBuilder);
+
 var app = webApplicationBuilder.Build();
 app.Configure(webApplicationBuilder.Environment);
 
 
+try
+{
     await app.RunAsync();
-
+}
+catch (System.Exception ex)
+{
+    Log.Fatal($"Failed to start {Assembly.GetExecutingAssembly().GetName().Name}", ex);
+    throw;
+}
 
 //method and class 
 static void AddAutofacRequirements(IHostBuilder builder, WebApplicationBuilder webApplicationBuilder)
@@ -62,6 +72,25 @@ static void AddExtraConfigs(IHostBuilder builder, IWebHostEnvironment webHostEnv
             .AddJsonFile($"appsettings.{webHostEnvironment.EnvironmentName}.json", optional: true);
     });
 }
+
+static void ConfigLogger(WebApplicationBuilder webApplicationBuilder)
+{
+    Console.WriteLine("myelastic:" + webApplicationBuilder.Configuration["ElasticConfiguration:Uri"]);
+    Log.Logger = new LoggerConfiguration()
+            .Enrich.FromLogContext()
+            .Enrich.WithMachineName()
+            .WriteTo.Debug()
+            .WriteTo.Console()
+            .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(webApplicationBuilder.Configuration["ElasticConfiguration:Uri"]))
+            {
+                AutoRegisterTemplate = true,
+                IndexFormat = $"{Assembly.GetExecutingAssembly().GetName().Name.ToLower().Replace(".", "-")}-{webApplicationBuilder.Environment.EnvironmentName?.ToLower().Replace(".", "-")}-{DateTime.UtcNow:yyyy-MM}"
+            })
+            .Enrich.WithProperty("Environment", webApplicationBuilder.Environment.EnvironmentName)
+            .ReadFrom.Configuration(webApplicationBuilder.Configuration)
+            .CreateLogger();
+}
+
 public partial class Program
 {
     public static string Namespace = typeof(Program).Assembly.GetName().Name;

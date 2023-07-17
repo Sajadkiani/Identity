@@ -1,4 +1,4 @@
-﻿using System;
+﻿    using System;
 using Hellang.Middleware.ProblemDetails;
 using Identity.Api.Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Builder;

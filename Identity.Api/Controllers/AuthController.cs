@@ -11,6 +11,7 @@ using Identity.Api.ViewModels;
 using Identity.Domain.Aggregates.Users;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 
 namespace Identity.Api.Controllers;
 
@@ -22,13 +23,15 @@ public class AuthController : ControllerBase
     private readonly IMemoryCache cache;
     private readonly AppOptions.Jwt jwt;
     private readonly IEventBus eventHandler;
+    private readonly ILogger<AuthController> logger;
 
     public AuthController(
         ITokenGeneratorService tokenGenerator,
         IMapper mapper,
         IMemoryCache cache,
         AppOptions.Jwt jwt,
-        IEventBus eventHandler
+        IEventBus eventHandler,
+        ILogger<AuthController> logger
     )
     {
         this.tokenGenerator = tokenGenerator;
@@ -36,11 +39,13 @@ public class AuthController : ControllerBase
         this.cache = cache;
         this.jwt = jwt;
         this.eventHandler = eventHandler;
+        this.logger = logger;
     }
     
     [HttpPost("login")]
     public async Task<AuthViewModel.GetTokenOutput> LoginAsync(AuthViewModel.LoginInput input)
     {
+        logger.LogError("teeeeest log");
         return await eventHandler.SendMediator(new LoginCommand(input.UserName,
             input.Password));
     }
