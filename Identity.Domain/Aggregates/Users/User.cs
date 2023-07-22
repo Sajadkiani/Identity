@@ -27,7 +27,7 @@ namespace Identity.Domain.Aggregates.Users
             Status = UserStatus.Active;
             
             //TODO: all invariants and data consistencies must put here 
-            Validate(bcScopeValidation);
+            // Validate(bcScopeValidation);
             AddDomainEvent(new TestDomainEvent(UserName));
         }
 

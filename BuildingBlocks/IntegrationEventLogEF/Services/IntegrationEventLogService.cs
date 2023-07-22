@@ -30,8 +30,14 @@ public class IntegrationEventLogService : IIntegrationEventLogService, IDisposab
     {
         if (transaction == null || @event is null) throw new ArgumentNullException(nameof(transaction));
 
+        var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
+        var eventEnvironmentType = EventEnvironmentType.Production;
+        if (string.Equals(env, "Development", StringComparison.Ordinal))
+            eventEnvironmentType = EventEnvironmentType.Development;
+
         //TODO: get event environment type form outside
-        var eventLogEntry = new IntegrationEventLogEntry(@event, transaction.TransactionId, @event.GetType(), EventEnvironmentType.Development);
+        var eventLogEntry = new IntegrationEventLogEntry(@event, transaction.TransactionId, @event.GetType(), eventEnvironmentType);
 
         integrationEventLogContext.Database.UseTransaction(transaction.GetDbTransaction());
         integrationEventLogContext.IntegrationEventLogs.Add(eventLogEntry);

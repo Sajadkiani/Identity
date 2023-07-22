@@ -5,7 +5,6 @@ namespace IntegrationEventLogEF;
 public class IntegrationEventLogEntry
 {
     private IntegrationEventLogEntry() { }
-    public EventEnvironmentType EventEnvironmentType { get; }
     public IntegrationEventLogEntry(dynamic @event, Guid transactionId, Type type, EventEnvironmentType eventEnvironmentType)
     {
         EventEnvironmentType = eventEnvironmentType;
@@ -31,7 +30,7 @@ public class IntegrationEventLogEntry
     public DateTime CreationTime { get; private set; }
     public string Content { get; private set; }
     public string TransactionId { get; private set; }
-    public EventEnvironmentType EnvironmentType { get; private set; }
+    public EventEnvironmentType EventEnvironmentType { get; private set; }
 
     public TEvent DeserializeJsonContent<TEvent>(Type type) where TEvent : class
     {
