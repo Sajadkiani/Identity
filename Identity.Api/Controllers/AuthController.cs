@@ -45,7 +45,6 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<AuthViewModel.GetTokenOutput> LoginAsync(AuthViewModel.LoginInput input)
     {
-        logger.LogError("teeeeest log");
         return await eventHandler.SendMediator(new LoginCommand(input.UserName,
             input.Password));
     }
