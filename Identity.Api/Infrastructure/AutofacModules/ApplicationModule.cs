@@ -27,6 +27,10 @@ public class ApplicationModule
 
     protected override void Load(ContainerBuilder builder)
     {
+
+        //TODO: add circuit breaker and retry pattern if it will need AddHttpClient
+        //https://learn.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/implement-circuit-breaker-pattern
+        
         builder.RegisterType<JwtTokenGeneratorService>().As<ITokenGeneratorService>().InstancePerLifetimeScope();
         builder.RegisterType<PasswordService>().As<IPasswordService>().InstancePerLifetimeScope();
         builder.RegisterType<EventInitializer>().As<IEventInitializer>().InstancePerLifetimeScope();
