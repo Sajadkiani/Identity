@@ -43,14 +43,14 @@ public class AuthController : ControllerBase
     }
     
     [HttpPost("login")]
-    public async Task<AuthViewModel.GetTokenOutput> LoginAsync(AuthViewModel.LoginInput input)
+    public async Task<AuthViewModel.GetTokenOutput> LoginAsync([FromBody] AuthViewModel.LoginInput input)
     {
         return await eventHandler.SendMediator(new LoginCommand(input.UserName,
             input.Password));
     }
 
     [HttpPost("refresh")]
-    public async Task<AuthViewModel.GetTokenOutput> RefreshTokenAsync(AuthViewModel.RefreshTokenInput input)
+    public async Task<AuthViewModel.GetTokenOutput> RefreshTokenAsync([FromBody] AuthViewModel.RefreshTokenInput input)
     {
         return await eventHandler.SendMediator(new RefreshTokenQuery { RefreshToken = input.RefreshToken});
     }

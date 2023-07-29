@@ -14,6 +14,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using Steeltoe.Discovery.Client;
+using Steeltoe.Discovery.Eureka;
 
 namespace Identity.Api
 {
@@ -64,6 +66,7 @@ namespace Identity.Api
                 };
             });
             
+            services.AddServiceDiscovery(o => o.UseEureka());
             services.AddAppDependencies(configuration);
             services.AddAppOptions(configuration);
             services.AddMemoryCache();
@@ -80,10 +83,8 @@ namespace Identity.Api
             }
 
             app.UseSerilogRequestLogging();
-
-            //TODO: swagger config must run in develop env, then put these inside of  
-            app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Identity.Api v1"));
+            app.UseAppSwagger();
+        
 
             app.UseAppProblemDetail();
             app.UseHttpsRedirection();

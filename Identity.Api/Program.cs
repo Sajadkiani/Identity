@@ -15,7 +15,7 @@ using Serilog.Sinks.Elasticsearch;
 var webApplicationBuilder = WebApplication.CreateBuilder(args);
 
 //serilog configurations
-webApplicationBuilder.Host.UseSerilog((ctx, config) =>
+webApplicationBuilder.Host.UseSerilog((ctx, config) =>  
 {
     config.Enrich.WithProperty("Application", ctx.HostingEnvironment.ApplicationName)
        .Enrich.WithProperty("Environment", ctx.HostingEnvironment.EnvironmentName)

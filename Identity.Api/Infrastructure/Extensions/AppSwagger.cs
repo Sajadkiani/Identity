@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 
@@ -35,5 +36,12 @@ public static class AppSwagger
         });
 
         return services;
+    }
+
+    public static void UseAppSwagger(this IApplicationBuilder app)
+    {
+        //TODO: swagger config must run in develop env, then put these inside of  
+        app.UseSwagger();
+        app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Identity.Api v1"));
     }
 }
