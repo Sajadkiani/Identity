@@ -54,20 +54,10 @@ public class AuthController : ControllerBase
     {
         return await eventHandler.SendMediator(new RefreshTokenQuery { RefreshToken = input.RefreshToken});
     }
-    
-    private async Task<AuthViewModel.GetTokenOutput> GetTokenAsync(User user)
-    {
-        var token = await tokenGenerator.GenerateTokenAsync(user);
-        await SaveTokenAsync(token, user);
-        return token;
-    }
 
-    private async Task SaveTokenAsync(AuthViewModel.GetTokenOutput token, User user)
+    [HttpPost("test")]
+    public async Task<AuthViewModel.GetTokenOutput> testAsync([FromBody] AuthViewModel.RefreshTokenInput input)
     {
-        await eventHandler.SendMediator(new AddTokenCommand{AccessToken = token.AccessToken, ExpireDate = token.ExpireDate,
-            RefreshToken = token.RefreshToken, User = user, UserId = user.Id});
-
-        cache.Set(CacheKeys.Token + token.RefreshToken, token,
-            token.ExpireDate.AddMinutes(jwt.DurationInMinutesRefresh));
+        return await eventHandler.SendMediator(new RefreshTokenQuery { RefreshToken = input.RefreshToken});
     }
 }
