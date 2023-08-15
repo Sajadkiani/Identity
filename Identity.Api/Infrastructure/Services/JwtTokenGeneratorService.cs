@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using EventBus.Abstractions;
 using Identity.Api.Application.Queries.Users;
-using Identity.Api.Infrastructure.Options;
+using Identity.Api.Infrastructure.Extensions.Options;
 using Identity.Api.ViewModels;
 using Identity.Domain.Aggregates.Users;
 using Identity.Infrastructure.EF.Utils;

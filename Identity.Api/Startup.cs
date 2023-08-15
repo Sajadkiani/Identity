@@ -1,8 +1,8 @@
 using System;
 using System.Reflection;
 using System.Text;
+using Identity.Api.Grpc.Services;
 using Identity.Api.Infrastructure.Extensions;
-using Identity.Api.Infrastructure.Options;
 using Identity.Api.Infrastructure.Security;
 using Identity.Infrastructure.EF;
 using IntegrationEventLogEF;
@@ -16,6 +16,7 @@ using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using Steeltoe.Discovery.Client;
 using Steeltoe.Discovery.Eureka;
+using Identity.Api.Infrastructure.Extensions.Options;
 
 namespace Identity.Api
 {
@@ -70,12 +71,13 @@ namespace Identity.Api
             services.AddAppDependencies(configuration);
             services.AddAppOptions(configuration);
             services.AddMemoryCache();
+            services.AddGrpc();
             services.AddControllers();
             services.AddAutoMapper(typeof(Startup));
             services.AddAppSwagger();
         }
 
-        public static void Configure(this IApplicationBuilder app, IWebHostEnvironment env)
+        public static void Configure(this WebApplication app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -93,6 +95,7 @@ namespace Identity.Api
 
             app.UseAuthentication();
             app.UseAuthorization();
+            app.MapGrpcService<TestGrpcService>();
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }

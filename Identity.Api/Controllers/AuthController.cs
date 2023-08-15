@@ -1,14 +1,13 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using EventBus.Abstractions;
+using Grpc.Net.Client;
 using Identity.Api.Application.Commands.Users;
 using Identity.Api.Application.Queries.Users;
-using Identity.Api.Infrastructure.Brokers;
-using Identity.Api.Infrastructure.Consts;
-using Identity.Api.Infrastructure.Options;
+using Identity.Api.Infrastructure.Extensions.Options;
 using Identity.Api.Infrastructure.Services;
 using Identity.Api.ViewModels;
-using Identity.Domain.Aggregates.Users;
+using IdentityGrpcClient;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
@@ -41,7 +40,19 @@ public class AuthController : ControllerBase
         this.eventHandler = eventHandler;
         this.logger = logger;
     }
-    
+
+    [HttpGet("grpc")]
+    public async Task grpc()
+    {
+        var message = new HelloRequest
+        {
+            Name = "Jaydeep"
+        };
+        var channel = GrpcChannel.ForAddress("https://localhost:5016");
+        var client = new IdentityGrpcClient.TestGrpc.TestGrpcClient(channel);
+        var srerveReply = await client.SayHelloAsync(message);
+    }
+
     [HttpPost("login")]
     public async Task<AuthViewModel.GetTokenOutput> LoginAsync([FromBody] AuthViewModel.LoginInput input)
     {
@@ -51,12 +62,6 @@ public class AuthController : ControllerBase
 
     [HttpPost("refresh")]
     public async Task<AuthViewModel.GetTokenOutput> RefreshTokenAsync([FromBody] AuthViewModel.RefreshTokenInput input)
-    {
-        return await eventHandler.SendMediator(new RefreshTokenQuery { RefreshToken = input.RefreshToken});
-    }
-
-    [HttpPost("test")]
-    public async Task<AuthViewModel.GetTokenOutput> testAsync([FromBody] AuthViewModel.RefreshTokenInput input)
     {
         return await eventHandler.SendMediator(new RefreshTokenQuery { RefreshToken = input.RefreshToken});
     }

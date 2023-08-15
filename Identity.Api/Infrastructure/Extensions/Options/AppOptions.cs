@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 
-namespace Identity.Api.Infrastructure.Options;
+namespace Identity.Api.Infrastructure.Extensions.Options;
 
 public class AppOptions
 {
@@ -21,5 +21,9 @@ public class AppOptions
     public static class ApplicationOptionContext
     {
         public static string ConnectionString { get; set; }
+    }
+
+    public class Grpc{
+
     }
 }

@@ -10,6 +10,13 @@
     <PackageReference Include="Autofac" Version="7.0.1" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="Google.Protobuf" Version="3.24.0" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.55.0" />
+    <PackageReference Include="Grpc.Net.Client" Version="2.55.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.57.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <!-- <PackageReference Include="Elastic.Serilog.Sinks" Version="8.6.0" /> -->
     <PackageReference Include="Hellang.Middleware.ProblemDetails" Version="6.5.1" />
     <PackageReference Include="MassTransit" Version="8.0.15" />
@@ -43,6 +50,11 @@
   <ItemGroup>
     <Folder Include="Application\IntegrationEvents\EventHandling" />
     <Folder Include="Infrastructure" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="Grpc\ServerProtos\test.proto" GrpcServices="Server" />
+    <Protobuf Include="Grpc\ClientProtos\test.proto" GrpcServices="Client" />
   </ItemGroup>
 
   <ItemGroup>

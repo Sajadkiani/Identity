@@ -1,14 +1,13 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Identity.Api.Infrastructure.Exceptions;
-using Identity.Api.Infrastructure.Options;
+using Identity.Api.Infrastructure.Extensions.Options;
 using Identity.Api.Infrastructure.Services;
 using Identity.Api.ViewModels;
 using Identity.Domain.Aggregates.Users;
 using Identity.Domain.Aggregates.Users.Enums;
 using Identity.Domain.IServices;
 using MediatR;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Identity.Api.Application.Commands.Users;

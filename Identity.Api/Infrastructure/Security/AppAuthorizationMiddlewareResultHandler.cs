@@ -3,7 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Identity.Api.Infrastructure.Consts;
-using Identity.Api.Infrastructure.Options;
+using Identity.Api.Infrastructure.Extensions.Options;
 using Identity.Api.Infrastructure.Services;
 using Identity.Api.ViewModels;
 using Microsoft.AspNetCore.Authentication;

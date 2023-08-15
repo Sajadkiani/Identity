@@ -1,10 +1,8 @@
 ﻿using System;
-using Identity.Api.Infrastructure.Options;
+using Identity.Api.Infrastructure.Extensions.Options;
 using IntegrationEventLogEF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.eShopOnContainers.BuildingBlocks.IntegrationEventLogEF;
-using Microsoft.Extensions.Configuration;
 
 namespace Identity.Api.Infrastructure.IntegrationEventMigrations;
 
