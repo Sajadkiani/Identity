@@ -4,7 +4,6 @@ using Identity.Domain.Aggregates.Users;
 using Identity.Domain.SeedWork;
 using Identity.Infrastructure.EF.Configs;
 using Identity.Infrastructure.Extensions;
-using IntegrationEventLogEF;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
