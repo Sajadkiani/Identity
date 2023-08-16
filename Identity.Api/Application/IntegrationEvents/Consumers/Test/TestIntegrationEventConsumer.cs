@@ -3,7 +3,6 @@ using EventBus.Abstractions;
 using Events;
 using Identity.Api.Application.Commands.Common;
 using Identity.Api.Application.Commands.Users;
-using Identity.Api.Infrastructure.Brokers;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 
@@ -12,7 +11,7 @@ namespace Identity.Api.Application.IntegrationEvents.Consumers.Test
     public class TestIntegrationEventConsumer : IConsumer<TestIntegrationEvent>
     {
         private readonly ILogger<TestIntegrationEventConsumer> logger;
-        private readonly EventBus eventBus;
+        private readonly IEventBus eventBus;
 
         public TestIntegrationEventConsumer(
             ILogger<TestIntegrationEventConsumer> logger,
