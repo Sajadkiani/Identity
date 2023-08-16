@@ -23,7 +23,11 @@ public class AppOptions
         public static string ConnectionString { get; set; }
     }
     
-    public class RabbitMqOptions
+    public abstract class MTUBusOptions
+    {
+    }
+    
+    public class MTuRabbitMqOptions : MTUBusOptions
     {
         public string HostName { get; set; } = "localhost";
         public string UserName { get; set; } = "guest";

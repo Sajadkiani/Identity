@@ -20,6 +20,7 @@
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.5" />
         <PackageReference Include="Microsoft.Data.SqlClient" Version="5.0.1" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.5" />
+        <PackageReference Include="RabbitMQ.Client" Version="7.1.2" />
     </ItemGroup>
 
     <ItemGroup>
@@ -31,6 +32,10 @@
     <ItemGroup>
         <Protobuf Include="Clients\Grpc\ClientProtos\test.proto" GrpcServices="Client" />
         <Protobuf Include="Clients\Grpc\ServerProtos\test.proto" GrpcServices="Server" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <Folder Include="Brokers\" />
     </ItemGroup>
 
 </Project>

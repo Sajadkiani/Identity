@@ -9,6 +9,7 @@ using Identity.Domain.Validations.Users;
 using Identity.Infrastructure.Dapper;
 using Identity.Infrastructure.EF.Stores;
 using Identity.Infrastructure.ORM.BcValidations;
+using Identity.Infrastructure.ORM.Dapper;
 using Identity.Infrastructure.Utils;
 using IntegrationEventLogEF.Services;
 using Microsoft.Extensions.Configuration;
@@ -72,7 +73,6 @@ public static class ApplicationConfiguration
         services.AddScoped<IPasswordService, PasswordService>();
         services.AddScoped<IEventInitializer, EventInitializer>();
         services.AddScoped<IAppRandoms, AppRandoms>();
-        services.AddScoped<IEventBus, Identity.Infrastructure.Brokers.EventBus>();
         services.AddScoped<IQueryExecutor, DapperQueryExecutor>();
         services.AddScoped<ICurrentUser, CurrentUser>();
 

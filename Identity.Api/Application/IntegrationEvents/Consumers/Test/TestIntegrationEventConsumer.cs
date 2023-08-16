@@ -3,35 +3,35 @@ using EventBus.Abstractions;
 using Events;
 using Identity.Api.Application.Commands.Common;
 using Identity.Api.Application.Commands.Users;
+using MassTransit;
 using Microsoft.Extensions.Logging;
 
-namespace Identity.Api.Application.IntegrationEvents.Consumers.Test
+namespace Identity.Api.Application.IntegrationEvents.Consumers.Test;
+
+public class TestIntegrationEventConsumer //: IConsumer<TestIntegrationEvent>
 {
-    public class TestIntegrationEventConsumer : IConsumer<TestIntegrationEvent>
+    private readonly ILogger<TestIntegrationEventConsumer> logger;
+    private readonly IEventBus eventBus;
+
+    public TestIntegrationEventConsumer(
+        ILogger<TestIntegrationEventConsumer> logger,
+        IEventBus eventBus
+    )
     {
-        private readonly ILogger<TestIntegrationEventConsumer> logger;
-        private readonly IEventBus eventBus;
+        this.eventBus = eventBus;
+        this.logger = logger;
+    }
 
-        public TestIntegrationEventConsumer(
-            ILogger<TestIntegrationEventConsumer> logger,
-            IEventBus eventBus    
-        )
-        {
-            this.eventBus = eventBus;
-            this.logger = logger;
-        }
+    public async Task Consume(ConsumeContext<TestIntegrationEvent> context)
+    {
+        //TODO: how should we handel the log? 
 
-        public async Task Consume(ConsumeContext<TestIntegrationEvent> context)
-        {
-            //TODO: how should we handel the log? 
+        var command = new TestCommand { UserName = context.Message.UserName };
 
-            var command = new TestCommand { UserName = context.Message.UserName };
+        var identifiedLoginCommand = new IdentifiedCommand<TestCommand, bool>(command, context.RequestId.Value);
 
-            var identifiedLoginCommand = new IdentifiedCommand<TestCommand, bool>(command, context.RequestId.Value);
+        //TODO: log maybe was good
 
-            //TODO: log maybe was good
-
-            _ = await eventBus.SendMediator(identifiedLoginCommand);
-        }
+        _ = await eventBus.SendMediator(identifiedLoginCommand);
     }
 }

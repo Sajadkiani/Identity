@@ -1,6 +1,8 @@
 using System;
 using System.Reflection;
 using Identity.Api;
+using Identity.Api.Extensions.Options;
+using Identity.Infrastructure.MtuBus;
 using Identity.Infrastructure.ORM.EF;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -8,13 +10,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Serilog;
 using Serilog.Formatting.Compact;
 using Serilog.Sinks.Elasticsearch;
 
 var webApplicationBuilder = WebApplication.CreateBuilder(args);
 
-Console.WriteLine($"connection string:{webApplicationBuilder.Configuration.GetConnectionString("DefaultConnection")}");
 webApplicationBuilder.Services.AddDbContext<AppDbContext>(opt =>
 {
     opt.UseSqlServer(webApplicationBuilder.Configuration.GetConnectionString("DefaultConnection"));
@@ -34,6 +37,22 @@ webApplicationBuilder.Host.UseSerilog((ctx, config) =>
             });
 
     config.ReadFrom.Configuration(ctx.Configuration);
+});
+
+
+webApplicationBuilder.Services.Configure<AppOptions.RabbitMqOptions>(webApplicationBuilder.Configuration.GetSection("Rabbitmq"));
+webApplicationBuilder.Services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
+webApplicationBuilder.Services.AddSingleton<IIntegrationEventDispatcher, EventPublisher>(opt =>
+{
+    var rabbitmqOption = opt.GetRequiredService<IOptions<AppOptions.RabbitMqOptions>>();
+    var logger = opt.GetRequiredService<ILogger<EventPublisher>>();
+
+    return EventPublisher.CreateAsync(rabbitmqOption, logger).GetAwaiter().GetResult();
+});
+
+webApplicationBuilder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
 });
 
 var host = webApplicationBuilder.Host;
