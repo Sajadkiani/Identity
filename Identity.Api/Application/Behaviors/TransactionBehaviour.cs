@@ -2,8 +2,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Identity.Api.Application.IntegrationEvents;
-using Identity.Api.Infrastructure.Exceptions;
+using Identity.Api.Extensions;
 using Identity.Infrastructure.EF;
+using Identity.Infrastructure.ORM.EF;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

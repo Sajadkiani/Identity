@@ -1,12 +1,9 @@
-﻿using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using EventBus.Abstractions;
 using Identity.Api.Application.Commands.Users;
-using Identity.Api.Infrastructure.Brokers;
 using Identity.Api.ViewModels;
 using Identity.Domain.Aggregates.Users;
-using Identity.Domain.SeedWork;
 using MediatR;
 
 namespace Identity.Api.Application.Queries.Users;
@@ -28,6 +25,6 @@ public class RefreshTokenQueryHandler : IRequestHandler<RefreshTokenQuery, AuthV
     {
         var user = await userStore.GetTokenByRefreshAsync(request.RefreshToken);
 
-        return await eventHandler.SendMediator(new LoginCommand(user.UserName, user.Password));
+        return await eventHandler.SendMediator(new LoginCommand(user.UserName, user.Password, doHashPassword: false ));
     }
 }

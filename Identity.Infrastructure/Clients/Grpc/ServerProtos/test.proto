@@ -1,0 +1,17 @@
+syntax = "proto3";
+option csharp_namespace = "IdentityGrpcServer";
+// The greeting service definition.
+service IdentityGrpc {
+  // Sends a greeting
+  rpc RefreshToken (RefreshTokenRequest) returns (RefreshTokenResponse);
+}
+// The request message containing the user's name.
+message RefreshTokenRequest {
+  string RefreshToken = 1;
+}
+// The response message containing the greetings.
+message RefreshTokenResponse{
+  string RefreshToken = 1;
+  string AccessToken = 2;
+  string ExpireDate = 3;
+}

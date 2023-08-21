@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Identity.Api.Infrastructure.Exceptions;
+using Identity.Api.Extensions;
 using Identity.Infrastructure.EF.Idempotency;
 using MediatR;
 using Microsoft.Extensions.Logging;

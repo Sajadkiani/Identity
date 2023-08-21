@@ -20,7 +20,7 @@ namespace Identity.Domain.Aggregates.Users
             Family = family;
             UserName = userName;
             Email = email;
-            Password = passwordService.HashPassword(password, password);
+            Password = passwordService.HashPassword(password, userName);
             Gender = gender;
             userRoles = new List<UserRole>();
             tokens = new List<Token>();

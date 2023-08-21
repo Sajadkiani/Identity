@@ -47,12 +47,5 @@ namespace Identity.Api.Controllers
         {
             return await eventBus.SendMediator(new GetUserRolesQuery(userId));
         }
-
-        // [HttpGet("{userId}/kubetest")]
-        // [Authorize]
-        // public async Task<IEnumerable<AuthViewModel.UserRoleOutput>> Kubettestte([FromRoute] int userId)
-        // {
-        //     return await eventBus.SendMediator(new GetUserRolesQuery(userId));
-        // }
     }
 }

@@ -2,7 +2,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
-using Identity.Api.Infrastructure.Exceptions;
 using MediatR;
 using Microsoft.Extensions.Logging;
 

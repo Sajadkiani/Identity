@@ -5,13 +5,14 @@ using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
 using EventBus.Abstractions;
-using Identity.Api.Infrastructure.Exceptions;
 using Identity.Infrastructure.EF;
+using Identity.Infrastructure.Exceptions;
+using Identity.Infrastructure.ORM.EF;
 using IntegrationEventLogEF;
 using IntegrationEventLogEF.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using ApplicationException = Identity.Api.Infrastructure.Exceptions.ApplicationException;
+using ApplicationException = Identity.Infrastructure.Exceptions.ApplicationException;
 
 namespace Identity.Api.Application.IntegrationEvents;
 

@@ -1,14 +1,22 @@
-﻿using System.Threading;
+﻿using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Security.Claims;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
-using Identity.Api.Infrastructure.Exceptions;
-using Identity.Api.Infrastructure.Extensions.Options;
-using Identity.Api.Infrastructure.Services;
+using EventBus.Abstractions;
+using Identity.Api.Application.Queries.Users;
 using Identity.Api.ViewModels;
 using Identity.Domain.Aggregates.Users;
 using Identity.Domain.Aggregates.Users.Enums;
 using Identity.Domain.IServices;
+using Identity.Infrastructure.EF.Utils;
+using Identity.Infrastructure.Exceptions;
+using Identity.Infrastructure.Extensions.Options;
 using MediatR;
-using Microsoft.Extensions.Caching.Memory;
+using Microsoft.IdentityModel.Tokens;
+using ApplicationException = Identity.Infrastructure.Exceptions.ApplicationException;
 
 namespace Identity.Api.Application.Commands.Users;
 
@@ -16,28 +24,28 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthViewModel.G
 {
     private readonly IUserStore userStore;
     private readonly IPasswordService passwordService;
-    private readonly ITokenGeneratorService tokenService;
-    private readonly IMemoryCache cache;
-    private readonly AppOptions.Jwt jwt;
+    private readonly AppOptions.Jwt jwtOptions;
+    private readonly IAppRandoms randoms;
+    private readonly IEventBus eventHandler;
 
     public LoginCommandHandler(
         IUserStore userStore,
         IPasswordService passwordService,
-        ITokenGeneratorService tokenService,
-        IMemoryCache cache,
-        AppOptions.Jwt jwt
+        AppOptions.Jwt jwtOptions,
+        IAppRandoms randoms,
+        IEventBus eventHandler
     )
     {
         this.userStore = userStore;
         this.passwordService = passwordService;
-        this.tokenService = tokenService;
-        this.cache = cache;
-        this.jwt = jwt;
+        this.jwtOptions = jwtOptions;
+        this.randoms = randoms;
+        this.eventHandler = eventHandler;
     }
     
-    public async Task<AuthViewModel.GetTokenOutput> Handle(LoginCommand notification, CancellationToken cancellationToken)
+    public async Task<AuthViewModel.GetTokenOutput> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
-        var user = await userStore.GetByUserNameAsync(notification.UserName);
+        var user = await userStore.GetByUserNameAsync(request.UserName);
         if (user is null)
         {
             throw new ApplicationException.NotFound(AppMessages.UserNotFound);
@@ -48,17 +56,57 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthViewModel.G
             throw new ApplicationException.Unauthorized();
         }
 
-        var incomePassword = passwordService.HashPassword(notification.Password, notification.UserName);
+        string incomePassword = request.Password;
+        if (request.DoHashPassword)
+        {
+            incomePassword = passwordService.HashPassword(request.Password, request.UserName);
+        }
+        
         if (user.Password != incomePassword)
         {
             throw new ApplicationException.Unauthorized();
         }
 
-        var token = await tokenService.GenerateTokenAsync(user);
+        var token = await GenerateTokenAsync(user);
         
         user.AddTokens(token.AccessToken, token.RefreshToken, token.ExpireDate);
         
         //TODO: check for add token in database
+
+        return token;
+    }
+    
+    public async Task<AuthViewModel.GetTokenOutput> GenerateTokenAsync(User user)
+    {
+        var roles = await eventHandler.SendMediator(new GetUserRolesQuery(user.Id));
+        var roleClaims = roles.Select(item => new Claim("roles", item.Name));
+
+        var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Jti, user.ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim("uid", user.Id.ToString())
+            }
+            // .Union(userClaims)
+            .Union(roleClaims);
+
+        var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key));
+        var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
+        var expire = DateTime.UtcNow.AddMinutes(jwtOptions.DurationInMinutes);
+        var jwtSecurityToken = new JwtSecurityToken(
+            issuer: jwtOptions.Issuer,
+            audience: jwtOptions.Audience,
+            claims: claims,
+            expires: expire,
+            signingCredentials: signingCredentials);
+
+        var token = new AuthViewModel.GetTokenOutput
+        {
+            AccessToken = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
+            ExpireDate = expire,
+            RefreshToken = randoms.GetRandom(lenght: null)
+        };
 
         return token;
     }
