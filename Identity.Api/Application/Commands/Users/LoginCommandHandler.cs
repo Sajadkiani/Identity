@@ -75,8 +75,8 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthViewModel.G
 
         return token;
     }
-    
-    public async Task<AuthViewModel.GetTokenOutput> GenerateTokenAsync(User user)
+
+    private async Task<AuthViewModel.GetTokenOutput> GenerateTokenAsync(User user)
     {
         var roles = await eventHandler.SendMediator(new GetUserRolesQuery(user.Id));
         var roleClaims = roles.Select(item => new Claim("roles", item.Name));

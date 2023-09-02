@@ -31,7 +31,8 @@ public class UserStore : Repository<User, int>, IUserStore
 
     public Task<User> GetTokenByRefreshAsync(string refreshToken)
     {
-        return context.Users.Include(u => u.Tokens.Where(item => item.RefreshToken == refreshToken))
+        return context.Users
+            .Include(u => u.Tokens.Where(item => item.RefreshToken == refreshToken))
             .FirstOrDefaultAsync()!;
     }
 }
