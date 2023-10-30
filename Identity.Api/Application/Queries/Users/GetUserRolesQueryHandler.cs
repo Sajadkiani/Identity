@@ -1,11 +1,33 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoMapper;
 using Identity.Api.ViewModels;
+using Identity.Domain.Aggregates.Users;
 using Identity.Domain.IServices;
 using MediatR;
 
 namespace Identity.Api.Application.Queries.Users;
+
+public class GetUserByUserNameQueryHandler : IRequestHandler<GetUserByUserNameQuery, AuthViewModel.GetUserByUserNameOutput>
+{
+    private readonly IUserStore store;
+    private readonly IMapper mapper;
+
+    public GetUserByUserNameQueryHandler(
+        IUserStore store,
+        IMapper mapper)
+    {
+        this.store = store;
+        this.mapper = mapper;
+    }
+
+    public async Task<AuthViewModel.GetUserByUserNameOutput> Handle(GetUserByUserNameQuery request,
+        CancellationToken cancellationToken)
+    {
+        return mapper.Map<AuthViewModel.GetUserByUserNameOutput>(await store.GetByUserNameAsync(request.UserName));
+    }
+}
 
 public class GetUserRolesQueryHandler : IRequestHandler<GetUserRolesQuery, IEnumerable<AuthViewModel.UserRoleOutput>>
 {

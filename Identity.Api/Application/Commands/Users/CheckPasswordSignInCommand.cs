@@ -4,9 +4,9 @@ using MediatR;
 
 namespace Identity.Api.Application.Commands.Users;
 
-public class LoginCommand : IRequest<AuthViewModel.GetTokenOutput>
+public class CheckPasswordSignInCommand : IRequest<bool>
 {
-    public LoginCommand(string userName, string password, bool doHashPassword)
+    public CheckPasswordSignInCommand(string userName, string password, bool doHashPassword)
     {
         Password = password;
         DoHashPassword = doHashPassword;

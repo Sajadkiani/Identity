@@ -12,19 +12,19 @@ namespace Identity.Api.Extensions;
 
 public static class OpenIdExtension
 {
-    private static void AddDbContextAndOpenIdDict(this IServiceCollection services, IConfiguration configuration)
+    public static void AddDbContextAndOpenIdDict(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<AppDbContext>(opt =>
             opt.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
-                options => options.MigrationsAssembly(Assembly.GetAssembly(typeof(Program))!.GetName().Name))
+                options => options.MigrationsAssembly(Assembly.GetAssembly(typeof(AppDbContext))!.GetName().Name))
         );
 
         services.AddDbContext<IntegrationEventLogContext>(options =>
         {
-            options.UseSqlServer(configuration["DefaultConnection"],
+            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
                 sqlServerOptionsAction: sqlOptions =>
                 {
-                    sqlOptions.MigrationsAssembly(typeof(Program).GetTypeInfo().Assembly.GetName().Name);
+                    sqlOptions.MigrationsAssembly(typeof(AppDbContext).GetTypeInfo().Assembly.GetName().Name);
                     sqlOptions.EnableRetryOnFailure(maxRetryCount: 15, maxRetryDelay: TimeSpan.FromSeconds(30),
                         errorNumbersToAdd: null);
                 });

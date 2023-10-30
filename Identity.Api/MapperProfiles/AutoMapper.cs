@@ -11,7 +11,6 @@ namespace Identity.Api.MapperProfiles
         {
             CreateMap<AddUserInput, User>();
             CreateMap<AddRoleInput, Role>();
-            CreateMap<AuthViewModel.GetTokenOutput, RefreshTokenResponse>();
         }
     }
 }

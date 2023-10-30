@@ -25,19 +25,19 @@ public class AppAuthorizeFilter : IAuthorizationFilter
     }
     public void OnAuthorization(AuthorizationFilterContext context)
     {
-        var authorization = context.HttpContext.Request.Headers.Authorization.ToString();
-        if (string.IsNullOrWhiteSpace(authorization))
-        {
-            return;
-        }
-        var referenceToken = authorization.Split(" ")[1];
-        var token = cache.Get<AuthViewModel.GetTokenOutput>(CacheKeys.Token + referenceToken);
-        if (token is null)
-            throw new ApplicationException.Unauthorized();
-         
-        context.HttpContext.Request.Headers.Authorization = token.AccessToken;
-        SetCurrentUser(context.HttpContext);
-        
+        // var authorization = context.HttpContext.Request.Headers.Authorization.ToString();
+        // if (string.IsNullOrWhiteSpace(authorization))
+        // {
+        //     return;
+        // }
+        // var referenceToken = authorization.Split(" ")[1];
+        // var token = cache.Get<AuthViewModel.GetTokenOutput>(CacheKeys.Token + referenceToken);
+        // if (token is null)
+        //     throw new ApplicationException.Unauthorized();
+        //  
+        // context.HttpContext.Request.Headers.Authorization = token.AccessToken;
+        // SetCurrentUser(context.HttpContext);
+        //
     }
     
     private void SetCurrentUser(HttpContext context)

@@ -62,106 +62,124 @@ public class AuthController : ControllerBase
         var request = HttpContext.GetOpenIddictServerRequest();
         if (request.IsPasswordGrantType())
         {
-            var user = new ApplicationUser
-            {
-                Email = "email@a.com",
-                Id = 1,
-                UserName = "UserName"
-            };
-            
-            if (user == null)
-            {
-                var properties = new AuthenticationProperties(new Dictionary<string, string>
-                {
-                    [OpenIddictServerAspNetCoreConstants.Properties.Error] = OpenIddictConstants.Errors.InvalidGrant,
-                    [OpenIddictServerAspNetCoreConstants.Properties.ErrorDescription] =
-                        "The username/password couple is invalid."
-                });
-
-                return Forbid(properties, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
-            }
-
-            // Validate the username/password parameters and ensure the account is not locked out.
-            // var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, lockoutOnFailure: true);
-            // if (!result.Succeeded)
-            // {
-            //     var properties = new AuthenticationProperties(new Dictionary<string, string>
-            //     {
-            //         [OpenIddictServerAspNetCoreConstants.Properties.Error] = Errors.InvalidGrant,
-            //         [OpenIddictServerAspNetCoreConstants.Properties.ErrorDescription] =
-            //             "The username/password couple is invalid."
-            //     });
-            //
-            //     return Forbid(properties, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
-            // }
-
-            // Create the claims-based identity that will be used by OpenIddict to generate tokens.
-            var identity = new ClaimsIdentity(
-                authenticationType: TokenValidationParameters.DefaultAuthenticationType,
-                nameType: OpenIddictConstants.Claims.Name,
-                roleType: OpenIddictConstants.Claims.Role);
-
-            // Add the claims that will be persisted in the tokens.
-            identity.SetClaim(OpenIddictConstants.Claims.Subject, user.UserName)
-                    .SetClaim(OpenIddictConstants.Claims.Email,  user.Email);
-
-            // Note: in this sample, the granted scopes match the requested scope
-            // but you may want to allow the user to uncheck specific scopes.
-            // For that, simply restrict the list of scopes before calling SetScopes.
-            identity.SetScopes(request.GetScopes());
-            identity.SetDestinations(GetDestinations);
-
-            // Returning a SignInResult will ask OpenIddict to issue the appropriate access/identity tokens.
-            var token =  SignIn(new ClaimsPrincipal(identity), OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
-            return token;
+            return await SignInPasswordGrantAsync(request);
         }
-
         else if (request.IsRefreshTokenGrantType())
         {
-            // Retrieve the claims principal stored in the refresh token.
-            var result = await HttpContext.AuthenticateAsync(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
-            
-            // Retrieve the user profile corresponding to the refresh token.
-            
-            if (user == null)
-            {
-                var properties = new AuthenticationProperties(new Dictionary<string, string>
-                {
-                    [OpenIddictServerAspNetCoreConstants.Properties.Error] = OpenIddictConstants.Errors.InvalidGrant,
-                    [OpenIddictServerAspNetCoreConstants.Properties.ErrorDescription] = "The refresh token is no longer valid."
-                });
-            
-                return Forbid(properties, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
-            }
-            
-            // Ensure the user is still allowed to sign in.
-            // if (!await _signInManager.CanSignInAsync(user))
-            // {
-            //     var properties = new AuthenticationProperties(new Dictionary<string, string>
-            //     {
-            //         [OpenIddictServerAspNetCoreConstants.Properties.Error] = Errors.InvalidGrant,
-            //         [OpenIddictServerAspNetCoreConstants.Properties.ErrorDescription] = "The user is no longer allowed to sign in."
-            //     });
-            //
-            //     return Forbid(properties, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
-            // }
-            
-            var identity = new ClaimsIdentity(result.Principal.Claims,
-                authenticationType: TokenValidationParameters.DefaultAuthenticationType,
-                nameType: OpenIddictConstants.Claims.Name,
-                roleType: OpenIddictConstants.Claims.Role);
-            
-            // Override the user claims present in the principal in case they changed since the refresh token was issued.
-            identity.SetClaim(OpenIddictConstants.Claims.Subject, user.Id)
-                .SetClaim(OpenIddictConstants.Claims.Email, user.Email)
-                .SetClaim(OpenIddictConstants.Claims.Name, user.UserName);
-            
-            identity.SetDestinations(GetDestinations);
-            
-            return SignIn(new ClaimsPrincipal(identity), OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+            return await SignInRefreshTokenGrantAsync(request);
         }
 
         throw new NotImplementedException("The specified grant type is not implemented.");
+    }
+
+    private async Task<IActionResult> SignInPasswordGrantAsync(OpenIddictRequest request)
+    {
+        var user = await eventHandler.SendMediator(new GetUserByUserNameQuery(request.Username));
+        if (user == null)
+        {
+            var properties = new AuthenticationProperties(new Dictionary<string, string>
+            {
+                //TODO: proper error message
+                [OpenIddictServerAspNetCoreConstants.Properties.Error] = OpenIddictConstants.Errors.InvalidGrant,
+                [OpenIddictServerAspNetCoreConstants.Properties.ErrorDescription] =
+                    "The username/password couple is invalid."
+            });
+
+            return Forbid(properties, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+        }
+
+        var succeeded =
+            await eventHandler.SendMediator(
+                new CheckPasswordSignInCommand(request.Username, request.Password, true));
+        if (!succeeded)
+        {
+            var properties = new AuthenticationProperties(new Dictionary<string, string>
+            {
+                [OpenIddictServerAspNetCoreConstants.Properties.Error] = OpenIddictConstants.Errors.InvalidGrant,
+                [OpenIddictServerAspNetCoreConstants.Properties.ErrorDescription] =
+                    "The username/password couple is invalid."
+            });
+
+            return Forbid(properties, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+        }
+
+        // Create the claims-based identity that will be used by OpenIddict to generate tokens.
+        return AddClaims(user, request);
+    }
+
+    private async Task<IActionResult> SignInRefreshTokenGrantAsync(OpenIddictRequest request)
+    {
+        // Retrieve the claims principal stored in the refresh token.
+        var result = await HttpContext.AuthenticateAsync(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+
+        // Retrieve the user profile corresponding to the refresh token.
+        var user = await eventHandler.SendMediator(new GetUserByUserNameQuery(request.Username));
+        if (user == null)
+        {
+            var properties = new AuthenticationProperties(new Dictionary<string, string>
+            {
+                //TODO: proper error message
+                [OpenIddictServerAspNetCoreConstants.Properties.Error] = OpenIddictConstants.Errors.InvalidGrant,
+                [OpenIddictServerAspNetCoreConstants.Properties.ErrorDescription] =
+                    "The username/password couple is invalid."
+            });
+
+            return Forbid(properties, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+        }
+
+        var succeeded =
+            await eventHandler.SendMediator(
+                new CheckPasswordSignInCommand(request.Username, request.Password, true));
+        if (!succeeded)
+        {
+            var properties = new AuthenticationProperties(new Dictionary<string, string>
+            {
+                [OpenIddictServerAspNetCoreConstants.Properties.Error] = OpenIddictConstants.Errors.InvalidGrant,
+                [OpenIddictServerAspNetCoreConstants.Properties.ErrorDescription] =
+                    "The username/password couple is invalid."
+            });
+
+            return Forbid(properties, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+        }
+
+        var identity = new ClaimsIdentity(result.Principal.Claims,
+            authenticationType: TokenValidationParameters.DefaultAuthenticationType,
+            nameType: OpenIddictConstants.Claims.Name,
+            roleType: OpenIddictConstants.Claims.Role);
+
+        // Override the user claims present in the principal in case they changed since the refresh token was issued.
+        identity.SetClaim(OpenIddictConstants.Claims.Subject, user.Id)
+            .SetClaim(OpenIddictConstants.Claims.Email, user.Email)
+            .SetClaim(OpenIddictConstants.Claims.Name, user.UserName);
+
+        identity.SetDestinations(GetDestinations);
+
+        return SignIn(new ClaimsPrincipal(identity), OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+    }
+
+    private IActionResult AddClaims(AuthViewModel.GetUserByUserNameOutput user, OpenIddictRequest request)
+    {
+        var identity = new ClaimsIdentity(
+            authenticationType: TokenValidationParameters.DefaultAuthenticationType,
+            nameType: OpenIddictConstants.Claims.Name,
+            roleType: OpenIddictConstants.Claims.Role);
+
+        // Add the claims that will be persisted in the tokens.
+        identity.SetClaim(OpenIddictConstants.Claims.Subject, user.UserName)
+            .SetClaim(OpenIddictConstants.Claims.Name, user.Name)
+            .SetClaim(OpenIddictConstants.Claims.FamilyName, user.Family)
+            .SetClaim(OpenIddictConstants.Claims.Gender, user.Gender.ToString())
+            .SetClaim(OpenIddictConstants.Claims.Email, user.Email);
+
+        // Note: in this sample, the granted scopes match the requested scope
+        // but you may want to allow the user to uncheck specific scopes.
+        // For that, simply restrict the list of scopes before calling SetScopes.
+        identity.SetScopes(request.GetScopes());
+        identity.SetDestinations(GetDestinations);
+
+        // Returning a SignInResult will ask OpenIddict to issue the appropriate access/identity tokens.
+        var signIn = SignIn(new ClaimsPrincipal(identity), OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+        return signIn;
     }
 
     private static IEnumerable<string> GetDestinations(Claim claim)
