@@ -1,9 +1,8 @@
 ﻿using Identity.Domain.Aggregates.Users;
-using Identity.Domain.SeedWork;
-using Identity.Infrastructure.ORM.EF;
+using Identity.Infrastructure.EF.Stores;
 using Microsoft.EntityFrameworkCore;
 
-namespace Identity.Infrastructure.EF.Stores;
+namespace Identity.Infrastructure.ORM.EF.Stores;
 
 public class UserStore : Repository<User, int>, IUserStore
 {
@@ -13,7 +12,7 @@ public class UserStore : Repository<User, int>, IUserStore
     
     public Task<User> GetByUserNameAsync(string userName)
     {
-        return context.Users.Include(item => item.Tokens).FirstOrDefaultAsync(u => u.UserName == userName)!;
+        return context.Users.FirstOrDefaultAsync(u => u.UserName == userName)!;
     }
     
     public Task AddUserAsync(User user)
@@ -27,12 +26,5 @@ public class UserStore : Repository<User, int>, IUserStore
             .Where(item => item.Id == userId)
             .SelectMany(item => item.UserRoles).Select(item => item.Role)
             .ToListAsync();
-    }
-
-    public Task<User> GetTokenByRefreshAsync(string refreshToken)
-    {
-        return context.Users
-            .Include(u => u.Tokens.Where(item => item.RefreshToken == refreshToken))
-            .FirstOrDefaultAsync()!;
     }
 }

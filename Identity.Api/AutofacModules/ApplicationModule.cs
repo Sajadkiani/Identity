@@ -10,6 +10,7 @@ using Identity.Infrastructure.Dapper;
 using Identity.Infrastructure.EF.Stores;
 using Identity.Infrastructure.EF.Utils;
 using Identity.Infrastructure.ORM.BcValidations;
+using Identity.Infrastructure.ORM.EF.Stores;
 using Identity.Infrastructure.Utils;
 using IntegrationEventLogEF.Services;
 using MediatR;

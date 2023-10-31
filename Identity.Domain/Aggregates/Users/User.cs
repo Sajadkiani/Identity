@@ -23,7 +23,6 @@ namespace Identity.Domain.Aggregates.Users
             Password = passwordService.HashPassword(password, userName);
             Gender = gender;
             userRoles = new List<UserRole>();
-            tokens = new List<Token>();
             Status = UserStatus.Active;
             //TODO: all invariants and data consistencies must put here 
             Validate(bcScopeValidation);
@@ -41,9 +40,6 @@ namespace Identity.Domain.Aggregates.Users
 
         public IReadOnlyCollection<UserRole> UserRoles => userRoles;
 
-        private readonly List<Token> tokens;
-        public IReadOnlyCollection<Token> Tokens => tokens;
-        
         private void Validate(IUserBcScopeValidation bcScopeValidation)
         {
             var isExistEmail = bcScopeValidation.IsExistEmail(Email);
@@ -57,12 +53,6 @@ namespace Identity.Domain.Aggregates.Users
             {
                 throw new AppBaseDomainException(AppDomainMessages.InvalidUserName);
             }
-        }
-        
-        public void AddTokens(string accessToken, string refreshToken, DateTime expireDate)
-        {
-            var token = new Token(accessToken, refreshToken, expireDate);
-            tokens.Add(token);
         }
         
         public void AddUserRole(int roleId)

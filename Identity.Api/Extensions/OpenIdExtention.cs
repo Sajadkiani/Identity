@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OpenIddict.Validation.AspNetCore;
 using Quartz;
 
 namespace Identity.Api.Extensions;
@@ -15,8 +16,12 @@ public static class OpenIdExtension
     public static void AddDbContextAndOpenIdDict(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<AppDbContext>(opt =>
-            opt.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
-                options => options.MigrationsAssembly(Assembly.GetAssembly(typeof(AppDbContext))!.GetName().Name))
+            {
+                opt.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
+                    options => options.MigrationsAssembly(Assembly.GetAssembly(typeof(AppDbContext))!.GetName().Name));
+
+                opt.UseOpenIddict();
+            }
         );
 
         services.AddDbContext<IntegrationEventLogContext>(options =>
@@ -28,8 +33,6 @@ public static class OpenIdExtension
                     sqlOptions.EnableRetryOnFailure(maxRetryCount: 15, maxRetryDelay: TimeSpan.FromSeconds(30),
                         errorNumbersToAdd: null);
                 });
-
-            options.UseOpenIddict();
         });
 
         services.AddQuartz(options =>
@@ -50,7 +53,7 @@ public static class OpenIdExtension
                 // Configure OpenIddict to use the Entity Framework Core stores and models.
                 // Note: call ReplaceDefaultEntities() to replace the default OpenIddict entities.
                 options.UseEntityFrameworkCore()
-                    .UseDbContext<IdentityDbContext>();
+                    .UseDbContext<AppDbContext>();
 
                 // Enable Quartz.NET integration.
                 options.UseQuartz();
@@ -87,5 +90,7 @@ public static class OpenIdExtension
                 // Register the ASP.NET Core host.
                 options.UseAspNetCore();
             });
+        
+        services.AddAuthentication(OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme);
     }
 }

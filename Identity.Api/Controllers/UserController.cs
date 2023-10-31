@@ -47,5 +47,12 @@ namespace Identity.Api.Controllers
         {
             return await eventBus.SendMediator(new GetUserRolesQuery(userId));
         }
+        
+        
+        [HttpGet("test")]
+        [Authorize]
+        public async Task test()
+        {
+        }
     }
 }

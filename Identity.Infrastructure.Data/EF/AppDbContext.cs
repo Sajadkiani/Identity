@@ -26,7 +26,7 @@ namespace Identity.Infrastructure.ORM.EF
         
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.ApplyConfigurationsFromAssembly(Assembly.GetAssembly(typeof(TokenConfig)));
+            builder.ApplyConfigurationsFromAssembly(Assembly.GetAssembly(typeof(UserConfig)));
             base.OnModelCreating(builder);
         }
 
