@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Common;
 using EventBus.Abstractions;
 using Events;
 using Identity.Api.Application.Commands.Users;
@@ -51,8 +52,10 @@ namespace Identity.Api.Controllers
         
         [HttpGet("test")]
         [Authorize]
+        [RequiredClaims("string")]
         public async Task test()
         {
+            var request = HttpContext.Request.HttpContext.User;
         }
     }
 }

@@ -2,7 +2,7 @@ using Identity.Domain.Aggregates.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Identity.Infrastructure.EF.Configs;
+namespace Identity.Infrastructure.ORM.EF.Configs;
 
 public class UserConfig : IEntityTypeConfiguration<User>
 {

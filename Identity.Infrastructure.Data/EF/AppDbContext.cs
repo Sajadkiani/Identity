@@ -3,6 +3,7 @@ using System.Reflection;
 using Identity.Domain.Aggregates.Users;
 using Identity.Domain.SeedWork;
 using Identity.Infrastructure.EF.Configs;
+using Identity.Infrastructure.ORM.EF.Configs;
 using Identity.Infrastructure.ORM.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

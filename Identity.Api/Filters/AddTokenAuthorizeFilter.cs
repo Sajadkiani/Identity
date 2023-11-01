@@ -1,14 +1,11 @@
 ﻿using System;
-using Identity.Api.Infrastructure.Consts;
 using Identity.Api.Infrastructure.Services;
-using Identity.Api.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
-using ApplicationException = Identity.Infrastructure.Exceptions.ApplicationException;
 
-namespace Identity.Api.Infrastructure.Filters;
+namespace Identity.Api.Filters;
 
 public class AppAuthorizeFilter : IAuthorizationFilter 
 {
@@ -25,19 +22,13 @@ public class AppAuthorizeFilter : IAuthorizationFilter
     }
     public void OnAuthorization(AuthorizationFilterContext context)
     {
-        // var authorization = context.HttpContext.Request.Headers.Authorization.ToString();
-        // if (string.IsNullOrWhiteSpace(authorization))
-        // {
-        //     return;
-        // }
-        // var referenceToken = authorization.Split(" ")[1];
-        // var token = cache.Get<AuthViewModel.GetTokenOutput>(CacheKeys.Token + referenceToken);
-        // if (token is null)
-        //     throw new ApplicationException.Unauthorized();
-        //  
-        // context.HttpContext.Request.Headers.Authorization = token.AccessToken;
-        // SetCurrentUser(context.HttpContext);
-        //
+        var authorization = context.HttpContext.Request.Headers.Authorization.ToString();
+        if (string.IsNullOrWhiteSpace(authorization))
+        {
+            return;
+        }
+        
+        SetCurrentUser(context.HttpContext);
     }
     
     private void SetCurrentUser(HttpContext context)

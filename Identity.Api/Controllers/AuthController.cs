@@ -42,19 +42,6 @@ public class AuthController : ControllerBase
         this.eventHandler = eventHandler;
         this.logger = logger;
     }
-
-    // [HttpPost("login")]
-    // public async Task<AuthViewModel.GetTokenOutput> LoginAsync([FromBody] AuthViewModel.LoginInput input)
-    // {
-    //     return await eventHandler.SendMediator(new LoginCommand(input.UserName, input.Password, doHashPassword: true));
-    // }
-
-    // [HttpPost("refresh")]
-    // public async Task<AuthViewModel.GetTokenOutput> RefreshTokenAsync([FromBody] AuthViewModel.RefreshTokenInput input)
-    // {
-    //     return await eventHandler.SendMediator(new RefreshTokenQuery { RefreshToken = input.RefreshToken});
-    // }
-    
     
     [HttpPost("~/connect/token"), IgnoreAntiforgeryToken, Produces("application/json")]
     public async Task<IActionResult> Exchange()
