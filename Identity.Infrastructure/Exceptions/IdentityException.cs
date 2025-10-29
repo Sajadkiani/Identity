@@ -14,7 +14,7 @@ public static class AppMessages
 {
     public static AppMessage UserNotFound = new AppMessage("کاربر یافت نشد");
     public static AppMessage Unauthenticated = new AppMessage("unauthenticated");
-    public static AppMessage InternalError = new AppMessage("internalError");
+    public static AppMessage InternalError = new AppMessage("خطای نامشخص رخ داد");
     public static AppMessage Forbidden = new AppMessage("forbidden");
     public static AppMessage NotFound = new AppMessage("notFound");
 }
@@ -43,6 +43,12 @@ public class ApplicationException
     public class NotFound : BaseException
     {
         public NotFound(AppMessage message) : base(message)
+        {}
+    }
+    
+    public class BadRequest : BaseException
+    {
+        public BadRequest(AppMessage message) : base(message)
         {}
     }
     

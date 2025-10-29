@@ -3,7 +3,6 @@ using EventBus.Abstractions;
 using Events;
 using Identity.Api.Application.Commands.Common;
 using Identity.Api.Application.Commands.Users;
-using MassTransit;
 using Microsoft.Extensions.Logging;
 
 namespace Identity.Api.Application.IntegrationEvents.Consumers.Test

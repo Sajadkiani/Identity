@@ -68,7 +68,7 @@ public class IntegrationEventService : IIntegrationEventService
             try
             {
                 await eventLogService.MarkEventAsInProgressAsync(logEvt.EventId);
-                await eventBus.Publish(deserializedEvent);
+                //await eventBus.Publish(deserializedEvent);
                 await eventLogService.MarkEventAsPublishedAsync(logEvt.EventId);
             }
             catch (Exception ex)

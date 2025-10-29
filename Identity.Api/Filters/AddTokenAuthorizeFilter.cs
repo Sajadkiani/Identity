@@ -1,7 +1,8 @@
 ﻿using System;
 using Identity.Api.Infrastructure.Consts;
-using Identity.Api.Infrastructure.Services;
 using Identity.Api.ViewModels;
+using Identity.Domain.Consts;
+using Identity.Infrastructure.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Caching.Memory;

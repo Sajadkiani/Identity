@@ -1,4 +1,4 @@
-﻿using Identity.Infrastructure.Extensions.Options;
+﻿using Identity.Api.Extensions.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

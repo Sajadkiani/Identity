@@ -2,11 +2,11 @@ using System;
 using System.Reflection;
 using System.Text;
 using Identity.Api.Extensions;
+using Identity.Api.Extensions.Options;
 using Identity.Api.Grpc;
 using Identity.Api.Security;
 using Identity.Infrastructure.Clients.Grpc;
 using Identity.Infrastructure.EF;
-using Identity.Infrastructure.Extensions.Options;
 using Identity.Infrastructure.ORM.EF;
 using IntegrationEventLogEF;
 using Microsoft.AspNetCore.Builder;
@@ -17,8 +17,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
-using Steeltoe.Discovery.Client;
-using Steeltoe.Discovery.Eureka;
 
 namespace Identity.Api
 {
@@ -48,7 +46,7 @@ namespace Identity.Api
                     });
             });
 
-            services.AddAppProblemDetail(environment);
+            // services.AddAppProblemDetail(environment);
 
             services.AddAuthentication(opt =>
             {
@@ -69,7 +67,7 @@ namespace Identity.Api
                 };
             });
             
-            services.AddServiceDiscovery(o => o.UseEureka());
+            // services.AddServiceDiscovery(o => o.UseEureka());
             services.AddAppDependencies(configuration);
             services.AddAppOptions(configuration);
             services.AddMemoryCache();
