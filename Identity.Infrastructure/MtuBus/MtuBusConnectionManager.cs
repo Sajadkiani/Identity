@@ -5,7 +5,7 @@ using RabbitMQ.Client;
 
 namespace Identity.Infrastructure.MtuBus;
 
-internal class MtuBusConnectionManager : IDisposable
+public class MtuBusConnectionManager : IMtuBusConnectionManager, IDisposable
 {
     private readonly AppOptions.MTuRabbitMqOptions _options;
     private readonly ILogger<MtuBusConnectionManager> _logger;
@@ -31,7 +31,7 @@ internal class MtuBusConnectionManager : IDisposable
             Password = _options.Password,
         };
 
-        _logger.LogInformation($"Creating new RabbitMQ connection to {_options.HostName}");
+        _logger.LogInformation($"Creating new MTU bus connection to {_options.HostName}.");
         _connection = await factory.CreateConnectionAsync();
         return _connection;
     }
@@ -40,7 +40,7 @@ internal class MtuBusConnectionManager : IDisposable
     {
         if (_connection is { IsOpen: true })
         {
-            _logger.LogInformation("Closing RabbitMQ connection...");
+            _logger.LogInformation("Closing MTU bus connection...");
             _connection.CloseAsync().GetAwaiter().GetResult();
             _connection.Dispose();
         }

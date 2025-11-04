@@ -70,7 +70,7 @@ public sealed class IntegrationEventDispatcher : IIntegrationEventDispatcher, IA
                 basicProperties: props,
                 body: body);
 
-            _logger.LogInformation("Published message to queue {Queue}: {Message}", queueName, json);
+            _logger.LogInformation($"Published message to queue {queueName}: {json}");
         }
         catch (Exception ex)
         {

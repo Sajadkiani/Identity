@@ -1,4 +1,5 @@
-﻿using IntegrationEventLogEF.Services;
+﻿using AppEvents;
+using IntegrationEventLogEF.Services;
 
 namespace Events;
 

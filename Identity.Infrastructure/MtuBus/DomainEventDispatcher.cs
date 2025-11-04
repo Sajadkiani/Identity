@@ -18,4 +18,9 @@ public class DomainEventDispatcher : IDomainEventDispatcher
             await _mediator.Publish(domainEvent);
         }
     }
+
+    public async Task DispatchAsync(INotification domainEvent)
+    {
+        await _mediator.Publish(domainEvent);
+    }
 }

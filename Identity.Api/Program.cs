@@ -1,8 +1,10 @@
 using System;
+using System.Linq;
 using System.Reflection;
 using Identity.Api;
 using Identity.Api.Extensions.Options;
 using Identity.Infrastructure.MtuBus;
+using Identity.Infrastructure.MtuBus.Consumers;
 using Identity.Infrastructure.ORM.EF;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -81,6 +83,30 @@ await app.RunAsync();
 //         .ConfigureContainer<ContainerBuilder>(conbuilder =>
 //             conbuilder.RegisterModule(new MediatorModule()));
 // }
+
+
+public static class MtuBusServiceCollectionExtensions
+{
+    public static WebApplicationBuilder AddMtuBus<T>(this WebApplicationBuilder web, IConfiguration configuration)
+    {
+        web.Services.Configure<AppOptions.MTuRabbitMqOptions>(
+            configuration.GetSection("Rabbitmq"));
+
+        web.Services.AddSingleton<IMtuBusConnectionManager, MtuBusConnectionManager>();
+
+        var consumerTypes = typeof(T).Assembly
+            .GetTypes()
+            .Where(t => !t.IsAbstract &&
+                        t.IsAssignableTo(typeof(BackgroundService)) &&
+                        t.BaseType is { IsGenericType: true } &&
+                        t.BaseType.GetGenericTypeDefinition() == typeof(MTUConsumer<>));
+
+        foreach (var consumerType in consumerTypes)
+            web.Services.AddHostedService(consumerType);
+
+        return web;
+    }
+}
 
 static void AddExtraConfigs(IHostBuilder builder, IWebHostEnvironment webHostEnvironment)
 {
