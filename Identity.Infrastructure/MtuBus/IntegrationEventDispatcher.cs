@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using System.Text.Json;
 using Identity.Api.Extensions.Options;
+using Identity.Infrastructure.MtuBus.Consumers;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
@@ -27,7 +28,7 @@ public sealed class IntegrationEventDispatcher : IIntegrationEventDispatcher, IA
         IOptions<AppOptions.MTUBusOptions> options,
         ILogger<IntegrationEventDispatcher> logger)
     {
-        if (options.Value is not AppOptions.MTuRabbitMqOptions busOptions) 
+        if (options.Value is not AppOptions.MtuRabbitMqOptions busOptions) 
             return null;
         
         var factory = new ConnectionFactory

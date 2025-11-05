@@ -11,11 +11,11 @@ namespace Identity.Api.Application.IntegrationEvents.Consumers.Test;
 public class TestIntegrationEventConsumer //: IConsumer<TestIntegrationEvent>
 {
     private readonly ILogger<TestIntegrationEventConsumer> logger;
-    private readonly IEventBus eventBus;
+    private readonly IDomainEventDispatcher eventBus;
 
     public TestIntegrationEventConsumer(
         ILogger<TestIntegrationEventConsumer> logger,
-        IEventBus eventBus
+        IDomainEventDispatcher eventBus
     )
     {
         this.eventBus = eventBus;

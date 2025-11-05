@@ -15,12 +15,12 @@ namespace Identity.Api.Application.Queries.Users;
 public class RefreshTokenQueryHandler : IRequestHandler<RefreshTokenQuery, AuthViewModel.GetTokenOutput>
 {
     private readonly IUserStore userStore;
-    private readonly IEventBus eventHandler;
+    private readonly IDomainEventDispatcher eventHandler;
     private readonly IQueryExecutor queryExecutor;
 
     public RefreshTokenQueryHandler(
         IUserStore userStore, 
-        IEventBus eventHandler,
+        IDomainEventDispatcher eventHandler,
         IQueryExecutor queryExecutor 
         )
     {

@@ -27,9 +27,6 @@ namespace Identity.Api
             AppOptions.ApplicationOptionContext.ConnectionString =
                 configuration.GetConnectionString("DefaultConnection");
             
-            Console.WriteLine("connectionStrigng =============================" 
-                              + configuration.GetConnectionString("DefaultConnection"));
-            
             services.AddDbContext<AppDbContext>(opt => 
                 opt.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
                     options => options.MigrationsAssembly(Assembly.GetAssembly(typeof(Program))!.GetName().Name))

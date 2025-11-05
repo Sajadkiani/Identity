@@ -18,13 +18,13 @@ namespace Identity.Api.Controllers
     {
         private readonly IMapper mapper;
         private readonly ICurrentUser currentUser;
-        private readonly IEventBus eventBus;
+        private readonly IDomainEventDispatcher eventBus;
         private readonly IMediator mediator;
 
         public UserController(
             IMapper mapper,
             ICurrentUser currentUser,
-            IEventBus eventBus,
+            IDomainEventDispatcher eventBus,
             IMediator mediator
         )
         {

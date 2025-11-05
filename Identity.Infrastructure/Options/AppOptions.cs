@@ -27,7 +27,7 @@ public class AppOptions
     {
     }
     
-    public class MTuRabbitMqOptions : MTUBusOptions
+    public class MtuRabbitMqOptions : MTUBusOptions
     {
         public string HostName { get; set; } = "localhost";
         public string UserName { get; set; } = "guest";

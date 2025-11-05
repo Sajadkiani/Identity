@@ -26,14 +26,14 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthViewModel.G
     private readonly IPasswordService passwordService;
     private readonly AppOptions.Jwt jwtOptions;
     private readonly IAppRandoms randoms;
-    private readonly IEventBus eventHandler;
+    private readonly IDomainEventDispatcher eventHandler;
 
     public LoginCommandHandler(
         IUserStore userStore,
         IPasswordService passwordService,
         AppOptions.Jwt jwtOptions,
         IAppRandoms randoms,
-        IEventBus eventHandler
+        IDomainEventDispatcher eventHandler
     )
     {
         this.userStore = userStore;

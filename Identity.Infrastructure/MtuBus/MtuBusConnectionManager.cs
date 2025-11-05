@@ -7,12 +7,12 @@ namespace Identity.Infrastructure.MtuBus;
 
 public class MtuBusConnectionManager : IMtuBusConnectionManager, IDisposable
 {
-    private readonly AppOptions.MTuRabbitMqOptions _options;
+    private readonly AppOptions.MtuRabbitMqOptions _options;
     private readonly ILogger<MtuBusConnectionManager> _logger;
     private IConnection? _connection;
 
     public MtuBusConnectionManager(
-        IOptions<AppOptions.MTuRabbitMqOptions> options,
+        IOptions<AppOptions.MtuRabbitMqOptions> options,
         ILogger<MtuBusConnectionManager> logger)
     {
         _options = options.Value;

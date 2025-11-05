@@ -19,14 +19,14 @@ namespace Identity.Api.Application.IntegrationEvents;
 public class IntegrationEventService : IIntegrationEventService
 {
     private readonly Func<DbConnection, IIntegrationEventLogService> integrationEventLogServiceFactory;
-    private readonly IEventBus eventBus;
+    private readonly IDomainEventDispatcher eventBus;
     private readonly AppDbContext context;
     private readonly IIntegrationEventLogService eventLogService;
     private readonly ILogger<IntegrationEventService> logger;
     private readonly IEventInitializer eventInitializer;
 
     public IntegrationEventService(
-        IEventBus eventBus,
+        IDomainEventDispatcher eventBus,
         AppDbContext context,
         IntegrationEventLogContext eventLogContext,
         Func<DbConnection, IIntegrationEventLogService> integrationEventLogServiceFactory,

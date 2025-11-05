@@ -1,6 +1,7 @@
 ﻿using Identity.Domain.Aggregates.Users;
 using Identity.Domain.SeedWork;
 using Identity.Infrastructure.ORM.EF;
+using Identity.Infrastructure.ORM.EF.Stores;
 using Microsoft.EntityFrameworkCore;
 
 namespace Identity.Infrastructure.EF.Stores;
