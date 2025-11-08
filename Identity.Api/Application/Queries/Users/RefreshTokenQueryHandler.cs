@@ -8,6 +8,7 @@ using Identity.Api.ViewModels;
 using Identity.Domain.Aggregates.Users;
 using Identity.Domain.IServices;
 using Identity.Infrastructure.Dapper;
+using Identity.Infrastructure.MtuBus;
 using MediatR;
 
 namespace Identity.Api.Application.Queries.Users;
@@ -50,6 +51,6 @@ public class RefreshTokenQueryHandler : IRequestHandler<RefreshTokenQuery, AuthV
             // 401 err
         }
 
-        return await eventHandler.SendMediator(new LoginCommand(user.UserName, user.Password, doHashPassword: false ));
+        return await eventHandler.SendAsync(new LoginCommand(user.UserName, user.Password, doHashPassword: false ));
     }
 }

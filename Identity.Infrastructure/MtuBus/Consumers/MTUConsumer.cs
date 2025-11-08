@@ -9,7 +9,7 @@ public class TestConsumer : IMtuConsumer
 {
     private readonly IDomainEventDispatcher _eventDispatcher;
     private readonly ILogger<TestConsumer> _logger;
-    public string QueueName { get; set; } = "test-queue-name";
+    public string QueueName { get; set; } = nameof(TestIntegrationEvent);
     public TestConsumer(
         IDomainEventDispatcher eventDispatcher,
         ILogger<TestConsumer> logger)
@@ -17,7 +17,6 @@ public class TestConsumer : IMtuConsumer
         _eventDispatcher = eventDispatcher;
         _logger = logger;
     }
-
 
     public async Task HandleAsync(string messageJson, CancellationToken cancellationToken)
     {
@@ -30,6 +29,6 @@ public class TestConsumer : IMtuConsumer
 
         _logger.LogInformation($"Processing message for {QueueName}");
 
-        await _eventDispatcher.DispatchAsync(new TestDomainEvent(message.UserName));
+        await _eventDispatcher.PublishAsync(new TestDomainEvent(message.UserName));
     }
 }

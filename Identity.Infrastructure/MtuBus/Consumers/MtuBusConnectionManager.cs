@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 
-namespace Identity.Infrastructure.MtuBus;
+namespace Identity.Infrastructure.MtuBus.Consumers;
 
 public class MtuBusConnectionManager : IMtuBusConnectionManager, IDisposable
 {

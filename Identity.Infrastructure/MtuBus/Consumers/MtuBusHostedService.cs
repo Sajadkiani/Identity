@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
@@ -6,21 +7,21 @@ using RabbitMQ.Client.Events;
 
 namespace Identity.Infrastructure.MtuBus.Consumers;
 
-public abstract class MtuBusHostedService : BackgroundService
+public class MtuBusHostedService : BackgroundService
 {
     private readonly ILogger<MtuBusHostedService> _logger;
-    private readonly IEnumerable<IMtuConsumer> _consumers;
+    private readonly IServiceProvider _serviceProvider;
     private readonly IMtuBusConnectionManager _connectionManager;
     private IChannel? _channel;
 
 
-    protected MtuBusHostedService(
+    public MtuBusHostedService(
         IMtuBusConnectionManager connectionManager,
         ILogger<MtuBusHostedService> logger,
-        IEnumerable<IMtuConsumer> consumers)
+        IServiceProvider serviceProvider)
     {
         _logger = logger;
-        _consumers = consumers;
+        _serviceProvider = serviceProvider;
         _connectionManager = connectionManager;
     }
 
@@ -29,7 +30,9 @@ public abstract class MtuBusHostedService : BackgroundService
         var connection = await _connectionManager.GetConnectionAsync();
         _channel = await connection.CreateChannelAsync(null, cancellationToken);
 
-        foreach (var consumer in _consumers)
+        using var startupScope = _serviceProvider.CreateScope();
+        var consumers = startupScope.ServiceProvider.GetServices<IMtuConsumer>().ToList();
+        foreach (var consumer in consumers)
         {
             await _channel.QueueDeclareAsync(
                 queue: consumer.QueueName,
@@ -65,6 +68,6 @@ public abstract class MtuBusHostedService : BackgroundService
             _logger.LogInformation("Consumer for queue {QueueName} started", consumer.QueueName);
         }
 
-        _logger.LogInformation("MTU bus started with {Count} consumers.", _consumers.Count());
+        _logger.LogInformation("MTU bus started with {Count} consumers.", consumers.Count());
     }
 }

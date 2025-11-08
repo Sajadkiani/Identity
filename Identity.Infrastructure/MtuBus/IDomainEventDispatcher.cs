@@ -4,6 +4,7 @@ namespace Identity.Infrastructure.MtuBus;
 
 public interface IDomainEventDispatcher
 {
-    Task DispatchAsync(IEnumerable<INotification> domainEvents);
-    Task DispatchAsync(INotification domainEvent);
+    Task PublishAsync(IEnumerable<INotification> notifications);
+    Task PublishAsync(INotification notification);
+    Task<TResponse> SendAsync<TResponse>(IRequest<TResponse> request);
 }

@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Events;
+using Identity.Api.Application.Commands.Users;
 using Identity.Domain.Events.Users;
 using Identity.Infrastructure.MtuBus;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Identity.Api.Controllers;
@@ -32,13 +31,16 @@ public class TestController : ControllerBase
         });
     }
 
-
     [HttpGet("domain/event")]
     public async Task DomainLoginAsync()
     {
-        await _domainEventDispatcher.DispatchAsync(new List<INotification>
-        {
-            new TestDomainEvent("domain event")
-        });
+        await _domainEventDispatcher.PublishAsync(new TestDomainEvent(userName: "test domain event"));
+    }
+    
+    
+    [HttpGet("domain/request")]
+    public async Task DomainRequestAsync()
+    {
+        await _domainEventDispatcher.SendAsync(new LoginCommand("test domain event", "password", true));
     }
 }

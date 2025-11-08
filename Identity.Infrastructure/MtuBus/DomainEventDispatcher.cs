@@ -11,16 +11,21 @@ public class DomainEventDispatcher : IDomainEventDispatcher
         _mediator = mediator;
     }
 
-    public async Task DispatchAsync(IEnumerable<INotification> domainEvents)
+    public async Task PublishAsync(IEnumerable<INotification> notifications)
     {
-        foreach (var domainEvent in domainEvents)
+        foreach (var notification in notifications)
         {
-            await _mediator.Publish(domainEvent);
+            await _mediator.Publish(notification);
         }
     }
 
-    public async Task DispatchAsync(INotification domainEvent)
+    public async Task PublishAsync(INotification notification)
     {
-        await _mediator.Publish(domainEvent);
+        await _mediator.Publish(notification);
+    }
+
+    public Task<TResponse> SendAsync<TResponse>(IRequest<TResponse> request)
+    {
+        return _mediator.Send(request);
     }
 }

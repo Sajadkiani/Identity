@@ -25,7 +25,7 @@ public class AuthGrpcService : IdentityGrpc.IdentityGrpcBase
 
     public override async Task<RefreshTokenResponse> RefreshToken(RefreshTokenRequest request, ServerCallContext context)
     {
-            var token = await eventBus.DispatchAsync(new RefreshTokenQuery { RefreshToken = request.RefreshToken});
+            var token = await eventBus.SendAsync(new RefreshTokenQuery { RefreshToken = request.RefreshToken});
             return mapper.Map<RefreshTokenResponse>(token);
     }
 }

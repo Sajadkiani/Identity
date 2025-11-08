@@ -13,6 +13,7 @@ using Identity.Domain.Aggregates.Users;
 using Identity.Domain.Aggregates.Users.Enums;
 using Identity.Domain.IServices;
 using Identity.Infrastructure.Exceptions;
+using Identity.Infrastructure.MtuBus;
 using Identity.Infrastructure.Utils;
 using MediatR;
 using Microsoft.IdentityModel.Tokens;
@@ -78,7 +79,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthViewModel.G
 
     private async Task<AuthViewModel.GetTokenOutput> GenerateTokenAsync(User user)
     {
-        var roles = await eventHandler.SendMediator(new GetUserRolesQuery(user.Id));
+        var roles = await eventHandler.SendAsync(new GetUserRolesQuery(user.Id));
         var roleClaims = roles.Select(item => new Claim("roles", item.Name));
 
         var claims = new[]

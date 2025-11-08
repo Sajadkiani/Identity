@@ -5,6 +5,7 @@ using Identity.Api.Application.Commands.Users;
 using Identity.Api.Application.Queries.Users;
 using Identity.Api.Extensions.Options;
 using Identity.Api.ViewModels;
+using Identity.Infrastructure.MtuBus;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
@@ -38,12 +39,12 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<AuthViewModel.GetTokenOutput> LoginAsync([FromBody] AuthViewModel.LoginInput input)
     {
-        return await eventHandler.SendMediator(new LoginCommand(input.UserName, input.Password, doHashPassword: true));
+        return await eventHandler.SendAsync(new LoginCommand(input.UserName, input.Password, doHashPassword: true));
     }
 
     [HttpPost("refresh")]
     public async Task<AuthViewModel.GetTokenOutput> RefreshTokenAsync([FromBody] AuthViewModel.RefreshTokenInput input)
     {
-        return await eventHandler.SendMediator(new RefreshTokenQuery { RefreshToken = input.RefreshToken});
+        return await eventHandler.SendAsync(new RefreshTokenQuery { RefreshToken = input.RefreshToken});
     }
 }

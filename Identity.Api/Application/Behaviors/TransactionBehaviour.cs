@@ -8,6 +8,7 @@ using Identity.Infrastructure.ORM.EF;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Serilog.Context;
 
 namespace Identity.Api.Application.Behaviors;
@@ -18,9 +19,7 @@ public class TransactionBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
     private readonly ILogger<TransactionBehaviour<TRequest, TResponse>> logger;
 
     private readonly AppDbContext dbContext;
-
     private readonly IIntegrationEventService integrationEventService;
-    // private readonly IOrderingIntegrationEventService _orderingIntegrationEventService;
 
     public TransactionBehaviour(
         AppDbContext dbContext,
@@ -54,13 +53,12 @@ public class TransactionBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
                 await using var transaction = await dbContext.BeginTransactionAsync();
                 using (LogContext.PushProperty("TransactionContext", transaction.TransactionId))
                 {
-                    logger.LogInformation("----- Begin transaction {TransactionId} for {CommandName} ({@Command})",
-                        transaction.TransactionId, typeName, request);
+                    logger.LogInformation(
+                        $"----- Begin transaction {transaction.TransactionId.ToString()} for {typeName} ({JsonConvert.SerializeObject(request)})");
 
-                    response = await next();
+                    response = await next(cancellationToken);
 
-                    logger.LogInformation("----- Commit transaction {TransactionId} for {CommandName}",
-                        transaction.TransactionId, typeName);
+                    logger.LogInformation($"----- Commit transaction {transaction.TransactionId} for {typeName}");
 
                     await dbContext.CommitTransactionAsync(transaction);
 
@@ -74,7 +72,7 @@ public class TransactionBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "ERROR Handling transaction for {CommandName} ({@Command})", typeName, request);
+            logger.LogError(ex, $"Error handling transaction for {typeName} ({JsonConvert.SerializeObject(request)})");
 
             throw;
         }

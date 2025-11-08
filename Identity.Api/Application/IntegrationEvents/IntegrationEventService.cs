@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using EventBus.Abstractions;
 using Identity.Infrastructure.EF;
 using Identity.Infrastructure.Exceptions;
+using Identity.Infrastructure.MtuBus;
 using Identity.Infrastructure.ORM.EF;
 using IntegrationEventLogEF;
 using IntegrationEventLogEF.Services;
@@ -19,7 +20,6 @@ namespace Identity.Api.Application.IntegrationEvents;
 public class IntegrationEventService : IIntegrationEventService
 {
     private readonly Func<DbConnection, IIntegrationEventLogService> integrationEventLogServiceFactory;
-    private readonly IDomainEventDispatcher eventBus;
     private readonly AppDbContext context;
     private readonly IIntegrationEventLogService eventLogService;
     private readonly ILogger<IntegrationEventService> logger;
@@ -37,7 +37,6 @@ public class IntegrationEventService : IIntegrationEventService
         this.context = context ?? throw new ArgumentNullException(nameof(context));
         integrationEventLogServiceFactory = integrationEventLogServiceFactory ??
                                              throw new ArgumentNullException(nameof(integrationEventLogServiceFactory));
-        this.eventBus = eventBus ?? throw new ArgumentNullException(nameof(eventBus));
         eventLogService = integrationEventLogServiceFactory(context.Database.GetDbConnection());
         this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         this.eventInitializer = eventInitializer;
