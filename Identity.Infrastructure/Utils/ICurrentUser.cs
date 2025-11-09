@@ -1,9 +1,7 @@
-﻿using System;
-using System.Linq;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using Identity.Api.Infrastructure.Consts;
 
-namespace Identity.Api.Infrastructure.Services;
+namespace Identity.Infrastructure.Utils;
 
 public class CurrentUser : ICurrentUser
 {

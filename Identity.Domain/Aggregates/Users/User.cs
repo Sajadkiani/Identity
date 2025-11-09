@@ -1,5 +1,5 @@
+using EventBus.MtuBus.Tests;
 using Identity.Domain.Aggregates.Users.Enums;
-using Identity.Domain.Events.Users;
 using Identity.Domain.Exceptions;
 using Identity.Domain.IServices;
 using Identity.Domain.SeedWork;

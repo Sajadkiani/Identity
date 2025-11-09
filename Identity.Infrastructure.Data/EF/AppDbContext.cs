@@ -3,6 +3,7 @@ using System.Reflection;
 using Identity.Domain.Aggregates.Users;
 using Identity.Domain.SeedWork;
 using Identity.Infrastructure.EF.Configs;
+using Identity.Infrastructure.MtuBus;
 using Identity.Infrastructure.ORM.EF.Configs;
 using Identity.Infrastructure.ORM.Extensions;
 using MediatR;
@@ -14,13 +15,17 @@ namespace Identity.Infrastructure.ORM.EF
     public class AppDbContext : DbContext, IUnitOfWork
     {
         private readonly IMediator mediator;
+        private readonly IDomainEventDispatcher _eventDispatcher;
         private IDbContextTransaction currentTransaction;
         public IDbContextTransaction GetCurrentTransaction() => currentTransaction;
         public bool HasActiveTransaction => currentTransaction != null;
-        public AppDbContext(DbContextOptions<AppDbContext> options, IMediator mediator)
+        public AppDbContext(
+            DbContextOptions<AppDbContext> options,
+            IDomainEventDispatcher eventDispatcher)
             : base(options)
         {
             this.mediator = mediator;
+            _eventDispatcher = eventDispatcher;
         }
 
         public DbSet<User> Users { get; set; }

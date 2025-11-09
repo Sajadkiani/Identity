@@ -1,26 +1,24 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Events;
-using Identity.Api.Application.IntegrationEvents;
-using Identity.Domain.Events.Users;
+using EventBus.MtuBus.Tests;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace Identity.Api.Application.DomainEventHandlers.Users;
 
-public class TestDomainEventHandler : INotificationHandler<TestDomainEvent>
+public class TestDomainEventNotificationHandler : INotificationHandler<TestDomainEvent>
 {
-    private readonly IIntegrationEventService integrationEventService;
+    private readonly ILogger<TestDomainEventNotificationHandler> _logger;
 
-    public TestDomainEventHandler(
-        IIntegrationEventService integrationEventService
+    public TestDomainEventNotificationHandler(
+        ILogger<TestDomainEventNotificationHandler> logger 
         )
     {
-        this.integrationEventService = integrationEventService;
+        _logger = logger;
     }
     
     public async Task Handle(TestDomainEvent notification, CancellationToken cancellationToken)
     {
-        await integrationEventService.AddAndSaveEventAsync(
-            new TestIntegrationEvent { UserName = notification.UserName });
+        _logger.LogInformation($"{nameof(TestDomainEventNotificationHandler)} processed the notification {nameof(notification.GetType)}");
     }
 }

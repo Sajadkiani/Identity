@@ -1,9 +1,9 @@
 ﻿using System.Data;
 using Dapper;
 using Identity.Domain.IServices;
-using Identity.Domain.SeedWork;
+using Identity.Infrastructure.Dapper;
 
-namespace Identity.Infrastructure.Dapper;
+namespace Identity.Infrastructure.ORM.Dapper;
 
 //user this class in cqrs queries 
 public class DapperQueryExecutor : IQueryExecutor

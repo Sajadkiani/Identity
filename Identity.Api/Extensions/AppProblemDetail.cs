@@ -1,13 +1,15 @@
 ﻿using System;
-using Grpc.Core;
-using Hellang.Middleware.ProblemDetails;
+using System.Text.Json;
+using System.Threading.Tasks;
 using Identity.Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using ApplicationException = Identity.Infrastructure.Exceptions.ApplicationException;
 
 namespace Identity.Api.Extensions;
@@ -16,63 +18,92 @@ public static class AppProblemDetail
 {
     public static void UseAppProblemDetail(this IApplicationBuilder app)
     {
-        app.UseProblemDetails();
+        app.UseMiddleware<ProblemHandlingMiddleware>();
     }
-    
-    public static void AddAppProblemDetail(this IServiceCollection services,
-        IWebHostEnvironment environment)
+}
+
+public class ProblemHandlingMiddleware
+{
+    private readonly RequestDelegate _next;
+
+    public ProblemHandlingMiddleware(RequestDelegate next)
     {
-        services.AddProblemDetails(options =>
+        _next = next;
+    }
+
+    public async Task Invoke(HttpContext context)
+    {
+        try
         {
-            // Only include exception details in a development environment. There's really no need
-            // to set this as it's the default behavior. It's just included here for completeness :)
-            options.IncludeExceptionDetails = (ctx, ex) => environment.IsDevelopment();
+            await _next(context);
+        }
+        catch (Exception ex)
+        {
+            var logger = context.RequestServices.GetService<ILogger<ProblemHandlingMiddleware>>();
+            logger?.LogError(ex, "ProblemHandlingMiddleware Exception");
 
-            // This will map UserNotFoundException to the 404 Not Found status code and return custom problem details.
-            options.Map<ApplicationException.Internal>(ex => new ProblemDetails
+            var problem = MapExceptionToProblemDetails(context, ex);
+
+            context.Response.ContentType = "application/problem+json";
+            context.Response.StatusCode = problem.Status ?? 500;
+
+            var json = JsonSerializer.Serialize(problem, new JsonSerializerOptions
             {
-                Title = AppMessages.InternalError.message,
-                Status = StatusCodes.Status500InternalServerError,
-                Detail = ex.Message,
-            });
-            
-            options.Map<ApplicationException.Unauthorized>(ex => new ProblemDetails
-            {
-                Title = AppMessages.Unauthenticated.message,
-                Status = StatusCodes.Status403Forbidden,
-                Detail = ex.Message,
-            });
-            
-            
-            options.Map<ApplicationException.NotFound>(ex => new ProblemDetails
-            {
-                Title = AppMessages.NotFound.message,
-                Status = StatusCodes.Status404NotFound,
-                Detail = ex.Message,
-            });
-            
-            options.Map<RpcException>(ex => new ProblemDetails
-            {
-                Title = "GRPC",
-                Status = StatusCodes.Status500InternalServerError,
-                Detail = ex.Message,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             });
 
-            // This will map NotImplementedException to the 501 Not Implemented status code.
-            options.MapToStatusCode<NotImplementedException>(StatusCodes.Status501NotImplemented);
+            await context.Response.WriteAsync(json);
+        }
+    }
 
-            // You can configure the middleware to re-throw certain types of exceptions, all exceptions or based on a predicate.
-            // This is useful if you have upstream middleware that  needs to do additional handling of exceptions.
-            // options.Rethrow<NotSupportedException>();
+    private ProblemDetails MapExceptionToProblemDetails(HttpContext context, Exception ex)
+    {
+        ProblemDetails problem;
 
-            // You can configure the middleware to ingore any exceptions of the specified type.
-            // This is useful if you have upstream middleware that  needs to do additional handling of exceptions.
-            // Note that unlike Rethrow, additional information will not be added to the exception.
-            options.Ignore<DivideByZeroException>();
+        switch (ex)
+        {
+            case ApplicationException.NotFound badReq:
+                problem = new ProblemDetails
+                {
+                    Title = nameof(StatusCodes.Status400BadRequest),
+                    Detail = badReq.Message,
+                    Status = StatusCodes.Status404NotFound,
+                    Instance = context.Request.Path,
+                };
+                break;
 
-            // Because exceptions are handled polymorphically, this will act as a "catch all" mapping, which is why it's added last.
-            // If an exception other than NotImplementedException and HttpRequestException is thrown, this will handle it.
-            options.MapToStatusCode<Exception>(StatusCodes.Status500InternalServerError);
-        });
+            case ApplicationException.Internal appEx:
+                problem = new ProblemDetails
+                {
+                    Title = nameof(StatusCodes.Status500InternalServerError),
+                    Detail = appEx.Message,
+                    Status = StatusCodes.Status500InternalServerError,
+                    Instance = context.Request.Path
+                };
+                break;
+            
+            case ApplicationException.BadRequest appEx:
+                problem = new ProblemDetails
+                {
+                    Title = nameof(StatusCodes.Status500InternalServerError),
+                    Detail = appEx.Message,
+                    Status = StatusCodes.Status500InternalServerError,
+                    Instance = context.Request.Path
+                };
+                break;
+
+            default:
+                problem = new ProblemDetails
+                {
+                    Title = nameof(StatusCodes.Status500InternalServerError),
+                    Detail = AppMessages.InternalError.message,
+                    Status = StatusCodes.Status500InternalServerError,
+                    Instance = context.Request.Path
+                };
+                break;
+        }
+
+        problem.Extensions["traceId"] = context.TraceIdentifier;
+        return problem;
     }
 }

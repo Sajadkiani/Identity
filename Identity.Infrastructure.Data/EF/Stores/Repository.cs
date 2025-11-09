@@ -1,7 +1,6 @@
 using Identity.Domain.SeedWork;
-using Identity.Infrastructure.ORM.EF;
 
-namespace Identity.Infrastructure.EF.Stores;
+namespace Identity.Infrastructure.ORM.EF.Stores;
 
 public class Repository<TEntity, TId> : IRepository<TEntity, TId> where TEntity : class, IAggregateRoot
 {

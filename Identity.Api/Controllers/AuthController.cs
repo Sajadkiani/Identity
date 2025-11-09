@@ -25,14 +25,14 @@ public class AuthController : ControllerBase
     private readonly IMapper mapper;
     private readonly IMemoryCache cache;
     private readonly AppOptions.Jwt jwt;
-    private readonly IEventBus eventHandler;
+    private readonly IDomainEventDispatcher eventHandler;
     private readonly ILogger<AuthController> logger;
 
     public AuthController(
         IMapper mapper,
         IMemoryCache cache,
         AppOptions.Jwt jwt,
-        IEventBus eventHandler,
+        IDomainEventDispatcher eventHandler,
         ILogger<AuthController> logger
     )
     {

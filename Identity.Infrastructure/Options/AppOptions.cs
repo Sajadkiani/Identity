@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 
-namespace Identity.Infrastructure.Extensions.Options;
+namespace Identity.Infrastructure.Options;
 
 public class AppOptions
 {

@@ -4,9 +4,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
-using EventBus.Abstractions;
-using Identity.Infrastructure.EF;
 using Identity.Infrastructure.Exceptions;
+using Identity.Infrastructure.MtuBus;
 using Identity.Infrastructure.ORM.EF;
 using IntegrationEventLogEF;
 using IntegrationEventLogEF.Services;
@@ -19,14 +18,13 @@ namespace Identity.Api.Application.IntegrationEvents;
 public class IntegrationEventService : IIntegrationEventService
 {
     private readonly Func<DbConnection, IIntegrationEventLogService> integrationEventLogServiceFactory;
-    private readonly IEventBus eventBus;
     private readonly AppDbContext context;
     private readonly IIntegrationEventLogService eventLogService;
     private readonly ILogger<IntegrationEventService> logger;
     private readonly IEventInitializer eventInitializer;
 
     public IntegrationEventService(
-        IEventBus eventBus,
+        IDomainEventDispatcher eventBus,
         AppDbContext context,
         IntegrationEventLogContext eventLogContext,
         Func<DbConnection, IIntegrationEventLogService> integrationEventLogServiceFactory,
@@ -37,7 +35,6 @@ public class IntegrationEventService : IIntegrationEventService
         this.context = context ?? throw new ArgumentNullException(nameof(context));
         integrationEventLogServiceFactory = integrationEventLogServiceFactory ??
                                              throw new ArgumentNullException(nameof(integrationEventLogServiceFactory));
-        this.eventBus = eventBus ?? throw new ArgumentNullException(nameof(eventBus));
         eventLogService = integrationEventLogServiceFactory(context.Database.GetDbConnection());
         this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         this.eventInitializer = eventInitializer;
@@ -68,7 +65,7 @@ public class IntegrationEventService : IIntegrationEventService
             try
             {
                 await eventLogService.MarkEventAsInProgressAsync(logEvt.EventId);
-                await eventBus.Publish(deserializedEvent);
+                //await eventBus.Publish(deserializedEvent);
                 await eventLogService.MarkEventAsPublishedAsync(logEvt.EventId);
             }
             catch (Exception ex)

@@ -1,4 +1,4 @@
-﻿namespace Identity.Api.Infrastructure.Consts;
+﻿namespace Identity.Domain.Consts;
 
 public static class CacheKeys
 {
