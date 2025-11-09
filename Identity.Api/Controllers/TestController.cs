@@ -41,6 +41,6 @@ public class TestController : ControllerBase
     [HttpGet("domain/request")]
     public async Task DomainRequestAsync()
     {
-        await _domainEventDispatcher.SendAsync(new LoginCommand("test domain event", "password", true));
+        // await _domainEventDispatcher.SendAsync(new LoginCommand("test domain event", "password", true));
     }
 }

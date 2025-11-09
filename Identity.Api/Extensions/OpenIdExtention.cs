@@ -2,7 +2,6 @@ using System;
 using System.Reflection;
 using Identity.Infrastructure.ORM.EF;
 using IntegrationEventLogEF;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
-using EventBus.Abstractions;
 using Identity.Api.Application.Commands.Users;
 using Identity.Api.Application.Queries.Users;
 using Identity.Api.ViewModels;
-using Identity.Infrastructure.Extensions.Options;
+using Identity.Infrastructure.MtuBus;
+using Identity.Infrastructure.Options;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
@@ -61,7 +61,7 @@ public class AuthController : ControllerBase
 
     private async Task<IActionResult> SignInPasswordGrantAsync(OpenIddictRequest request)
     {
-        var user = await eventHandler.SendMediator(new GetUserByUserNameQuery(request.Username));
+        var user = await eventHandler.SendAsync(new GetUserByUserNameQuery(request.Username));
         if (user == null)
         {
             var properties = new AuthenticationProperties(new Dictionary<string, string>
@@ -76,7 +76,7 @@ public class AuthController : ControllerBase
         }
 
         var succeeded =
-            await eventHandler.SendMediator(
+            await eventHandler.SendAsync(
                 new CheckPasswordSignInCommand(request.Username, request.Password, true));
         if (!succeeded)
         {
@@ -100,7 +100,7 @@ public class AuthController : ControllerBase
         var result = await HttpContext.AuthenticateAsync(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
 
         // Retrieve the user profile corresponding to the refresh token.
-        var user = await eventHandler.SendMediator(new GetUserByUserNameQuery(request.Username));
+        var user = await eventHandler.SendAsync(new GetUserByUserNameQuery(request.Username));
         if (user == null)
         {
             var properties = new AuthenticationProperties(new Dictionary<string, string>
@@ -115,7 +115,7 @@ public class AuthController : ControllerBase
         }
 
         var succeeded =
-            await eventHandler.SendMediator(
+            await eventHandler.SendAsync(
                 new CheckPasswordSignInCommand(request.Username, request.Password, true));
         if (!succeeded)
         {

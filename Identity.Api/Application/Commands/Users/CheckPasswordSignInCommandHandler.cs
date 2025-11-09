@@ -1,21 +1,13 @@
-﻿using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using EventBus.Abstractions;
-using Identity.Api.Application.Queries.Users;
-using Identity.Api.ViewModels;
 using Identity.Domain.Aggregates.Users;
 using Identity.Domain.Aggregates.Users.Enums;
 using Identity.Domain.IServices;
-using Identity.Infrastructure.EF.Utils;
 using Identity.Infrastructure.Exceptions;
-using Identity.Infrastructure.Extensions.Options;
+using Identity.Infrastructure.MtuBus;
+using Identity.Infrastructure.Options;
+using Identity.Infrastructure.Utils;
 using MediatR;
-using Microsoft.IdentityModel.Tokens;
 using ApplicationException = Identity.Infrastructure.Exceptions.ApplicationException;
 
 namespace Identity.Api.Application.Commands.Users;

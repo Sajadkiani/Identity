@@ -1,5 +1,5 @@
 ﻿using System;
-using Identity.Api.Infrastructure.Services;
+using Identity.Infrastructure.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Caching.Memory;

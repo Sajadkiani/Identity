@@ -22,13 +22,9 @@ public class AuthGrpcService : IdentityGrpc.IdentityGrpcBase
         this.eventBus = eventBus;
     }
 
-    public override async Task<RefreshTokenResponse> RefreshToken(RefreshTokenRequest request, ServerCallContext context)
+    public override async Task<RefreshTokenResponse> RefreshToken(RefreshTokenRequest request,
+        ServerCallContext context)
     {
-            var token = await eventBus.SendAsync(new RefreshTokenQuery { RefreshToken = request.RefreshToken});
-            return mapper.Map<RefreshTokenResponse>(token);
-            // var token = await eventBus.SendMediator(new RefreshTokenQuery { RefreshToken = request.RefreshToken});
-            // return mapper.Map<RefreshTokenResponse>(token);
-
-            return null;
+        throw new NotImplementedException();
     }
 }
