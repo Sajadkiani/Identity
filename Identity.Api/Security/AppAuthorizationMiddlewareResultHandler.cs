@@ -2,10 +2,10 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using Identity.Api.Extensions.Options;
 using Identity.Api.Infrastructure.Consts;
 using Identity.Domain.Consts;
 using Identity.Infrastructure.Models.Auth;
+using Identity.Infrastructure.Options;
 using Identity.Infrastructure.Utils;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Caching.Memory;

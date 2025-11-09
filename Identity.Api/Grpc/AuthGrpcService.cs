@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using AutoMapper;
-using EventBus.Abstractions;
 using Grpc.Core;
 using Identity.Api.Application.Queries.Users;
 using Identity.Infrastructure.MtuBus;

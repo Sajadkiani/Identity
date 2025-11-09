@@ -4,8 +4,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
-using EventBus.Abstractions;
-using Identity.Infrastructure.EF;
 using Identity.Infrastructure.Exceptions;
 using Identity.Infrastructure.MtuBus;
 using Identity.Infrastructure.ORM.EF;

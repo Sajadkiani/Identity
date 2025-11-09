@@ -1,11 +1,11 @@
 using System;
 using System.Reflection;
 using System.Text;
+using EventBus.MtuBus.Extensions;
 using Identity.Api;
 using Identity.Api.Application.Behaviors;
 using Identity.Api.Application.DomainEventHandlers.Users;
 using Identity.Api.Extensions;
-using Identity.Api.Extensions.Options;
 using Identity.Api.Grpc;
 using Identity.Api.Security;
 using Identity.Domain.Aggregates.Users;
@@ -15,6 +15,7 @@ using Identity.Infrastructure.Clients.Grpc;
 using Identity.Infrastructure.Dapper;
 using Identity.Infrastructure.MtuBus;
 using Identity.Infrastructure.MtuBus.Consumers;
+using Identity.Infrastructure.Options;
 using Identity.Infrastructure.ORM.BcValidations;
 using Identity.Infrastructure.ORM.Dapper;
 using Identity.Infrastructure.ORM.EF;
@@ -108,7 +109,7 @@ web.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
 });
 
-web.AddMtuBus();
+web.Services.AddMtuBus(web.Configuration);
 
 web.AddExtraConfigs();
 web.ConfigLogger();
@@ -138,27 +139,6 @@ await app.RunAsync();
 
 static class AppExtensions
 {
-    public static WebApplicationBuilder AddMtuBus(this WebApplicationBuilder web)
-    {
-        web.Services.Configure<AppOptions.MtuRabbitMqOptions>(web.Configuration.GetSection("Rabbitmq"));
-
-        web.Services.AddSingleton<IMtuBusConnectionManager, MtuBusConnectionManager>();
-        web.Services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
-        web.Services.AddSingleton<IIntegrationEventDispatcher, IntegrationEventDispatcher>(opt =>
-        {
-            var logger = opt.GetRequiredService<ILogger<IntegrationEventDispatcher>>();
-            var options = opt.GetRequiredService<IOptions<AppOptions.MtuRabbitMqOptions>>();
-
-            return IntegrationEventDispatcher.CreateAsync(options, logger).GetAwaiter().GetResult();
-        });
-
-        web.Services.AddScoped<IMtuConsumer, TestConsumer>();
-
-        web.Services.AddHostedService<MtuBusHostedService>();
-
-        return web;
-    }
-
     public static WebApplicationBuilder AddExtraConfigs(this WebApplicationBuilder web)
     {
         web.Host.ConfigureAppConfiguration(conf =>

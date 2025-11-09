@@ -1,11 +1,10 @@
 using System.Threading.Tasks;
 using AutoMapper;
-using EventBus.Abstractions;
 using Identity.Api.Application.Commands.Users;
 using Identity.Api.Application.Queries.Users;
-using Identity.Api.Extensions.Options;
 using Identity.Api.ViewModels;
 using Identity.Infrastructure.MtuBus;
+using Identity.Infrastructure.Options;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;

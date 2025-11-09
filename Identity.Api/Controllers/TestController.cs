@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
+using EventBus.MtuBus.Tests;
 using Events;
 using Identity.Api.Application.Commands.Users;
-using Identity.Domain.Events.Users;
 using Identity.Infrastructure.MtuBus;
 using Microsoft.AspNetCore.Mvc;
 

@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Identity.Domain.Events.Users;
+using EventBus.MtuBus.Tests;
 using MediatR;
 using Microsoft.Extensions.Logging;
 

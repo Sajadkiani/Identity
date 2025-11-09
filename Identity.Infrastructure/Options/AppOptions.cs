@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 
-namespace Identity.Api.Extensions.Options;
+namespace Identity.Infrastructure.Options;
 
 public class AppOptions
 {
@@ -21,18 +21,5 @@ public class AppOptions
     public static class ApplicationOptionContext
     {
         public static string ConnectionString { get; set; }
-    }
-    
-    public abstract class MTUBusOptions
-    {
-    }
-    
-    public class MtuRabbitMqOptions : MTUBusOptions
-    {
-        public string HostName { get; set; } = "localhost";
-        public string UserName { get; set; } = "guest";
-        public string Password { get; set; } = "guest";
-        public string VirtualHost { get; set; } = "/";
-        public int Port { get; set; } = 5672;
     }
 }
