@@ -1,6 +1,7 @@
 using System;
 using System.Reflection;
 using System.Text;
+using Elastic.Channels;
 using Elastic.Ingest.Elasticsearch;
 using Elastic.Ingest.Elasticsearch.DataStreams;
 using Elastic.Serilog.Sinks;
@@ -8,16 +9,17 @@ using EventBus.MtuBus.Extensions;
 using Identity.Api.Application.Behaviors;
 using Identity.Api.Extensions;
 using Identity.Api.Grpc;
+using Identity.Api.MapperProfiles;
 using Identity.Api.Security;
 using Identity.Domain.Aggregates.Users;
 using Identity.Domain.IServices;
 using Identity.Domain.Validations.Users;
 using Identity.Infrastructure.Clients.Grpc;
 using Identity.Infrastructure.Dapper;
+using Identity.Infrastructure.Data.EF;
 using Identity.Infrastructure.Options;
 using Identity.Infrastructure.ORM.BcValidations;
 using Identity.Infrastructure.ORM.Dapper;
-using Identity.Infrastructure.ORM.EF;
 using Identity.Infrastructure.ORM.EF.Stores;
 using Identity.Infrastructure.Utils;
 using IntegrationEventLogEF.Services;
@@ -31,8 +33,6 @@ using Microsoft.IdentityModel.Tokens;
 using Serilog;
 
 var web = WebApplication.CreateBuilder(args);
-
-AppOptions.ApplicationOptionContext.ConnectionString = web.Configuration.GetConnectionString("DefaultConnection");
 
 web.Services.AddDbContext<AppDbContext>(opt =>
 {
@@ -58,8 +58,12 @@ web.Services.AddAuthentication(opt =>
     };
 });
 
+web.Services.AddAutoMapper(expr =>
+{
+    expr.AddProfile<AutoMapperProfile>();
+});
+
 web.Services.AddAuthorization();
-web.AddIntegrationEvents();
 web.Services.AddAppOptions(web.Configuration);
 web.Services.AddMemoryCache();
 web.Services.AddGrpc(opt => { opt.Interceptors.Add<ExceptionInterceptor>(); });
@@ -98,12 +102,13 @@ web.ConfigLogger();
 
 
 var app = web.Build();
+app.UseSerilogRequestLogging();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
 }
 
-app.UseSerilogRequestLogging();
 app.UseAppSwagger();
 
 app.UseAppProblemDetail();
@@ -132,49 +137,27 @@ static class AppExtensions
         return web;
     }
 
-    public static WebApplicationBuilder ConfigLogger(this WebApplicationBuilder webApplicationBuilder)
+    public static WebApplicationBuilder ConfigLogger(this WebApplicationBuilder builder)
     {
-        webApplicationBuilder.Host.UseSerilog((ctx, loggerConfig) =>
-        {
-            loggerConfig
-                .Enrich.WithProperty("Application", ctx.HostingEnvironment.ApplicationName)
-                .Enrich.WithProperty("Environment", ctx.HostingEnvironment.EnvironmentName)
-                .WriteTo.Console()
-                .WriteTo.Elasticsearch(
-                    new[] { new Uri(ctx.Configuration["ElasticConfiguration:Uri"]) },
-                    options =>
-                    {
-                        // use DataStream name instead of IndexFormat
-                        options.DataStream = new DataStreamName("logs", ctx.HostingEnvironment.ApplicationName.ToLower(), 
-                            ctx.HostingEnvironment.EnvironmentName.ToLower());
-
-                        // control template/bootstrap behavior
-                        options.BootstrapMethod = BootstrapMethod.Failure;
-
-                        // any old AutoRegisterTemplate logic is managed via BootstrapMethod now
-                    });
-
-            loggerConfig.ReadFrom.Configuration(ctx.Configuration);
-        });
+        var logOptions = builder.Configuration.GetSection("Logging").Get<AppOptions.LoggingOption>();
         
-        // Log.Logger = new LoggerConfiguration()
-        //     .Enrich.FromLogContext()
-        //     .Enrich.WithMachineName()
-        //     .WriteTo.Debug()
-        //     .WriteTo.Console()
-        //     .WriteTo.Elasticsearch(
-        //         new ElasticsearchSinkOptions(new Uri(webApplicationBuilder.Configuration["ElasticConfiguration:Uri"]))
-        //         {
-        //             AutoRegisterTemplate = true,
-        //             IndexFormat =
-        //                 $"{Assembly.GetExecutingAssembly().GetName().Name.ToLower().Replace(".", "-")}-{webApplicationBuilder.Environment.EnvironmentName?.ToLower().Replace(".", "-")}-{DateTime.UtcNow:yyyy-MM}"
-        //         })
-        //     
-        //     .Enrich.WithProperty("Environment", webApplicationBuilder.Environment.EnvironmentName)
-        //     .ReadFrom.Configuration(webApplicationBuilder.Configuration)
-        //     .CreateLogger();
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .Enrich.FromLogContext()
+            .Enrich.WithMachineName()
+            .Enrich.WithProperty("Environment", builder.Environment.EnvironmentName)
+            .Enrich.WithProperty("Application", logOptions.ApplicationName)
+            .WriteTo.Console(formatProvider: null, theme: Serilog.Sinks.SystemConsole.Themes.AnsiConsoleTheme.Code)
+            .WriteTo.Elasticsearch(new[] { new Uri(logOptions.ElasticUrl) }, opts =>
+            {
+                opts.DataStream = new DataStreamName("logs", logOptions.ApplicationName,
+                    $"{builder.Environment.EnvironmentName}");
+                opts.BootstrapMethod = BootstrapMethod.None;
+            })
+            .CreateLogger();
 
-        return webApplicationBuilder;
+        builder.Host.UseSerilog();
+        return builder;
     }
 }
 

@@ -1,4 +1,5 @@
 ﻿using Identity.Domain.Exceptions;
+using Identity.Infrastructure.Data.EF;
 using Identity.Infrastructure.ORM.EF;
 
 namespace Identity.Infrastructure.EF.Idempotency;

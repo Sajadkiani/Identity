@@ -1,4 +1,5 @@
 using Identity.Domain.SeedWork;
+using Identity.Infrastructure.Data.EF;
 
 namespace Identity.Infrastructure.ORM.EF.Stores;
 

@@ -1,4 +1,5 @@
 ﻿using Identity.Domain.SeedWork;
+using Identity.Infrastructure.Data.EF;
 using Identity.Infrastructure.ORM.EF;
 using MediatR;
 

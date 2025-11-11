@@ -2,30 +2,25 @@ using System.Data;
 using System.Reflection;
 using Identity.Domain.Aggregates.Users;
 using Identity.Domain.SeedWork;
-using Identity.Infrastructure.EF.Configs;
 using Identity.Infrastructure.MtuBus;
 using Identity.Infrastructure.ORM.EF.Configs;
 using Identity.Infrastructure.ORM.Extensions;
+using IntegrationEventLogEF;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace Identity.Infrastructure.ORM.EF
+namespace Identity.Infrastructure.Data.EF
 {
-    public class AppDbContext : DbContext, IUnitOfWork
+    public class AppDbContext : EventLogDbContext, IUnitOfWork
     {
         private readonly IMediator mediator;
-        private readonly IDomainEventDispatcher _eventDispatcher;
         private IDbContextTransaction currentTransaction;
-        public IDbContextTransaction GetCurrentTransaction() => currentTransaction;
         public bool HasActiveTransaction => currentTransaction != null;
         public AppDbContext(
-            DbContextOptions<AppDbContext> options,
-            IDomainEventDispatcher eventDispatcher)
+            DbContextOptions<AppDbContext> options)
             : base(options)
         {
-            this.mediator = mediator;
-            _eventDispatcher = eventDispatcher;
         }
 
         public DbSet<User> Users { get; set; }

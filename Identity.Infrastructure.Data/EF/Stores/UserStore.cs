@@ -1,4 +1,5 @@
 ﻿using Identity.Domain.Aggregates.Users;
+using Identity.Infrastructure.Data.EF;
 using Microsoft.EntityFrameworkCore;
 
 namespace Identity.Infrastructure.ORM.EF.Stores;

@@ -48,10 +48,8 @@ namespace Identity.Api.Controllers
             return await eventBus.SendAsync(new GetUserRolesQuery(userId));
         }
         
-        
         [HttpGet("test")]
         [Authorize]
-        [RequiredClaims("string")]
         public async Task test()
         {
             var request = HttpContext.Request.HttpContext.User;

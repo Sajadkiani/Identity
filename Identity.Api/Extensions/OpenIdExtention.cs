@@ -1,7 +1,5 @@
-using System;
 using System.Reflection;
-using Identity.Infrastructure.ORM.EF;
-using IntegrationEventLogEF;
+using Identity.Infrastructure.Data.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,17 +20,6 @@ public static class OpenIdExtension
                 opt.UseOpenIddict();
             }
         );
-
-        services.AddDbContext<IntegrationEventLogContext>(options =>
-        {
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
-                sqlServerOptionsAction: sqlOptions =>
-                {
-                    sqlOptions.MigrationsAssembly(typeof(AppDbContext).GetTypeInfo().Assembly.GetName().Name);
-                    sqlOptions.EnableRetryOnFailure(maxRetryCount: 15, maxRetryDelay: TimeSpan.FromSeconds(30),
-                        errorNumbersToAdd: null);
-                });
-        });
 
         services.AddQuartz(options =>
         {

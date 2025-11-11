@@ -22,4 +22,11 @@ public class AppOptions
     {
         public static string ConnectionString { get; set; }
     }
+
+    public class LoggingOption
+    {
+        public string ElasticUrl { get; set; }
+        public string LogLevel { get; set; }
+        public string ApplicationName { get; set; }
+    }
 }
