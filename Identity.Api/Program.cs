@@ -44,7 +44,8 @@ web.Services.AddAuthentication(opt =>
     opt.DefaultAuthenticateScheme = AppOptions.Jwt.Scheme;
     opt.DefaultScheme = AppOptions.Jwt.Scheme;
     opt.DefaultChallengeScheme = AppOptions.Jwt.Scheme;
-}).AddScheme<AppOptions.Jwt, AppAuthenticationHandler>(AppOptions.Jwt.Scheme, opt =>
+})
+    .AddScheme<AppOptions.Jwt, AppAuthenticationHandler>(AppOptions.Jwt.Scheme, opt =>
 {
     opt.TokenValidationParameters = new TokenValidationParameters
     {
@@ -68,9 +69,6 @@ web.Services.AddAppOptions(web.Configuration);
 web.Services.AddMemoryCache();
 web.Services.AddGrpc(opt => { opt.Interceptors.Add<ExceptionInterceptor>(); });
 web.Services.AddControllers();
-
-//TODO: fix auto mapper register, after upgrade to version 15 there is error 
-// web.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 web.Services.AddAppSwagger();
 
 
