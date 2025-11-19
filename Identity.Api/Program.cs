@@ -6,6 +6,7 @@ using Elastic.Ingest.Elasticsearch;
 using Elastic.Ingest.Elasticsearch.DataStreams;
 using Elastic.Serilog.Sinks;
 using EventBus.MtuBus.Extensions;
+using EventBus.Services;
 using Identity.Api.Application.Behaviors;
 using Identity.Api.Extensions;
 using Identity.Api.Grpc;
@@ -22,7 +23,6 @@ using Identity.Infrastructure.ORM.BcValidations;
 using Identity.Infrastructure.ORM.Dapper;
 using Identity.Infrastructure.ORM.EF.Stores;
 using Identity.Infrastructure.Utils;
-using IntegrationEventLogEF.Services;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
@@ -85,6 +85,8 @@ web.Services.AddScoped<IUserStore, UserStore>();
 web.Services.AddScoped(sp =>
     new DapperContext(web.Configuration.GetConnectionString("DefaultConnection")));
 
+web.Services.AddMtuBus(web.Configuration);
+
 // Register pipeline behaviors
 web.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionBehaviour<,>));
 web.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
@@ -93,7 +95,6 @@ web.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
 });
 
-web.Services.AddMtuBus(web.Configuration);
 
 web.AddExtraConfigs();
 web.ConfigLogger();

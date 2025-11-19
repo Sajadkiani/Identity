@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using EventBus.Services;
 using Identity.Api.Extensions;
 using Identity.Infrastructure.Data.EF;
-using IntegrationEventLogEF.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

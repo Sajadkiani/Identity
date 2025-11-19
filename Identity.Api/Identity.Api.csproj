@@ -36,7 +36,6 @@
     <ProjectReference Include="..\BuildingBlocks\EventBus\EventBus.csproj" />
     <ProjectReference Include="..\Identity.Infrastructure.Data\Identity.Infrastructure.Data.csproj" />
     <ProjectReference Include="..\Identity.Infrastructure\Identity.Infrastructure.csproj" />
-    <ProjectReference Include="..\BuildingBlocks\IntegrationEventLogEF\IntegrationEventLogEF.csproj" />
   </ItemGroup>
 
 </Project>

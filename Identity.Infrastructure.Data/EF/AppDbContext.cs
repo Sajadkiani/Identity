@@ -1,11 +1,10 @@
 using System.Data;
 using System.Reflection;
+using EventBus;
 using Identity.Domain.Aggregates.Users;
 using Identity.Domain.SeedWork;
-using Identity.Infrastructure.MtuBus;
 using Identity.Infrastructure.ORM.EF.Configs;
 using Identity.Infrastructure.ORM.Extensions;
-using IntegrationEventLogEF;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
