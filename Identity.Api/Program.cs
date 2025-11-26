@@ -85,7 +85,7 @@ web.Services.AddScoped<IUserStore, UserStore>();
 web.Services.AddScoped(sp =>
     new DapperContext(web.Configuration.GetConnectionString("DefaultConnection")));
 
-web.Services.AddMtuBus(web.Configuration);
+web.Services.AddMtuBus(web.Configuration, "DefaultConnection");
 
 // Register pipeline behaviors
 web.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionBehaviour<,>));
