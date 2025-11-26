@@ -34,9 +34,10 @@ using Serilog;
 
 var web = WebApplication.CreateBuilder(args);
 
+var dbConnectionString = web.Configuration.GetConnectionString("DefaultConnection");
 web.Services.AddDbContext<AppDbContext>(opt =>
 {
-    opt.UseSqlServer(web.Configuration.GetConnectionString("DefaultConnection"));
+    opt.UseSqlServer(dbConnectionString);
 });
 
 web.Services.AddAuthentication(opt =>
@@ -83,7 +84,7 @@ web.Services.AddScoped<IUserStore, UserStore>();
 
 // Dapper context
 web.Services.AddScoped(sp =>
-    new DapperContext(web.Configuration.GetConnectionString("DefaultConnection")));
+    new DapperContext(dbConnectionString));
 
 web.Services.AddMtuBus(web.Configuration, "DefaultConnection");
 

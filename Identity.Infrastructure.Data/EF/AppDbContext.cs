@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Identity.Infrastructure.Data.EF
 {
-    public class AppDbContext : EventLogDbContext, IUnitOfWork
+    public class AppDbContext : EventDbContext, IUnitOfWork
     {
         private readonly IMediator mediator;
         private IDbContextTransaction currentTransaction;
