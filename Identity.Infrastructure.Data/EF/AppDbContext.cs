@@ -1,8 +1,9 @@
 using System.Data;
 using System.Reflection;
+using AppDomain.SeedWork;
 using EventBus;
+using EventBus.Services;
 using Identity.Domain.Aggregates.Users;
-using Identity.Domain.SeedWork;
 using Identity.Infrastructure.ORM.EF.Configs;
 using Identity.Infrastructure.ORM.Extensions;
 using MediatR;
@@ -17,8 +18,9 @@ namespace Identity.Infrastructure.Data.EF
         private IDbContextTransaction currentTransaction;
         public bool HasActiveTransaction => currentTransaction != null;
         public AppDbContext(
-            DbContextOptions<AppDbContext> options)
-            : base(options)
+            DbContextOptions<AppDbContext> options,
+            IIntegrationEventLogService integrationEventLogService,
+            IMediator mediator) : base(options,integrationEventLogService, mediator)
         {
         }
 
@@ -32,20 +34,7 @@ namespace Identity.Infrastructure.Data.EF
 
         public async Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            // Dispatch Domain Events collection.
-            // Choices:
-            // A) Right BEFORE committing data (EF SaveChanges) into the DB. This makes
-            // a single transaction including side effects from the domain event
-            // handlers that are using the same DbContext with Scope lifetime
-            // B) Right AFTER committing data (EF SaveChanges) into the DB. This makes
-            // multiple transactions. You will need to handle eventual consistency and
-            // compensatory actions in case of failures.
-            await mediator.DispatchDomainEventsAsync(this);
-        
-            // After this line runs, all the changes (from the Command Handler and Domain
-            // event handlers) performed through the DbContext will be committed
-            var result = await base.SaveChangesAsync(cancellationToken) > 0;
-            return result;
+            return true;
         }
         
         public async Task<IDbContextTransaction> BeginTransactionAsync()
@@ -67,7 +56,7 @@ namespace Identity.Infrastructure.Data.EF
 
             try
             {
-                await SaveEntitiesAsync();
+                await base.SaveChangesAsync();
                 await transaction.CommitAsync();
             }
             catch

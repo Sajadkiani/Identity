@@ -1,6 +1,4 @@
-﻿using Identity.Domain.SeedWork;
-
-namespace Identity.Domain.Aggregates.Users.Enums;
+﻿namespace Identity.Domain.Aggregates.Users.Enums;
 
 public enum Gender
 {

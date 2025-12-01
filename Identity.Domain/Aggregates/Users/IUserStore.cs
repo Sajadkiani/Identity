@@ -1,4 +1,4 @@
-﻿using Identity.Domain.SeedWork;
+﻿using AppDomain.SeedWork;
 
 namespace Identity.Domain.Aggregates.Users;
 

@@ -1,4 +1,4 @@
-using Identity.Infrastructure.EF.Idempotency;
+using Identity.Infrastructure.Data.EF.Idempotency;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

@@ -1,8 +1,8 @@
+using AppDomain.SeedWork;
 using EventBus.MtuBus.Tests;
 using Identity.Domain.Aggregates.Users.Enums;
 using Identity.Domain.Exceptions;
 using Identity.Domain.IServices;
-using Identity.Domain.SeedWork;
 using Identity.Domain.Validations.Users;
 
 namespace Identity.Domain.Aggregates.Users

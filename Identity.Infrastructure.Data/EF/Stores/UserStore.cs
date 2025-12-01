@@ -1,8 +1,7 @@
 ﻿using Identity.Domain.Aggregates.Users;
-using Identity.Infrastructure.Data.EF;
 using Microsoft.EntityFrameworkCore;
 
-namespace Identity.Infrastructure.ORM.EF.Stores;
+namespace Identity.Infrastructure.Data.EF.Stores;
 
 public class UserStore : Repository<User, int>, IUserStore
 {

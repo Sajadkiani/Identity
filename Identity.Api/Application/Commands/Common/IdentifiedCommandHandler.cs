@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Identity.Api.Extensions;
-using Identity.Infrastructure.EF.Idempotency;
+using Identity.Infrastructure.Data.EF.Idempotency;
 using MediatR;
 using Microsoft.Extensions.Logging;
 

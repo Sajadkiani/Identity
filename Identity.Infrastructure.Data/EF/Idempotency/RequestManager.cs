@@ -1,8 +1,6 @@
 ﻿using Identity.Domain.Exceptions;
-using Identity.Infrastructure.Data.EF;
-using Identity.Infrastructure.ORM.EF;
 
-namespace Identity.Infrastructure.EF.Idempotency;
+namespace Identity.Infrastructure.Data.EF.Idempotency;
 
 public class RequestManager : IRequestManager
 {

@@ -1,4 +1,4 @@
-﻿namespace Identity.Infrastructure.EF.Idempotency;
+﻿namespace Identity.Infrastructure.Data.EF.Idempotency;
 
 public interface IRequestManager
 {
