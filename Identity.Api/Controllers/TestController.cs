@@ -22,13 +22,10 @@ public class TestController : ControllerBase
         _domainEventDispatcher = domainEventDispatcher;
     }
     
-    [HttpGet("int/event")]
-    public async Task LoginAsync()
+    [HttpPost("int/event")]
+    public async Task LoginAsync([FromBody] AddUserCommand command)
     {
-        await _integrationEventDispatcher.PublishAsync(nameof(TestIntegrationEvent), new TestIntegrationEvent
-        {
-            UserName = "integrated event"
-        });
+        await _domainEventDispatcher.SendAsync(command);
     }
 
     [HttpGet("domain/event")]

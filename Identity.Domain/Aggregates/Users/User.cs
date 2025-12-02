@@ -1,5 +1,7 @@
 using AppDomain.SeedWork;
+using AppEvents;
 using EventBus.MtuBus.Tests;
+using Events;
 using Identity.Domain.Aggregates.Users.Enums;
 using Identity.Domain.Exceptions;
 using Identity.Domain.IServices;
@@ -27,6 +29,10 @@ namespace Identity.Domain.Aggregates.Users
             //TODO: all invariants and data consistencies must put here 
             Validate(bcScopeValidation);
             AddDomainEvent(new TestDomainEvent(UserName));
+            AddIntegratedEvent(new TestIntegrationEvent
+            {
+                UserName = userName
+            });
         }
 
         public string Name { get; private set; }

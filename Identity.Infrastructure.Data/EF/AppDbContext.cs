@@ -19,8 +19,7 @@ namespace Identity.Infrastructure.Data.EF
         public bool HasActiveTransaction => currentTransaction != null;
         public AppDbContext(
             DbContextOptions<AppDbContext> options,
-            IIntegrationEventLogService integrationEventLogService,
-            IMediator mediator) : base(options,integrationEventLogService, mediator)
+            IMediator mediator) : base(options, mediator)
         {
         }
 
@@ -56,7 +55,7 @@ namespace Identity.Infrastructure.Data.EF
 
             try
             {
-                await base.SaveChangesAsync();
+                await SaveChangesAndSendEventsAsync(transaction);
                 await transaction.CommitAsync();
             }
             catch
